@@ -1,0 +1,157 @@
+16:28:17.969898 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 x 3 hilos | generadores=2 | solicitudes=continuo | cola=semaforos(10) | vehículos=3 | ventana=0.0100 s | semilla=42 | log=evidencias/fase3/e5_ejecucion.log
+16:28:17.987979 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 88902
+16:28:17.989569 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 88903
+16:28:17.994178 | PID  88902 | PPID  88898 | TID  88902 | trabajador-1    | MainThread       | INICIO trabajador 1 con 3 hilos despachadores
+16:28:17.994997 | PID  88903 | PPID  88898 | TID  88903 | trabajador-2    | MainThread       | INICIO trabajador 2 con 3 hilos despachadores
+16:28:17.995349 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | SINCRONIZADO: 2 trabajadores listos
+16:28:17.997675 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000000 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~0
+16:28:17.998063 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000001 (ráfaga 1) Olímpica: Garagoa -> Villa de Leyva | en cola ~0
+16:28:17.997905 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RÁFAGA 1: 2 generadores liberados simultáneamente
+16:28:17.998280 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000000 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~1
+16:28:17.998409 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000001 (ráfaga 1) Jumbo: Chiquinquirá -> Paipa | en cola ~2
+16:28:17.997814 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+16:28:17.998559 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+16:28:17.998931 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   88898   81622   centro_despacho  R      3      23104    
+16:28:17.999264 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88898   centro_despacho  R
+16:28:17.999377 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88910   generador-1      S
+16:28:17.999459 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88911   generador-2      S
+16:28:17.999676 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   88902   88898   trabajador-1     S      4      19108    
+16:28:18.000002 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88902   trabajador-1     S
+16:28:18.000089 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88904   despachador-1-1  S
+16:28:18.000164 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88906   despachador-1-2  S
+16:28:18.000245 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88907   despachador-1-3  S
+16:28:18.000445 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   88903   88898   trabajador-2     S      4      19040    
+16:28:18.000787 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88903   trabajador-2     S
+16:28:18.000876 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88905   despachador-2-1  S
+16:28:18.000957 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88908   despachador-2-2  S
+16:28:18.001027 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |       └ TID 88909   despachador-2-3  S
+16:28:18.008295 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V2 a la solicitud 2000001 | libres ~2/3
+16:28:18.008745 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V3 a la solicitud 1000000 | libres ~1/3
+16:28:18.010641 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 1000000 en V3 (Homecenter: Sogamoso -> Tunja) | esperó en cola 0 ms, por vehículo 12 ms
+16:28:18.010626 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 2000001 en V2 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 0 ms, por vehículo 12 ms
+16:28:18.011010 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 2000000 mientras lo usa la solicitud 1000000 (PID 88903, TID 88905) [entre procesos]
+16:28:18.011168 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000000 en V3 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms, por vehículo 13 ms
+16:28:18.011317 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 1000001 mientras lo usa la solicitud 2000001 (PID 88902, TID 88906) [mismo proceso]
+16:28:18.011419 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1000001 en V2 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 0 ms, por vehículo 13 ms
+16:28:18.193742 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1000001 en V2
+16:28:18.232950 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 1000000 en V3
+16:28:18.238456 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000000 en V3
+16:28:18.297953 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 2000001 en V2
+16:28:18.402475 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1000001 | V2 liberado | servicio 404 ms
+16:28:18.495094 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | CONSUMIDOR ESPERANDO: cola vacía
+16:28:18.495812 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | CONSUMIDOR ESPERANDO: cola vacía
+16:28:18.498951 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000002 (ráfaga 2) Homecenter: Tunja -> Moniquirá | en cola ~1
+16:28:18.499876 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000003 (ráfaga 2) D1: Moniquirá -> Sogamoso | en cola ~1
+16:28:18.499398 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RÁFAGA 2: 2 generadores liberados simultáneamente
+16:28:18.500790 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000002 (ráfaga 2) D1: Duitama -> Villa de Leyva | en cola ~1
+16:28:18.500756 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 2000001 | V2 liberado | servicio 503 ms
+16:28:18.501307 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000003 (ráfaga 2) Falabella: Villa de Leyva -> Moniquirá | en cola ~1
+16:28:18.509471 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V2 a la solicitud 1000002 | libres ~1/3
+16:28:18.510132 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1000002 en V2 (Homecenter: Tunja -> Moniquirá) | esperó en cola 0 ms, por vehículo 11 ms
+16:28:18.510646 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 1000003 mientras lo usa la solicitud 1000002 (PID 88902, TID 88907) [entre procesos]
+16:28:18.511526 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 1000003 en V2 (D1: Moniquirá -> Sogamoso) | esperó en cola 0 ms, por vehículo 11 ms
+16:28:18.511623 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V1 asignado a la solicitud 2000003 mientras lo usa la solicitud 2000002 (PID 88903, TID 88909) [entre procesos]
+16:28:18.511169 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V1 a la solicitud 2000002 | libres ~0/3
+16:28:18.512066 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 2000003 en V1 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 0 ms, por vehículo 11 ms
+16:28:18.512330 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 2000002 en V1 (D1: Duitama -> Villa de Leyva) | esperó en cola 0 ms, por vehículo 11 ms
+16:28:18.625987 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 2000002 en V1
+16:28:18.629816 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 2000003 en V1
+16:28:18.666157 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000000 | V3 liberado | servicio 668 ms
+16:28:18.667118 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 1000003 en V2
+16:28:18.698891 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 1000000 | V3 liberado | servicio 700 ms
+16:28:18.733200 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1000002 en V2
+16:28:18.854783 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 2000002 | V1 liberado | servicio 354 ms
+16:28:18.966902 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 1000003 | V2 liberado | servicio 467 ms
+16:28:19.002472 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000004 (ráfaga 3) D1: Paipa -> Moniquirá | en cola ~1
+16:28:19.003818 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000005 (ráfaga 3) Éxito: Tunja -> Paipa | en cola ~1
+16:28:19.003200 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RÁFAGA 3: 2 generadores liberados simultáneamente
+16:28:19.004697 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000004 (ráfaga 3) Éxito: Tunja -> Sogamoso | en cola ~1
+16:28:19.005275 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000005 (ráfaga 3) Homecenter: Duitama -> Villa de Leyva | en cola ~1
+16:28:19.013050 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V3 a la solicitud 2000004 | libres ~2/3
+16:28:19.013679 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000004 en V3 (D1: Paipa -> Moniquirá) | esperó en cola 0 ms, por vehículo 11 ms
+16:28:19.014823 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 2000005 mientras lo usa la solicitud 1000003 (PID 88903, TID 88908) [mismo proceso]
+16:28:19.016331 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 2000005 en V2 (Éxito: Tunja -> Paipa) | esperó en cola 0 ms, por vehículo 12 ms
+16:28:19.015950 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 1000005 mientras lo usa la solicitud 2000005 (PID 88903, TID 88905) [mismo proceso]
+16:28:19.015361 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 1000004 mientras lo usa la solicitud 2000004 (PID 88902, TID 88904) [entre procesos]
+16:28:19.018118 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 1000004 en V3 (Éxito: Tunja -> Sogamoso) | esperó en cola 0 ms, por vehículo 13 ms
+16:28:19.017361 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 1000005 en V2 (Homecenter: Duitama -> Villa de Leyva) | esperó en cola 0 ms, por vehículo 12 ms
+16:28:19.032772 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 2000003 | V1 liberado | servicio 531 ms
+16:28:19.231022 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 1000004 en V3
+16:28:19.242837 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 1000005 en V2
+16:28:19.272113 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 2000005 en V2
+16:28:19.282476 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000004 en V3
+16:28:19.301229 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1000002 | V2 liberado | servicio 802 ms
+16:28:19.501563 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 1000005 | V2 liberado | servicio 496 ms
+16:28:19.506088 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000006 (ráfaga 4) Homecenter: Paipa -> Tunja | en cola ~1
+16:28:19.506807 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000007 (ráfaga 4) D1: Villa de Leyva -> Sogamoso | en cola ~1
+16:28:19.506432 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RÁFAGA 4: 2 generadores liberados simultáneamente
+16:28:19.507535 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000006 (ráfaga 4) Jumbo: Paipa -> Moniquirá | en cola ~1
+16:28:19.507905 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000007 (ráfaga 4) Éxito: Paipa -> Moniquirá | en cola ~2
+16:28:19.516359 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 1000006 mientras lo usa la solicitud 1000005 (PID 88903, TID 88908) [entre procesos]
+16:28:19.516723 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000006 en V2 (Homecenter: Paipa -> Tunja) | esperó en cola 0 ms, por vehículo 10 ms
+16:28:19.517012 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 1000007 | libres ~0/3
+16:28:19.517180 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1000007 en V1 (D1: Villa de Leyva -> Sogamoso) | esperó en cola 0 ms, por vehículo 10 ms
+16:28:19.518454 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 2000006 mientras lo usa la solicitud 1000006 (PID 88902, TID 88906) [entre procesos]
+16:28:19.518697 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 2000006 en V2 (Jumbo: Paipa -> Moniquirá) | esperó en cola 1 ms, por vehículo 10 ms
+16:28:19.562639 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 1000004 | V3 liberado | servicio 558 ms
+16:28:19.573079 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 2000007 mientras lo usa la solicitud 1000004 (PID 88903, TID 88909) [mismo proceso]
+16:28:19.573264 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 2000007 en V3 (Éxito: Paipa -> Moniquirá) | esperó en cola 55 ms, por vehículo 10 ms
+16:28:19.645033 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000006 en V2
+16:28:19.681219 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000004 | V3 liberado | servicio 678 ms
+16:28:19.710577 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 2000007 en V3
+16:28:19.749832 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 2000005 | V2 liberado | servicio 746 ms
+16:28:19.750621 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1000007 en V1
+16:28:19.763170 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 2000006 en V2
+16:28:20.008393 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000008 (ráfaga 5) Falabella: Tunja -> Chiquinquirá | en cola ~1
+16:28:20.008742 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | RECIBIDA solicitud 2000009 (ráfaga 5) Ara: Tunja -> Moniquirá | en cola ~1
+16:28:20.008555 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RÁFAGA 5: 2 generadores liberados simultáneamente
+16:28:20.008971 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000008 (ráfaga 5) Ara: Chiquinquirá -> Moniquirá | en cola ~1
+16:28:20.009064 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | RECIBIDA solicitud 1000009 (ráfaga 5) Ara: Garagoa -> Tunja | en cola ~2
+16:28:20.018558 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 2000008 mientras lo usa la solicitud 2000006 (PID 88903, TID 88908) [entre procesos]
+16:28:20.018692 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000008 en V2 (Falabella: Tunja -> Chiquinquirá) | esperó en cola 0 ms, por vehículo 10 ms
+16:28:20.018880 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 2000009 mientras lo usa la solicitud 2000007 (PID 88903, TID 88909) [mismo proceso]
+16:28:20.018977 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 2000009 en V3 (Ara: Tunja -> Moniquirá) | esperó en cola 0 ms, por vehículo 10 ms
+16:28:20.089368 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000006 | V2 liberado | servicio 583 ms
+16:28:20.089912 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | SEÑAL SIGINT recibida: se detiene la generación y se cancelan las solicitudes en cola
+16:28:20.099708 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 1000008 mientras lo usa la solicitud 2000008 (PID 88902, TID 88904) [mismo proceso]
+16:28:20.099881 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000008 en V2 (Ara: Chiquinquirá -> Moniquirá) | esperó en cola 81 ms, por vehículo 10 ms
+16:28:20.174503 | PID  88902 | PPID  88898 | TID  88907 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1000007 | V1 liberado | servicio 668 ms
+16:28:20.183296 | PID  88903 | PPID  88898 | TID  88909 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 2000007 | V3 liberado | servicio 620 ms
+16:28:20.209411 | PID  88898 | PPID  81622 | TID  88910 | centro_despacho | generador-1      | FIN generador 1: generadas=10, bloqueos por cola llena=0 (0.000 s)
+16:28:20.211270 | PID  88898 | PPID  81622 | TID  88911 | centro_despacho | generador-2      | FIN generador 2: generadas=10, bloqueos por cola llena=0 (0.000 s)
+16:28:20.267913 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000008 en V2
+16:28:20.286335 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000008 en V2
+16:28:20.289285 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 2000009 en V3
+16:28:20.333922 | PID  88903 | PPID  88898 | TID  88908 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 2000006 | V2 liberado | servicio 826 ms
+16:28:20.669032 | PID  88903 | PPID  88898 | TID  88905 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 2000009 | V3 liberado | servicio 660 ms
+16:28:20.675053 | PID  88902 | PPID  88898 | TID  88906 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000008 | V2 liberado | servicio 585 ms
+16:28:20.762460 | PID  88902 | PPID  88898 | TID  88904 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000008 | V2 liberado | servicio 754 ms
+16:28:21.200778 | PID  88903 | PPID  88898 | TID  88903 | trabajador-2    | MainThread       | FIN trabajador 2 | atendidas por hilo: despachador-2-1=3, despachador-2-2=3, despachador-2-3=3
+16:28:21.300950 | PID  88902 | PPID  88898 | TID  88902 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=3, despachador-1-2=4, despachador-1-3=3
+16:28:21.364764 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 88902): exit(0)
+16:28:21.365762 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | TERMINÓ trabajador-2 (PID 88903): exit(0)
+16:28:21.416741 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | RESUMEN de terminación:
+16:28:21.417437 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   trabajador-1   PID 88902   exit(0)
+16:28:21.417932 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   trabajador-2   PID 88903   exit(0)
+16:28:21.418522 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+16:28:21.419289 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | ESTADÍSTICAS:
+16:28:21.419728 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   solicitudes: generadas=20 entregadas=19 canceladas=1 no atendidas=0
+16:28:21.420162 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=0, tiempo bloqueados=0.000 s
+16:28:21.420654 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=7 máx=81
+16:28:21.421074 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   servicio (s): prom=0.611 | trabajo total (suma)=11.60 s
+16:28:21.421861 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   tiempo total=2.77 s | rendimiento=6.87 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=4.20
+16:28:21.422477 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   concurrencia máxima observada=6 (capacidad = 2 trabajadores x 3 hilos = 6)
+16:28:21.423274 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=10, trabajador-2=9
+16:28:21.423744 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=3, despachador-1-2=4, despachador-1-3=3, despachador-2-1=3, despachador-2-2=3, despachador-2-3=3
+16:28:21.424191 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   CPU: principal=0.15 s, trabajadores=0.07 s | tiempo real=3.43 s | uso medio de CPU de los trabajadores=2.1 %
+16:28:21.424567 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=218, involuntarios=22
+16:28:21.425010 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   FLOTA: 3 vehículos | asignaciones=19 | reparto: V1=3, V2=10, V3=6
+16:28:21.425435 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   espera por vehículo (ms): prom=11 máx=13 | reintentos de búsqueda (espera activa)=0
+16:28:21.426336 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   DOBLES ASIGNACIONES: sonda en vivo=13 | auditoría: asignaciones sobre un vehículo ocupado=13, pares solapados=17 (entre procesos=11, entre hilos del mismo proceso=6)
+16:28:21.426844 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |     V1: solicitud 2000003 [despachador-1-2] y solicitud 2000002 [despachador-2-3] lo usaron a la vez durante 342 ms
+16:28:21.427275 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |     V2: solicitud 2000001 [despachador-1-2] y solicitud 1000001 [despachador-1-3] lo usaron a la vez durante 391 ms
+16:28:21.427803 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |     V2: solicitud 1000002 [despachador-1-3] y solicitud 1000003 [despachador-2-2] lo usaron a la vez durante 455 ms
+16:28:21.428199 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |     V2: solicitud 1000002 [despachador-1-3] y solicitud 2000005 [despachador-2-1] lo usaron a la vez durante 285 ms
+16:28:21.428596 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |     V2: solicitud 1000002 [despachador-1-3] y solicitud 1000005 [despachador-2-2] lo usaron a la vez durante 284 ms
+16:28:21.429320 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       |   estado final de la flota: libres=3/3
+16:28:21.429867 | PID  88898 | PPID  81622 | TID  88898 | centro_despacho | MainThread       | FIN centro de despacho (con fallos)

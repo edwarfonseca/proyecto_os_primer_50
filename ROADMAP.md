@@ -99,11 +99,12 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] Evidencia: E1–E4 (`scripts/evidencias_fase2.sh`): ráfagas, `pstree -t`, `ps -L`, `top -H`, escalamiento, capacidad.
 - [x] Hallazgos: H3 (inanición con `multiprocessing.Queue`, 4/10 → 0/10) y H4 (carrera `Barrier.wait`/`abort`, 13/30 → 0/30).
 
-### Fase 3 — Condición de carrera (versión con el problema)
-- [ ] Arreglo compartido de vehículos sin protección (`lock=False`).
-- [ ] Asignación *check-then-act*: buscar libre → ventana → marcar ocupado (TOCTOU).
-- [ ] Instrumentación: contador protegido de ocupantes por vehículo → detecta **doble asignación**.
-- [ ] Prueba reproducible (misma semilla, varias repeticiones, % de ejecuciones con fallo).
+### Fase 3 — Condición de carrera (versión con el problema) ✅
+- [x] Flota compartida `estado[V]` en `RawArray` (memoria compartida `/dev/shm`, sin lock).
+- [x] Asignación *check-then-act*: buscar libre → ventana (`--ventana`) → marcar ocupado (TOCTOU).
+- [x] Detección doble e independiente: sonda en vivo + auditoría de solapamientos en el principal; exit code 1.
+- [x] Prueba reproducible: 10/10 ejecuciones con la misma semilla (E2).
+- [x] Ventana 0–10 ms (E3), hilos vs procesos y efecto del GIL (E4), memoria compartida en `/proc/<pid>/maps` (E5).
 
 ### Fase 4 — Corrección
 - [ ] `Lock` que hace atómica la búsqueda + marcado (sección crítica mínima).

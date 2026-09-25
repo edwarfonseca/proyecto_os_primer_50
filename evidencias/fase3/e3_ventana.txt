@@ -1,0 +1,8 @@
+Configuración: -w 2 -t 3 -g 4 -n 24 -v 3, 10 ejecuciones por ventana
+
+VENTANA(s)   EJECUCIONES CON FALLO  DOBLES PROMEDIO    MÁXIMO   
+0            3/10                   0.9                4         
+0.0005       10/10                  18.3               21        
+0.001        10/10                  18.1               21        
+0.005        10/10                  17.8               20        
+0.01         10/10                  18.0               19        

@@ -1,0 +1,9 @@
+Carga: 48 solicitudes en ráfagas (6 generadores x 2), 3 vehículos, 10 ejecuciones
+
+PROCESOS   HILOS   VENTANA(s)   EJECUCIONES CON FALLO  DOBLES PROMEDIO   
+1          6       0            0/10                   0.0               
+6          1       0            10/10                  23.0              
+2          3       0            5/10                   3.6               
+1          6       0.001        10/10                  39.8              
+6          1       0.001        10/10                  37.0              
+2          3       0.001        10/10                  36.8              

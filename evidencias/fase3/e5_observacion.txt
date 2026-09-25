@@ -1,0 +1,132 @@
+Captura: 2026-09-25 16:28:19 | kernel 7.1.8-arch1-3 | PID principal: 88898
+
+===== 1. Jerarquía de procesos e hilos (pstree -p -t: {..} = hilos) =====
+centro_despacho(88898)-+-trabajador-1(88902)-+-{QueueFeederThre}(88921)
+                       |                     |-{despachador-1-1}(88904)
+                       |                     |-{despachador-1-2}(88906)
+                       |                     `-{despachador-1-3}(88907)
+                       |-trabajador-2(88903)-+-{QueueFeederThre}(88922)
+                       |                     |-{despachador-2-1}(88905)
+                       |                     |-{despachador-2-2}(88908)
+                       |                     `-{despachador-2-3}(88909)
+                       |-{generador-1}(88910)
+                       `-{generador-2}(88911)
+
+===== 2. Procesos: identidad, estado y recursos (ps -o) =====
+    PID    PPID    PGID STAT NLWP %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  88898   81622   88898 Ssl     3  5.7  0.2 23148 176164       00:02 centro_despacho python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+  88902   88898   88898 Sl      5  0.5  0.2 19272 323528       00:01 trabajador-1    python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+  88903   88898   88898 Sl      5  0.5  0.2 19272 323528       00:01 trabajador-2    python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+
+===== 3. Hilos de cada proceso (ps -eLf filtrado; LWP = TID del kernel) =====
+UID          PID    PPID     LWP  C NLWP STIME TTY          TIME CMD
+edwar      88898   81622   88898  5    3 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88898   81622   88910  0    3 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88898   81622   88911  0    3 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88902   88898   88902  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88902   88898   88904  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88902   88898   88906  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88902   88898   88907  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88902   88898   88921  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88903   88898   88903  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88903   88898   88905  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88903   88898   88908  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88903   88898   88909  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+edwar      88903   88898   88922  0    5 16:28 ?        00:00:00 python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log evidencias/fase3/e5_ejecucion.log
+
+===== 4. Hilos con nombre, estado y CPU (ps -L) =====
+    PID     LWP STAT %CPU WCHAN                    COMMAND
+  88898   88898 Ssl   5.1 poll_schedule_timeout.co centro_despacho
+  88898   88910 Ssl   0.0 hrtimer_nanosleep        generador-1
+  88898   88911 Ssl   0.0 hrtimer_nanosleep        generador-2
+  88902   88902 Sl    0.0 hrtimer_nanosleep        trabajador-1
+  88902   88904 Sl    0.0 hrtimer_nanosleep        despachador-1-1
+  88902   88906 Sl    0.0 hrtimer_nanosleep        despachador-1-2
+  88902   88907 Sl    0.0 hrtimer_nanosleep        despachador-1-3
+  88902   88921 Sl    0.0 futex_do_wait            QueueFeederThre
+  88903   88903 Sl    0.0 hrtimer_nanosleep        trabajador-2
+  88903   88905 Sl    0.0 hrtimer_nanosleep        despachador-2-1
+  88903   88908 Sl    0.0 hrtimer_nanosleep        despachador-2-2
+  88903   88909 Sl    0.0 hrtimer_nanosleep        despachador-2-3
+  88903   88922 Sl    0.0 futex_do_wait            QueueFeederThre
+
+===== 5. /proc/<pid>/status (campos relevantes) =====
+-- PID 88898
+   Name:	centro_despacho
+   State:	S (sleeping)
+   Pid:	88898
+   PPid:	81622
+   VmSize:	  176164 kB
+   VmRSS:	   23148 kB
+   Threads:	3
+   voluntary_ctxt_switches:	27
+   nonvoluntary_ctxt_switches:	17
+   Rss:               23148 kB
+   Pss:                8629 kB
+   Shared_Clean:      10552 kB
+   Private_Dirty:      3324 kB
+-- PID 88902
+   Name:	trabajador-1
+   State:	S (sleeping)
+   Pid:	88902
+   PPid:	88898
+   VmSize:	  323528 kB
+   VmRSS:	   19272 kB
+   Threads:	5
+   voluntary_ctxt_switches:	28
+   nonvoluntary_ctxt_switches:	2
+   Rss:               19272 kB
+   Pss:                7019 kB
+   Shared_Clean:       7148 kB
+   Private_Dirty:      2840 kB
+-- PID 88903
+   Name:	trabajador-2
+   State:	S (sleeping)
+   Pid:	88903
+   PPid:	88898
+   VmSize:	  323528 kB
+   VmRSS:	   19272 kB
+   Threads:	5
+   voluntary_ctxt_switches:	28
+   nonvoluntary_ctxt_switches:	2
+   Rss:               19272 kB
+   Pss:                6997 kB
+   Shared_Clean:       7148 kB
+   Private_Dirty:      2796 kB
+
+===== 6. Memoria compartida: segmentos de /dev/shm mapeados por cada proceso =====
+   (mismo INODO en varios procesos = mismas páginas físicas; pym-* = RawArray/RawValue,
+    sem.* = semáforos y locks POSIX; '(deleted)' = sin nombre, vive mientras esté mapeado)
+-- PID 88898 (centro_despacho)
+   inodo 8770     /dev/shm/pym-88898-1t4sp94s (deleted)
+   inodo 8771     /dev/shm/sem.baPddd (deleted)
+   inodo 8772     /dev/shm/sem.9PH1b5 (deleted)
+   inodo 8773     /dev/shm/sem.OCIqtt (deleted)
+   inodo 8774     /dev/shm/sem.bex5Zc (deleted)
+   inodo 8775     /dev/shm/sem.Avgc3t (deleted)
+   inodo 8776     /dev/shm/sem.1wmj2J (deleted)
+   inodo 8777     /dev/shm/sem.WwgFUh (deleted)
+   inodo 8778     /dev/shm/sem.KoymGt (deleted)
+   inodo 8779     /dev/shm/sem.cl1Yd9 (deleted)
+-- PID 88902 (trabajador-1)
+   inodo 8770     /dev/shm/pym-88898-1t4sp94s (deleted)
+   inodo 8771     /dev/shm/sem.baPddd (deleted)
+   inodo 8772     /dev/shm/sem.9PH1b5 (deleted)
+   inodo 8773     /dev/shm/sem.OCIqtt (deleted)
+   inodo 8774     /dev/shm/sem.bex5Zc (deleted)
+   inodo 8775     /dev/shm/sem.Avgc3t (deleted)
+   inodo 8776     /dev/shm/sem.1wmj2J (deleted)
+   inodo 8777     /dev/shm/sem.WwgFUh (deleted)
+   inodo 8778     /dev/shm/sem.KoymGt (deleted)
+   inodo 8779     /dev/shm/sem.cl1Yd9 (deleted)
+-- PID 88903 (trabajador-2)
+   inodo 8770     /dev/shm/pym-88898-1t4sp94s (deleted)
+   inodo 8771     /dev/shm/sem.baPddd (deleted)
+   inodo 8772     /dev/shm/sem.9PH1b5 (deleted)
+   inodo 8773     /dev/shm/sem.OCIqtt (deleted)
+   inodo 8774     /dev/shm/sem.bex5Zc (deleted)
+   inodo 8775     /dev/shm/sem.Avgc3t (deleted)
+   inodo 8776     /dev/shm/sem.1wmj2J (deleted)
+   inodo 8777     /dev/shm/sem.WwgFUh (deleted)
+   inodo 8778     /dev/shm/sem.KoymGt (deleted)
+   inodo 8779     /dev/shm/sem.cl1Yd9 (deleted)
