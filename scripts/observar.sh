@@ -45,4 +45,12 @@ titulo() { printf '\n===== %s =====\n' "$1"; }
         grep -E '^(Rss|Pss|Shared_Clean|Private_Dirty):' "/proc/$p/smaps_rollup" 2>/dev/null \
             | sed 's/^/   /' || true
     done
+
+    titulo "6. Memoria compartida: segmentos de /dev/shm mapeados por cada proceso"
+    echo "   (mismo INODO en varios procesos = mismas páginas físicas; pym-* = RawArray/RawValue,"
+    echo "    sem.* = semáforos y locks POSIX; '(deleted)' = sin nombre, vive mientras esté mapeado)"
+    for p in ${TODOS//,/ }; do
+        echo "-- PID $p ($(cat /proc/$p/comm))"
+        awk '/\/dev\/shm/ {printf "   inodo %-8s %s %s\n", $5, $6, $7}' "/proc/$p/maps" | sort -u
+    done
 } | tee "$SALIDA"

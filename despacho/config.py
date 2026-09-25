@@ -15,6 +15,8 @@ class Config:
     tam_rafaga: int          # solicitudes por generador en cada ráfaga; 0 = todas de una vez
     intervalo: float         # segundos entre ráfagas
     capacidad_cola: int
+    vehiculos: int
+    ventana: float           # segundos entre ver un vehículo libre y marcarlo asignado
     tipo_cola: str           # semaforos (ColaAcotada) | mp (multiprocessing.Queue)
     despacho: tuple[float, float]   # rango (s) del tiempo de preparación
     entrega: tuple[float, float]    # rango (s) del tiempo de ruta
@@ -73,6 +75,13 @@ def leer_argumentos(argv=None) -> Config:
     c.add_argument("-s", "--semilla", type=int, default=42,
                    help="semilla aleatoria: misma semilla = misma carga (defecto: 42)")
 
+    f = p.add_argument_group("flota")
+    f.add_argument("-v", "--vehiculos", type=int, default=3,
+                   help="vehículos de la flota compartida (defecto: 3)")
+    f.add_argument("--ventana", type=float, default=0.01,
+                   help="segundos de validación entre ver un vehículo libre y marcarlo "
+                        "asignado; ensancha la ventana de carrera (defecto: 0.01)")
+
     e = p.add_argument_group("ejecución")
     e.add_argument("-d", "--duracion", type=float, default=0.0,
                    help="tiempo máximo en segundos; 0 = sin límite (defecto: 0)")
@@ -82,17 +91,18 @@ def leer_argumentos(argv=None) -> Config:
                    help="archivo de registro (defecto: logs/despacho_<fecha>.log)")
     a = p.parse_args(argv)
 
-    for nombre in ("trabajadores", "hilos", "generadores", "capacidad_cola"):
+    for nombre in ("trabajadores", "hilos", "generadores", "capacidad_cola", "vehiculos"):
         if getattr(a, nombre) < 1:
             p.error(f"--{nombre.replace('_', '-')} debe ser >= 1")
-    if a.solicitudes < 0 or a.tam_rafaga < 0:
-        p.error("--solicitudes y --tam-rafaga no pueden ser negativos")
+    if a.solicitudes < 0 or a.tam_rafaga < 0 or a.ventana < 0:
+        p.error("--solicitudes, --tam-rafaga y --ventana no pueden ser negativos")
     ruta_log = a.log or Path("logs") / f"despacho_{time.strftime('%Y%m%d_%H%M%S')}.log"
 
     return Config(
         trabajadores=a.trabajadores, hilos=a.hilos, generadores=a.generadores,
         solicitudes=a.solicitudes, tam_rafaga=a.tam_rafaga, intervalo=a.intervalo,
-        capacidad_cola=a.capacidad_cola, tipo_cola=a.tipo_cola, despacho=a.despacho, entrega=a.entrega,
+        capacidad_cola=a.capacidad_cola, tipo_cola=a.tipo_cola,
+        vehiculos=a.vehiculos, ventana=a.ventana, despacho=a.despacho, entrega=a.entrega,
         semilla=a.semilla, duracion=a.duracion, metodo_inicio=a.metodo_inicio,
         espera_fin=a.espera_fin, ruta_log=ruta_log,
     )

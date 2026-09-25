@@ -29,3 +29,7 @@ class Resultado:
     t_llegada: float
     t_inicio: float        # el despachador la sacó de la cola
     t_fin: float
+    vehiculo: int = -1     # índice del vehículo asignado (-1 = ninguno)
+    t_asignado: float = 0.0
+    t_liberado: float = 0.0
+    reintentos: int = 0    # búsquedas fallidas de vehículo (espera activa)
