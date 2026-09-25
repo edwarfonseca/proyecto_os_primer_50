@@ -119,10 +119,11 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] Análisis de las 4 condiciones de Coffman y qué estrategia rompe cada una.
 - [x] Estrategias: `orden` (espera circular, defecto), `timeout` con espera aleatoria creciente (retención y espera), `deteccion` con víctima (no expropiación). Comparación E3 y ajuste del tiempo límite E4.
 
-### Fase 6 — CPU y memoria
-- [ ] Cálculo de ruta óptima (fuerza bruta sobre puntos de entrega) como tarea CPU-bound.
-- [ ] Experimento GIL: 1 proceso × 8 hilos vs 4 procesos × 2 hilos → `top -H` y tiempos.
-- [ ] Crecimiento controlado de memoria (historial/caché de rutas acotado) → `VmRSS` en `/proc`.
+### Fase 6 — CPU y memoria ✅
+- [x] Ruta óptima por fuerza bruta (P! recorridos, `-p`) como tarea CPU-bound; CPU por hilo con `thread_time()`.
+- [x] Experimento GIL: hilos vs procesos (E1: 0.98x vs 1.76x; límites de Hyper-Threading), `top -H` (E2).
+- [x] Carga mixta: 16 hilos en 1..16 procesos, tiempo y memoria (E3): justificación de la arquitectura híbrida.
+- [x] Historial de trazas GPS acotado vs sin límite (E4); hilo `muestreador` con series CSV de RSS/PSS/CPU desde `/proc`.
 
 ### Fase 7 — Registro y observación
 - [ ] Hilo monitor: recibidas, pendientes, vehículos disponibles, asignados, finalizadas (cada segundo + CSV).

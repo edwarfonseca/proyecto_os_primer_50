@@ -12,7 +12,7 @@
 - [3. Condición de carrera](#fase-3--condición-de-carrera) ✅
 - [4. Corrección por sincronización](#fase-4--corrección-por-sincronización) ✅
 - [5. Interbloqueo](#fase-5--interbloqueo) ✅
-- [6. CPU y memoria](#fase-6--cpu-y-memoria) *(pendiente)*
+- [6. CPU y memoria](#fase-6--cpu-y-memoria) ✅
 - [7. Registro y observación](#fase-7--registro-y-observación) *(pendiente)*
 - [8. Experimentos y comparación antes/después](#fase-8--experimentos-y-comparación-antesdespués) *(pendiente)*
 - [9. Guion de demostración y sustentación](#fase-9--guion-de-demostración-y-sustentación) *(pendiente)*
@@ -1594,7 +1594,208 @@ INTERBLOQUEOS: detectados=0
 - **¿Qué pasa si un proceso muere con un recurso tomado?** D5.7.
 
 ## Fase 6 — CPU y memoria
-*(pendiente)*
+
+> Rama `fase-6-cpu-memoria` · etiqueta `fase-6` · evidencias en `evidencias/fase6/`
+>
+> Requisito 13 (tarea con consumo elevado de CPU) y requisitos transversales de CPU y memoria
+> ("simulación, medición y análisis", 10 % de la nota).
+
+### 6.1 Qué se hizo
+- **Tarea intensiva en CPU: planificación de la ruta de reparto** (`despacho/carga.py`). Cada
+  solicitud trae P puntos de entrega (`-p`, defecto 7) y el despachador busca por fuerza bruta el
+  recorrido más corto que sale del centro, visita todos los puntos y regresa (problema del
+  viajante): **P! recorridos**. Es Python puro, así que el hilo retiene el GIL todo el cálculo.
+  Medido en este equipo: 7 puntos ≈ 3 ms, 8 ≈ 25 ms, 9 ≈ 220 ms.
+- **CPU por hilo:** cada ruta mide su tiempo real y la **CPU consumida por su propio hilo**
+  (`time.thread_time()`, que es `CLOCK_THREAD_CPUTIME_ID` del kernel). Si el tiempo real supera la
+  CPU, el hilo estuvo listo pero sin ejecutarse (esperando el GIL o un núcleo).
+- **Verificación de resultado:** la suma de las longitudes de todas las rutas debe ser idéntica con
+  cualquier número de procesos e hilos (misma carga → mismo resultado).
+- **Crecimiento controlado de memoria: historial de trazas GPS.** Al entregar, cada despachador
+  guarda la traza del recorrido (`--traza-kb`, defecto 64 KB) en un historial **compartido por los
+  hilos de su proceso** (protegido con `threading.Lock`). `--historial N` conserva las N más
+  recientes (crecimiento acotado); `--historial 0` las conserva todas (crecimiento sin límite, como
+  una fuga).
+- **Hilo `muestreador`** en el principal (`despacho/muestreador.py`): cada `--muestreo` segundos
+  (defecto 0.5) lee de `/proc` el RSS, el PSS, la memoria privada modificada, los hilos y la CPU de
+  cada proceso. Guarda la serie en `<log>.recursos.csv` y al final imprime inicial, pico y final.
+- Cada trabajador informa al terminar su historial y su memoria (`MEMORIA trabajador …`).
+- Los scripts de fases anteriores fijan `-p 0 --traza-kb 0` (sin esta carga, como en esas fases).
+
+Parámetros nuevos: `-p/--puntos` (defecto 7), `--traza-kb` (defecto 64), `--historial` (defecto 50;
+0 = sin límite), `--muestreo` (defecto 0.5 s).
+
+**Equipo de las mediciones:** Intel Core i3-10110U, **2 núcleos físicos × 2 hilos (Hyper-Threading)
+= 4 CPU lógicas** (las CPU 0 y 2 comparten núcleo, igual que la 1 y la 3), frecuencia de 0.4 a
+4.1 GHz con *turbo* y gobernador `powersave`. Esto explica los límites de aceleración de E1.
+
+### 6.2 Cómo ejecutarlo
+```bash
+python3 main.py                                     # defecto: rutas de 7 puntos, trazas de 64 KB (máx. 50)
+python3 main.py -p 9 -w 4 -t 1                      # CPU alta: 4 procesos calculando rutas
+python3 main.py -p 9 -w 1 -t 4                      # la misma carga con 4 hilos en 1 proceso
+python3 main.py --traza-kb 256 --historial 0 -n 200 # memoria sin límite
+column -s, -t logs/<archivo>.recursos.csv | less    # serie de CPU y memoria por proceso
+scripts/evidencias_fase6.sh                         # E1–E4 (≈ 5 min)
+```
+
+### 6.3 Evidencias y cómo explicarlas
+
+**E1 — CPU: hilos frente a procesos** (`e1_cpu_hilos_procesos.txt`; 24 rutas de 9 puntos, sólo
+CPU, sin esperas)
+
+| Procesos | Hilos | Tiempo (s) | Aceleración | CPU trabajadores | Real/CPU por ruta | Cambios de contexto involuntarios | CPU total en rutas (s) | Suma de longitudes |
+|---|---|---|---|---|---|---|---|---|
+| 1 | 1 | 5.31 | 1.00x | 95 % | 1.00 | 250 | 5.27 | 7690.4 |
+| 1 | 2 | 5.41 | 0.98x | 96 % | 1.86 | 113 | 5.37 | 7690.4 |
+| 1 | 4 | 5.35 | 0.99x | 96 % | **3.50** | 184 | 5.33 | 7690.4 |
+| 1 | 8 | 5.41 | 0.98x | 96 % | **5.34** | 283 | 5.39 | 7690.4 |
+| 2 | 1 | 3.52 | 1.51x | 180 % | 1.03 | 1 274 | 6.77 | 7690.4 |
+| 4 | 1 | 3.01 | **1.76x** | **334 %** | 1.08 | 3 460 | 10.85 | 7690.4 |
+| 8 | 1 | 2.87 | 1.85x | 349 % | 2.00 | 6 564 | 10.84 | 7690.4 |
+| 2 | 2 | 3.63 | 1.46x | 186 % | 1.94 | 632 | 7.17 | 7690.4 |
+| 4 | 2 | 2.98 | 1.78x | 337 % | 2.13 | 8 317 | 10.89 | 7690.4 |
+
+- *Qué decir:*
+  - **Con hilos en un solo proceso no hay ninguna aceleración** (0.98x–1.00x) y la CPU nunca pasa
+    de un núcleo (~96 %). Es el **GIL**: sólo un hilo por proceso ejecuta bytecode a la vez. La
+    columna *real/CPU* lo mide hilo por hilo: con 4 hilos, cada ruta tarda 3.5 veces su CPU porque
+    pasa el resto del tiempo esperando el GIL; con 8, 5.3 veces.
+  - **Con procesos sí hay paralelismo real:** cada proceso tiene su intérprete y su GIL, y el
+    planificador del kernel los reparte en núcleos distintos (334 % de CPU con 4 procesos).
+    *Real/CPU* ≈ 1: cada ruta se ejecuta sin esperar.
+  - **¿Por qué 1.76x y no 4x?** Por el hardware: 2 núcleos físicos con Hyper-Threading. Con 2
+    procesos (1.51x) cada uno tiene un núcleo físico, aunque el *turbo* baja la frecuencia al activar
+    más núcleos. Con 4 procesos, dos procesos comparten las unidades de ejecución de cada núcleo:
+    la **CPU total para el mismo trabajo se duplica** (5.27 → 10.85 s de CPU) y el Hyper-Threading
+    sólo aporta ~17 % adicional. Una CPU lógica no equivale a un núcleo físico.
+  - **Más procesos que CPU lógicas no ayuda** (8 procesos: 1.85x). El planificador los turna
+    (*real/CPU* = 2.0: cada proceso espera la mitad del tiempo) y se multiplican los **cambios de
+    contexto involuntarios** (6 564): expropiaciones del planificador cuando vence el turno de un
+    proceso que quería seguir ejecutándose.
+  - Con hilos, los cambios de contexto involuntarios **no** crecen (113–283): el GIL se cede de
+    forma voluntaria (el hilo se duerme esperándolo), no porque el kernel lo expropie.
+  - **La suma de longitudes es idéntica en las 9 configuraciones** (7690.4): la concurrencia no
+    altera el resultado del cálculo.
+
+**E2 — La misma tarea vista desde el SO** (`e2_top_w1_t4.txt`, `e2_top_w4_t1.txt`)
+```
+1 proceso x 4 hilos (top -H)                 4 procesos x 1 hilo (top -H)
+despachador-1-1  R  29.0 %                   despachador-1-1  S  98.8 %
+despachador-1-4  S  27.0 %                   despachador-2-1  R  96.8 %
+despachador-1-2  S  24.0 %                   despachador-3-1  R  94.8 %
+despachador-1-3  S  21.0 %                   despachador-4-1  R  94.8 %
+suma ≈ 100 %  (un núcleo)                    suma ≈ 385 %  (casi cuatro CPU lógicas)
+
+ps -L (tres fotos, 0.3 s):                   ps -L (tres fotos):
+1-1:R  1-2:S  1-3:S  1-4:S                   1-1:R  2-1:R  3-1:R  4-1:R
+1-1:S  1-2:R  1-3:S  1-4:S                   1-1:R  2-1:R  3-1:R  4-1:R
+1-1:S  1-2:S  1-3:S  1-4:R                   1-1:R  2-1:R  3-1:R  4-1:R
+```
+- *Qué decir:* con 4 hilos en un proceso, en cada foto **sólo un hilo está en `R`**: el que tiene
+  el GIL. El `R` "rota" entre los hilos y los demás están en `S`, dormidos esperando el GIL. Se
+  reparten un único núcleo (~25 % cada uno). Con 4 procesos, **los 4 están en `R` a la vez**, cada
+  uno cerca del 100 %. Es la evidencia más directa del GIL desde las herramientas del SO.
+
+**E3 — Carga mixta: repartir 16 hilos entre procesos** (`e3_mixta.txt`; 48 solicitudes con ruta
+de 8 puntos ≈ 25 ms de CPU + preparación 0.1–0.3 s + ruta 0.2–0.6 s)
+
+| Procesos × hilos | Total | Tiempo (s) | CPU trabajadores | Real/CPU por ruta | PSS total (MB) | RSS total (MB) |
+|---|---|---|---|---|---|---|
+| 4 × 1 | 4 | 7.90 | 28 % | 1.05 | 43.4 | 101.6 |
+| 1 × 16 | 16 | 2.93 | 44 % | **2.76** | **26.2** | 44.1 |
+| 2 × 8 | 16 | **2.44** | 65 % | 1.94 | 31.1 | 63.4 |
+| 4 × 4 | 16 | 2.51 | 67 % | 1.54 | 44.7 | 102.5 |
+| 8 × 2 | 16 | 2.42 | 81 % | 1.80 | 57.4 | 180.9 |
+| 16 × 1 | 16 | 2.44 | 101 % | 1.87 | **89.1** | 333.2 |
+
+- *Qué decir:* es la carga real del sistema, con CPU **y** esperas.
+  - **Pocos hilos (4 × 1)** desperdician las esperas: 7.9 s.
+  - **Sólo hilos (1 × 16)** atiende bien las esperas, pero la parte de CPU se serializa en el GIL
+    (*real/CPU* 2.76): 20 % más lento que las configuraciones híbridas.
+  - **Sólo procesos (16 × 1)** es igual de rápido que las híbridas, pero ocupa **2.9 veces más
+    memoria física** que 2 × 8 (89.1 frente a 31.1 MB de PSS; 3.4 veces más que 1 × 16) y consume
+    más CPU para el mismo trabajo (101 %): más intérpretes, más colas y más cambios de contexto.
+  - **Los híbridos (2 × 8, 4 × 4) logran el mejor tiempo con poca memoria.** Justificación de la
+    arquitectura: **procesos para usar varios núcleos en la parte de CPU, hilos (baratos) para
+    atender muchas esperas concurrentes.** Con 2 núcleos físicos, 2 procesos ya capturan casi todo el
+    paralelismo real disponible.
+  - PSS frente a RSS: cada proceso nuevo agrega ~19 MB de RSS, pero gran parte son páginas del
+    intérprete compartidas tras `fork` (copy-on-write). El PSS reparte esas páginas y mide el costo
+    real (≈ 4.1 MB por proceso adicional: (89.1 − 31.1) / 14).
+
+**E4 — Crecimiento de memoria: sin límite frente a acotado** (`e4_memoria.txt`,
+`e4_historial_*.recursos.csv`; 200 entregas, trazas de 256 KB)
+
+| t (s) | trabajador-1, sin límite (MB) | trabajador-1, acotado a 20 (MB) | centro_despacho (MB) |
+|---|---|---|---|
+| 0.00 | 18.8 | 19.2 | 23.0 |
+| 0.51 | 26.0 | 26.2 | 23.2 |
+| 1.03 | 33.1 | **26.8** | 23.3 |
+| 1.54 | 39.2 | 26.7 | 23.3 |
+| 2.06 | **45.5** | 26.8 | 23.5 |
+
+| Al terminar (por trabajador) | Sin límite | Acotado a 20 |
+|---|---|---|
+| Trazas conservadas / descartadas | 100 / 0 (25.0 MB) | 20 / 81 (5.0 MB) |
+| RSS | 46.2 MB | 27.0 MB |
+| Memoria privada modificada (`Private_Dirty`) | 29.6 MB | 10.3 MB |
+| PSS total del sistema (suma de picos) | 81.9 MB | 45.4 MB |
+
+- *Qué decir:*
+  - **Sin límite, el RSS crece linealmente** (~13 MB/s con esta carga): cada entrega agrega 256 KB
+    que nunca se liberan. Es el perfil de una **fuga de memoria**: en un servidor que nunca se
+    reinicia, termina en falta de memoria (el *OOM killer* del kernel mata al proceso).
+  - **Acotado, crece hasta ~27 MB y se estabiliza.** Al llegar a 20 trazas, cada traza nueva
+    reemplaza a la más antigua; la memoria liberada la reutiliza el asignador (`malloc`) del mismo
+    proceso, así que el RSS no sigue subiendo. La diferencia final (27 frente a 46 MB) corresponde
+    a las 80 trazas descartadas (20 MB).
+  - **El crecimiento es privado de cada trabajador:** sube `Private_Dirty` (páginas escritas por el
+    proceso, que ya no se comparten tras `fork`), mientras el principal se mantiene plano (23 MB).
+    Los procesos no comparten el heap: el historial de `trabajador-1` no ocupa nada en
+    `trabajador-2`. Los hilos del **mismo** trabajador sí comparten su historial, y por eso lo
+    protege un `threading.Lock`.
+  - Detalle de implementación: la traza **escribe** todos sus bytes. Una reserva sin escribir
+    (por ejemplo `bytes(n)`, que usa `calloc` o `mmap` de páginas en cero) no ocupa páginas físicas
+    hasta que se tocan, y no aparecería en el RSS: es la misma diferencia entre memoria virtual
+    reservada y memoria residente que se vio con las pilas de los hilos (F2-E2).
+
+### 6.4 Decisiones de la fase
+- **D6.1 Fuerza bruta a propósito.** Hay algoritmos mejores para el viajante, pero aquí interesa
+  una carga de CPU **real, determinista y regulable**: el costo se controla con un solo parámetro
+  (P!) y el resultado se puede verificar (suma de longitudes).
+- **D6.2 La ruta se planifica antes de pedir vehículo.** No lo necesita, y así el cálculo no retiene
+  un vehículo ni un andén (no alarga ninguna sección crítica).
+- **D6.3 `time.thread_time()` además de `getrusage()`.** `getrusage` da la CPU total del proceso;
+  `thread_time` permite ver, ruta por ruta, cuánto esperó cada hilo (*real/CPU*): la medida directa
+  del efecto del GIL.
+- **D6.4 El muestreador no hace `waitpid`.** Leer `is_alive()` de los hijos desde otro hilo haría
+  que dos hilos compitieran por recoger el estado de salida de un mismo hijo con `waitpid()`: uno
+  lo obtiene y el otro recibe `ECHILD`, con riesgo de confundir el código de salida. El muestreador
+  sólo lee `/proc` y descarta a los procesos en estado `Z` (un zombi ya no tiene memoria).
+- **D6.5 `threading.Lock` para el historial, no `multiprocessing.Lock`.** El historial vive en el
+  heap de un proceso y sólo lo tocan sus hilos: basta un lock de hilos, más barato porque no
+  necesita un semáforo en memoria compartida. La herramienta de sincronización se elige según el
+  alcance del dato compartido.
+- **D6.6 Configuración por defecto (2 trabajadores × 3 hilos):** es un punto intermedio para la
+  demostración. E3 muestra que con esta CPU (2 núcleos físicos) el óptimo para cargas grandes está
+  en 2 × 8 o 4 × 4.
+
+### 6.5 Preguntas probables en la sustentación
+- **¿Dónde está la tarea intensiva en CPU y cómo la miden?** Ruta óptima por fuerza bruta (P!);
+  CPU por hilo con `thread_time`, por proceso con `getrusage` y `/proc/<pid>/stat`, y `top -H`.
+- **¿Por qué los hilos no aceleran el cálculo?** GIL: E1 (0.98x), E2 (un solo hilo en `R`).
+- **¿Por qué 4 procesos no dan 4x?** 2 núcleos físicos con Hyper-Threading + turbo (E1).
+- **¿Entonces para qué sirven los hilos?** Para las esperas: F2-E3 (7.1x con 8 hilos) y E3 de esta
+  fase (1 × 16 es 2.7 veces más rápido que 4 × 1). Y cuestan mucha menos memoria que los procesos.
+- **¿Qué es un cambio de contexto involuntario?** El kernel expropia a un proceso que quería
+  seguir ejecutándose (se acabó su turno). Crece con más procesos que CPU (E1: 250 → 6 564).
+- **¿Cómo simularon el crecimiento de memoria y cómo lo controlan?** E4: historial sin límite
+  (fuga, crecimiento lineal) frente a acotado (se estabiliza), medido con `/proc` cada 0.25 s.
+- **RSS, PSS, VSZ, memoria privada: ¿cuál usar?** VSZ = espacio reservado (engaña con hilos,
+  F2-E2); RSS = páginas residentes, incluidas las compartidas (sobrestima al sumar procesos);
+  PSS = reparte las compartidas (la suma es real); `Private_Dirty` = lo que el proceso escribió y es
+  sólo suyo (donde se ve una fuga).
 
 ## Fase 7 — Registro y observación
 *(pendiente)*
@@ -1622,12 +1823,13 @@ INTERBLOQUEOS: detectados=0
 | 10 | Recursos en orden distinto | 5 ✅ | cargue vehículo→andén vs inspección andén→vehículo | F5-E1: ciclo, `futex_do_wait`, 0 CPU; E2: 8/10 |
 | 11 | Estrategia anti-interbloqueo | 5 ✅ | `--interbloqueo orden` (defecto), `timeout`, `deteccion` | F5-E3: 10/10 → 0/10 en las tres; E4 |
 | 12 | Registro de estadísticas | 7 | hilo `monitor`, CSV | CSV + resumen |
-| 13 | Consumo elevado de CPU | 4, 6 | espera activa (F4-E4); cálculo de ruta (Fase 6) | F4-E4: `top -H`, 175 % CPU |
+| 13 | Consumo elevado de CPU | 4, 6 ✅ | espera activa (F4-E4); ruta óptima por fuerza bruta `-p` (F6) | F4-E4: 175 % CPU; F6-E1: GIL vs procesos (334 %); F6-E2: `top -H` |
 | 14 | Observación de procesos e hilos | 1, 2, 7 | `scripts/observar.sh` | capturas + explicación |
 | 15 | Antes/después de sincronizar | 4 ✅, 8 | misma carga y semilla, modo por parámetro | F4-E1..E5 (tablas); gráficas en la Fase 8 |
 | 9.1 | Diseño | 0 | esta sección | diagramas |
 | 9.3 | Prueba de fallo y corrección (8 pasos) | 3, 4, 5, 8 | modos + semilla | antes/después |
 | 9.4 | Evidencias del SO | todas | ps, pstree, top, /proc | `evidencias/` |
+| 19 (informe) | Pruebas de CPU y memoria | 6 ✅ | `muestreador` (/proc), `thread_time`, `getrusage`, historial acotado/sin límite | F6-E1..E4, series CSV |
 
 ## Anexo B. Comandos del SO
 
