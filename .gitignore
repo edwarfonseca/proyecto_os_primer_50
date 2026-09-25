@@ -6,7 +6,7 @@ venv/
 .pytest_cache/
 
 # Salidas temporales de ejecución (las evidencias finales sí se versionan en evidencias/)
-logs/tmp/
+logs/
 *.tmp
 
 # Editor / SO
