@@ -1,6 +1,6 @@
 # Bitácora técnica — Proyecto 6: Sistema de despacho y logística
 
-> Documento vivo. Se actualiza al cerrar cada fase. Sirve como fuente para el informe técnico
+> Documento vivo, actualizado al cerrar cada fase (proyecto terminado: fases 0 a 9). Sirve como fuente para el informe técnico
 > y como guía para la demostración/sustentación. Cada sección de fase contiene:
 > **Qué se hizo · Decisiones y justificación · Conceptos de SO · Cómo ejecutarlo ·
 > Qué observar y cómo explicarlo · Evidencias.**
@@ -15,13 +15,17 @@
 - [6. CPU y memoria](#fase-6--cpu-y-memoria) ✅
 - [7. Registro y observación](#fase-7--registro-y-observación) ✅
 - [8. Experimentos y comparación antes/después](#fase-8--experimentos-y-comparación-antesdespués) ✅
-- [9. Guion de demostración y sustentación](#fase-9--guion-de-demostración-y-sustentación) *(pendiente)*
+- [9. Cierre: diseño final, demostración, revisión y conclusiones](#fase-9--guion-de-demostración-y-sustentación) ✅
 - [Anexo A. Matriz de trazabilidad](#anexo-a-matriz-de-trazabilidad)
 - [Anexo B. Glosario de comandos del SO usados](#anexo-b-comandos-del-so)
 
 ---
 
 ## Fase 0 — Contexto, entorno y diseño
+
+> Esta sección es el diseño **inicial**. El diseño **final**, con todo lo agregado en las
+> fases 1 a 7 (taller, vigilante, monitor, muestreador, cola propia, flota y andenes), está en la
+> sección 9.2.
 
 ### 0.1 Problema
 Una empresa de transporte recibe solicitudes de despacho. Cada solicitud debe:
@@ -2193,7 +2197,249 @@ reprodujeron, se explicaron con conceptos de SO, se corrigieron y se midieron an
 - **¿Cómo reproduzco una gráfica?** `scripts/evidencias_fase8.sh --solo-informe` (8.2).
 
 ## Fase 9 — Guion de demostración y sustentación
-*(pendiente)*
+
+> Rama `fase-9-cierre` · etiqueta `fase-9`
+>
+> Cierre del proyecto: entregables finales, diseño final consolidado, revisión contra el
+> enunciado y conclusiones.
+
+### 9.1 Qué se hizo
+- **`scripts/verificar.sh`**: verificación rápida (≈ 40 s, 14 comprobaciones). Sintaxis, cada versión
+  con el código de salida esperado, detectores y herramientas de observación. Usarla antes de
+  presentar.
+- **`scripts/demo.sh`**: demostración guiada en 7 pasos (procesos e hilos, condición de carrera,
+  interbloqueo, GIL, espera activa, monitor, memoria) con los comandos exactos y pausas para
+  explicar. Si el interbloqueo no se forma en el primer intento, reintenta.
+- **[docs/GUION_DEMOSTRACION.md](GUION_DEMOSTRACION.md)**: qué señalar y qué decir en cada paso,
+  tiempos, alternativas si algo no ocurre y comandos para preguntas fuera del guion.
+- **[docs/PREGUNTAS_SUSTENTACION.md](PREGUNTAS_SUSTENTACION.md)**: unas 45 preguntas probables con
+  respuesta corta y referencia a la evidencia, organizadas por criterio de evaluación.
+- **README final**: requisitos, inicio rápido, arquitectura, versiones seleccionables, parámetros,
+  observación, reproducción de evidencias y estructura.
+- La ayuda de `main.py --help` se actualizó para describir todo el sistema.
+- Ensayos de la demostración que ajustaron el guion: el interbloqueo tardaba 26 s en cerrarse
+  (plazo de 6 s por proceso → 3 s); la demostración de detección no siempre formaba el ciclo
+  (ahora usa 1 andén y 2 inspectores, y reintenta); `top` no alcanzaba a medir 4 procesos (más
+  carga); y las líneas `ESTADO` aparecían todas al final porque `cut` acumula su salida cuando no
+  escribe a una terminal (`stdbuf -oL`).
+
+### 9.2 Diseño final (estado al cierre del proyecto)
+
+La Fase 0 contiene el diseño **inicial**. Este es el diseño **final**, con todo lo que se agregó en
+las fases 1 a 7.
+
+**Arquitectura**
+
+```mermaid
+flowchart TB
+    subgraph P["centro_despacho (proceso principal)"]
+        MT["MainThread<br/>supervisa, recoge resultados,<br/>centinelas, cierre, estadísticas"]
+        GEN["generador-1..g<br/>(productores, Barrier)"]
+        VIG["vigilante<br/>(grafo de espera)"]
+        MON["monitor<br/>(estado en vivo)"]
+        MUE["muestreador<br/>(/proc: CPU y memoria)"]
+    end
+    subgraph SHM["Memoria compartida (/dev/shm) y semáforos POSIX"]
+        COLA[["ColaAcotada(K)<br/>vacíos · llenos · mutex_l · mutex_e"]]
+        FLOTA[("flota estado[V]<br/>mutex + BoundedSemaphore(V)")]
+        REC[("locks de vehículos y andenes<br/>+ registro de dueños y esperas")]
+        CONT[("contadores<br/>un lock")]
+        STOP[("detener<br/>byte, escritor único")]
+    end
+    RES[["resultados<br/>multiprocessing.Queue"]]
+    subgraph W["trabajador-1..w (procesos)"]
+        DESP["despachador-w-1..t<br/>ruta (CPU) → vehículo → cargue → entrega"]
+        HIST[("historial de trazas<br/>threading.Lock")]
+    end
+    subgraph T["taller (proceso)"]
+        INS["inspector-1..i<br/>andén → vehículo"]
+    end
+    GEN -- "put" --> COLA
+    COLA -- "get" --> DESP
+    DESP <--> FLOTA
+    DESP <--> REC
+    INS <--> REC
+    DESP --> CONT
+    DESP --> HIST
+    DESP --> RES --> MT
+    VIG -. "foto" .-> REC
+    MON -. "foto" .-> CONT
+    MON -. "foto" .-> FLOTA
+    MT -- "escribe" --> STOP
+    STOP -. "lee" .-> DESP & INS & GEN
+```
+
+**Ciclo de vida de una solicitud**
+
+```mermaid
+sequenceDiagram
+    participant G as generador-i
+    participant C as ColaAcotada
+    participant D as despachador-w-t
+    participant F as Flota
+    participant R as Recursos (vehículo/andén)
+    participant P as principal
+    G->>C: put: P(vacíos) · escribir · V(llenos)   [RECIBIDA]
+    C->>D: get: P(llenos) · leer · V(vacíos)
+    D->>D: ruta óptima (P! recorridos, CPU)       [RUTA]
+    D->>F: P(disponibles) · mutex: buscar + marcar [ASIGNADO]
+    D->>R: vehículo → andén (orden global)          [cargue]
+    D->>D: ruta simulada (sleep)                    [EN RUTA]
+    D->>F: mutex: liberar · V(disponibles)          [ENTREGADA]
+    D->>P: resultado por la cola de resultados
+```
+
+**Procesos e hilos** (con 2 trabajadores × 3 hilos, 2 generadores y 1 inspector: 4 procesos, 18 hilos)
+
+| Proceso | Hilo | Rol | Dónde espera normalmente (`wchan`) |
+|---|---|---|---|
+| `centro_despacho` | `MainThread` | Supervisa hijos (`waitpid`), recoge resultados, envía centinelas, cierre y estadísticas | `poll_schedule_timeout` (pipe de resultados) |
+| | `generador-1..g` | Productores; ráfagas simultáneas con `Barrier` | `hrtimer_nanosleep` (entre ráfagas) o `futex_do_wait` (cola llena) |
+| | `vigilante` | Grafo de espera y detección de ciclos cada 0.5 s | `futex_do_wait` (intervalo) |
+| | `monitor` | Línea `ESTADO` y CSV cada segundo; alerta sin progreso | `futex_do_wait` (intervalo) |
+| | `muestreador` | CPU y memoria de cada proceso desde `/proc` | `futex_do_wait` (intervalo) |
+| `trabajador-w` | `MainThread` | Crea los despachadores y vigila la orfandad | `hrtimer_nanosleep` |
+| | `despachador-w-1..t` | Consumidores: ruta, vehículo, cargue, entrega | `futex_do_wait` (cola, vehículo, andén), `hrtimer_nanosleep` (preparación, ruta) o `R` (cálculo de ruta) |
+| | `QueueFeederThread` | Hilo interno de `multiprocessing.Queue` que escribe los resultados al pipe | `futex_do_wait` |
+| `taller` | `MainThread` | Crea los inspectores y vigila la orfandad | `hrtimer_nanosleep` |
+| | `inspector-1..i` | Inspección: andén → vehículo | `hrtimer_nanosleep` o `futex_do_wait` |
+
+**Recursos compartidos y mecanismo de sincronización**
+
+| Recurso | Qué es y dónde vive | Quién lo comparte | Mecanismo | Fase |
+|---|---|---|---|---|
+| Cola de solicitudes | Pipe del kernel + 4 semáforos POSIX | generadores (productores) y despachadores de todos los trabajadores (consumidores) | `vacios` (K), `llenos` (0), `mutex_lectura`, `mutex_escritura` | 2 |
+| Flota `estado[V]` | `RawArray` en `/dev/shm` | despachadores de todos los procesos | `Lock` sobre buscar + marcar y liberar; `BoundedSemaphore(V)` de vehículos libres | 3, 4 |
+| Vehículos en el patio y andenes | Un `Lock` por recurso (semáforos POSIX) | despachadores (cargue) e inspectores (inspección) | Orden global de adquisición (alternativas: tiempo límite, detección y recuperación) | 5 |
+| Registro de recursos | `RawArray` de dueños, esperas y órdenes de aborto | despachadores, inspectores, vigilante | Un `Lock` (fotos consistentes) | 5 |
+| Contadores del monitor | `RawArray` | despachadores, flota, monitor | Un `Lock` que envuelve cada leer-modificar-escribir | 7 |
+| Cola de resultados | `multiprocessing.Queue` (pipe + locks internos) | trabajadores → principal | Interno; un solo lector (el principal) | 2 |
+| Indicador de parada | `RawValue` de un byte | principal (escribe) y todos (leen) | Ninguno: escritor único y escritura atómica de un byte | 1 |
+| Semáforo de arranque | `Semaphore(0)` | hijos → principal | `sem_post` / `sem_wait` con tiempo límite | 1 |
+| Historial de trazas | `OrderedDict` en el heap de cada trabajador | hilos del mismo trabajador | `threading.Lock` | 6 |
+| Barrera de ráfagas | `threading.Barrier` | generadores | `abort()` sólo en una parada (H4) | 2 |
+| Archivo de log | Archivo abierto con `O_APPEND` | todos los procesos | `O_APPEND` (cada escritura al final) + lock de `logging` por proceso | 1 |
+| Salida de error | Descriptor heredado | procesos que vuelcan pilas (`SIGUSR1`) | Señales escalonadas (H5) | 5 |
+
+**Situaciones de bloqueo identificadas y cómo se tratan** (requisito 9.1, "posibles situaciones de
+bloqueo")
+
+| Situación | Dónde podía ocurrir | Tratamiento | Evidencia |
+|---|---|---|---|
+| Doble asignación (condición de carrera) | asignar vehículo | mutex + semáforo | F3, F4 |
+| Interbloqueo vehículo ↔ andén | cargue frente a inspección | orden global (o tiempo límite, o detección) | F5 |
+| Inanición por un lock retenido por un proceso muerto | lectores de `multiprocessing.Queue` | `ColaAcotada`: se espera sin retener locks | H3 |
+| Bloqueo de la orden de parada | `multiprocessing.Event.set()` con un participante muerto | indicador de un byte | H1 |
+| Espera activa | hilos sin vehículo | semáforo contador | F4-E4 |
+| Cierre bloqueado por datos pendientes en una cola | trabajador que termina con resultados sin entregar al pipe | el principal vacía los resultados mientras espera | F2 D2.7 |
+| Proceso detenido o que no responde | cierre | `SIGTERM` y luego `SIGKILL`; alerta del monitor | F1-E3, F7-E3 |
+| Huérfanos que nunca terminan | muerte del principal | detección del cambio de PPID | H2 |
+| Lock heredado tomado tras `fork` | crear procesos con hilos activos | procesos antes que hilos | F1 D1.2 |
+| Interbloqueo del hilo principal consigo mismo | manejador de señales | el manejador sólo anota la señal | F1 D1.4 |
+| Competencia por `waitpid` | muestreador y principal | el muestreador sólo lee `/proc` | F6 D6.4 |
+| Ráfaga perdida | `Barrier.abort()` a destiempo | `abort()` sólo en una parada | H4 |
+| Actualizaciones perdidas en contadores | `Value(lock=True)` | lock alrededor de la secuencia | H6 |
+
+### 9.3 Mapa hacia el informe
+
+Cómo usar esta bitácora para cada sección de la "estructura sugerida del informe" del enunciado:
+
+| Sección del informe | Fuente en la bitácora | Material listo para usar |
+|---|---|---|
+| Descripción del problema | 0.1 | tabla síntoma → causa |
+| Objetivo | 9.5 (primer párrafo) y resultados de aprendizaje del enunciado | — |
+| Arquitectura de la solución | 9.2, 0.3 (decisiones D1–D8) | diagramas Mermaid de arquitectura y ciclo de vida |
+| Procesos e hilos | 9.2 (tabla de hilos), F1, F2, D1.1–D1.9 | `pstree -t` (F2-E2), `ps -L` (F5-E5) |
+| Recursos compartidos | 9.2 (tabla de recursos), F3-E5 | mismo inodo en `/proc/<pid>/maps` |
+| Problema de concurrencia | F3 (3.2 código, 3.3 anatomía, E1–E5) | diagrama de secuencia de la carrera, cronología de V2 |
+| Mecanismo de sincronización | F4 (4.2 código, 4.3 por qué funciona), F2 D2.3 (cola) | tabla E3 (qué corrige cada mecanismo) |
+| Análisis del interbloqueo | F5 (5.2 diagramas, 5.3 Coffman, 5.4 estrategias) | E1 (observación en el SO), E3 (comparación) |
+| Pruebas de CPU y memoria | F6 (E1–E4), F4-E4, F8 (G6–G8) | tablas y gráficas |
+| Evidencias | cada fase, sección "Evidencias y cómo explicarlas"; F7 (observación) | archivos en `evidencias/faseN/` |
+| Comparación antes/después | F8 (8.3, 8.4, 8.5) | gráficas G1–G8, tablas consolidadas |
+| Resultados | F8 8.3, `evidencias/fase8/resumen.md` | tablas con media ± desviación |
+| Conclusiones | 9.5 | — |
+
+### 9.4 Revisión final contra el enunciado
+
+**Requisitos mínimos del Proyecto 6:** los 15 están cumplidos; la matriz de trazabilidad (Anexo A)
+indica dónde se implementa cada uno y su evidencia.
+
+**Requisitos transversales:**
+
+| Punto | Estado | Dónde |
+|---|---|---|
+| 9.1 Diseño: arquitectura, jerarquía, hilos, recursos, sincronización, bloqueos | ✅ | 9.2 |
+| 9.2 Implementación: procesos, hilos, recurso compartido, concurrencia observable, sincronización, validación | ✅ | F1–F7; `scripts/verificar.sh` |
+| 9.3 Prueba de fallo y corrección (8 pasos) | ✅ | F3+F4 (carrera), F5 (interbloqueo), H1–H6 (con los 8 pasos), F8 |
+| 9.4 Evidencias del SO: `ps`, `pstree`, `top`/`htop`, `ps -eLf`, `ps -eo`, `/proc` | ✅ | `observar.sh`, `monitor_so.sh`, Anexo B |
+
+**Entregables:**
+
+| # | Entregable | Dónde |
+|---|---|---|
+| 1 | Código fuente completo y organizado | `main.py`, `despacho/` (16 módulos), `scripts/`, `experimentos/` |
+| 2 | README con instrucciones de ejecución | `README.md` |
+| 3 | Diagrama de arquitectura y procesos | 9.2 (Mermaid), `README.md` |
+| 4 | Documento técnico | informe del equipo, a partir de esta bitácora (9.3) |
+| 5 | Evidencias de las pruebas | `evidencias/fase1..8/` (generadas por scripts) |
+| 6 | Evidencia del problema antes de la corrección | F3, F5-E1, H1–H6 (antes), F8 |
+| 7 | Evidencia de la solución después de la corrección | F4, F5-E3, H1–H6 (después), F8 |
+| 8 | Conclusiones técnicas | 9.5 |
+| 9 | Presentación o demostración funcional | `scripts/demo.sh`, `docs/GUION_DEMOSTRACION.md` |
+
+### 9.5 Conclusiones técnicas
+
+El objetivo fue construir un sistema concurrente que no sólo funcione, sino que permita
+**observar, explicar y corregir** sus comportamientos problemáticos, que es lo que plantea la
+pregunta orientadora. Las conclusiones:
+
+1. **Un resultado incorrecto puede verse como un programa que funciona.** La versión con la
+   condición de carrera termina, entrega todo y "rinde" 1.8 veces más. Sólo la instrumentación (sonda,
+   auditoría de intervalos, verificación al liberar, código de salida) revela que puso 6 entregas en 3
+   vehículos. **Observar es parte del diseño**, no un agregado posterior.
+2. **La sección crítica es la secuencia, no cada acceso.** Lo mostraron la asignación de vehículos
+   (F3), `Value(lock=True)` (H6) y la barrera (H4): proteger cada lectura y escritura por separado, o
+   romper una primitiva a destiempo, deja la carrera intacta. La corrección rinde en el máximo físico
+   de la flota y el mutex cuesta 0.01 ms.
+3. **El GIL no es un mecanismo de sincronización.** Reduce la probabilidad de algunas carreras entre
+   hilos, pero cualquier operación bloqueante (incluido tomar un lock) cede el GIL dentro de la
+   sección crítica, y entre procesos no existe (F3-E4, H6).
+4. **Hilos y procesos resuelven problemas distintos.** Los hilos rinden en las esperas (7.1x con 8
+   hilos) y cuestan poca memoria; para la CPU sólo los procesos dan paralelismo real (0.98x frente a
+   1.76x). La arquitectura híbrida logra el mejor tiempo con 2.9 veces menos memoria que usar sólo
+   procesos (F2-E3, F6).
+5. **Un interbloqueo exige las cuatro condiciones de Coffman, y basta romper una.** Con órdenes
+   opuestos se bloqueó en 24 de 26 ejecuciones. El orden global lo elimina sin costo, el tiempo límite
+   a cambio de reintentos, y la detección a cambio de latencia. El SO distingue un interbloqueo de la
+   lentitud: 0 CPU y 0 cambios de contexto en `futex_do_wait` (F5, F8).
+6. **Esperar bloqueado en el kernel en lugar de preguntar en un bucle** hace el mismo trabajo en el
+   mismo tiempo con 99 veces menos CPU (F4-E4, F8).
+7. **Las primitivas de sincronización entre procesos no toleran que un participante muera.**
+   `Event` (H1) y `multiprocessing.Queue` (H3) dejaron al sistema bloqueado o sin progreso. El diseño
+   robusto evita retener recursos mientras se espera y prefiere operaciones atómicas simples
+   (`sem_post`, escribir un byte).
+8. **Las herramientas del SO sustentan cada conclusión con datos independientes del programa**:
+   `pstree`/`ps` para la jerarquía y los hilos, `wchan` para saber en qué espera cada hilo, `/proc`
+   para la memoria real (PSS) y los cambios de contexto, y `top -H` para el GIL. Donde el programa y el
+   kernel coinciden, la conclusión es firme.
+9. **Los problemas intermitentes se demuestran con repeticiones, no con una ejecución.** Una
+   carrera "que no salió" no demuestra corrección. Cada fenómeno se midió en 10 a 63 ejecuciones con la
+   misma carga, y cada corrección se comparó con su versión anterior.
+
+### 9.6 Limitaciones y trabajo futuro
+- **Recuperación ante procesos caídos:** si un proceso muere reteniendo un lock (flota, andén), el
+  recurso queda perdido. Un mutex robusto (`PTHREAD_MUTEX_ROBUST`) o un supervisor que repare el
+  estado permitirían recuperarlo (F5 D5.7).
+- **Estado en memoria:** la flota y los contadores viven en memoria compartida; un sistema real los
+  persistiría (base de datos con transacciones).
+- **Cálculo de rutas:** la fuerza bruta es deliberada (carga regulable y verificable). En producción
+  se usaría una heurística o un solucionador, y Python sin GIL (*free-threaded*) o extensiones en C
+  para paralelizar con hilos.
+- **Validez de las mediciones:** 3 repeticiones en la batería, un solo equipo portátil (2 núcleos
+  físicos, turbo, `powersave`) y tiempos de servicio simulados (F8 D8.4).
+- **Balanceo:** una única cola compartida reparte bien la carga aquí; con muchos más trabajadores,
+  la contención en `mutex_lectura` crecería y convendría una cola por trabajador con robo de trabajo.
 
 ---
 

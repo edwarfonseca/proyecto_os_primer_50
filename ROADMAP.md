@@ -1,5 +1,7 @@
 # Ruta de desarrollo — Proyecto 6: Sistema de despacho y logística
 
+> **Estado: terminado.** Las 10 fases (0 a 9) están completas y etiquetadas en git (`fase-0` … `fase-9`).
+
 > Plan de trabajo por fases. Cada fase termina con: código funcionando, evidencia real
 > del SO capturada en `evidencias/`, y su sección completada en
 > [`docs/BITACORA_TECNICA.md`](docs/BITACORA_TECNICA.md).
@@ -137,7 +139,8 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] `experimentos/informe_fase8.py`: media ± desviación, 8 gráficas SVG sin dependencias (paleta validada, revisadas renderizadas) + tablas gemelas.
 - [x] Comparación antes/después consolidada: síntoma → causa → corrección → evidencia (8.4) y hallazgos H1–H6 (8.5).
 
-### Fase 9 — Cierre
-- [ ] README con instalación y ejecución.
-- [ ] Guion de demostración (5–10 min) y banco de preguntas de sustentación con respuestas.
-- [ ] Revisión final contra la matriz de trazabilidad.
+### Fase 9 — Cierre ✅
+- [x] README final (requisitos, inicio rápido, arquitectura, versiones, parámetros, observación, evidencias).
+- [x] `scripts/verificar.sh` (14 comprobaciones) y `scripts/demo.sh` (demostración guiada, ensayada).
+- [x] Guion de demostración (`docs/GUION_DEMOSTRACION.md`) y banco de preguntas (`docs/PREGUNTAS_SUSTENTACION.md`).
+- [x] Diseño final, mapa hacia el informe, revisión contra el enunciado y conclusiones (bitácora, sección 9).
