@@ -1,0 +1,13 @@
+## top -H -b -n 1 (vista por hilos)
+top - 15:34:19 up 23:24,  1 user,  load average: 0.89, 0.88, 0.80
+Threads: 4 total, 0 running, 4 sleep, 0 d-sleep, 0 stopped, 0 zombie
+%Cpu(s):  8.9 us,  1.3 sy,  0.0 ni, 88.6 id,  0.0 wa,  1.3 hi,  0.0 si,  0.0 st 
+MiB Mem :   7755.3 total,    350.9 free,   5524.8 used,   3118.2 buff/cache     
+MiB Swap:   4096.0 total,   3758.3 free,    337.7 used.   2230.5 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  56677 edwar     20   0   27792  21752  10704 S   0.0   0.3   0:00.09 centro_despacho
+  56680 edwar     20   0   27792  17796   6780 S   0.0   0.2   0:00.00 trabajador-1
+  56681 edwar     20   0   27792  17796   6780 S   0.0   0.2   0:00.00 trabajador-2
+  56683 edwar     20   0   27792  17796   6780 S   0.0   0.2   0:00.00 trabajador-3
+

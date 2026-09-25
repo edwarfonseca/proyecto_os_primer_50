@@ -17,4 +17,31 @@ sincronización, interbloqueos, CPU y memoria**, observados con herramientas del
 - Python 3.12+ (desarrollado con 3.14)
 
 ## Ejecución
-*(Se completa a partir de la Fase 1.)*
+```bash
+python3 main.py --help
+python3 main.py -w 3 -d 5          # 3 procesos trabajadores durante 5 s
+python3 main.py -w 3 -d 0          # hasta Ctrl+C
+```
+
+## Observación con herramientas del SO
+Con el sistema en ejecución, en otra terminal:
+```bash
+scripts/observar.sh                # pstree, ps, ps -eLf, /proc/<pid>/status, PSS
+kill -USR1 $(pgrep -xo centro_despacho)   # volcado de la pila de todos los hilos
+```
+
+## Reproducir evidencias
+```bash
+scripts/evidencias_fase1.sh        # escenarios de procesos, señales, zombis y huérfanos
+python3 experimentos/h1_event_bloqueado.py [--corregido]
+```
+
+## Estructura
+```
+main.py                  punto de entrada
+despacho/                código del sistema (centro, trabajador, registro, utilidades del SO)
+scripts/                 observación y reproducción de evidencias
+experimentos/            experimentos aislados de hallazgos
+evidencias/faseN/        salidas reales de cada fase
+docs/                    bitácora técnica
+```

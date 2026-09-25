@@ -1,0 +1,4 @@
+## kill -STOP 56770
+    PID    PPID STAT WCHAN                COMMAND
+  56770   56768 T    do_signal_stop       trabajador-1
+  56771   56768 S    hrtimer_nanosleep    trabajador-2

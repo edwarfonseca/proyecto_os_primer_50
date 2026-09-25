@@ -1,0 +1,12 @@
+## pstree -p -t con --metodo-inicio forkserver
+centro_despacho(56837)-+-python3(56839)
+                       `-python3(56840)-+-trabajador-1(56861)
+                                        `-trabajador-2(56862)
+
+## ps: observe el PPID de los trabajadores
+    PID    PPID STAT COMMAND         COMMAND
+  56837   56673 Ss   centro_despacho python3 main.py -w 2 -d 0 --metodo-inicio forkserver --log evidencias/fase1/e4_ejecucion.log
+  56839   56837 S    python3         /usr/bin/python3 -c from multiprocessing.resource_tracker import main;main(6)
+  56840   56837 S    python3         /usr/bin/python3 -c import sys; from multiprocessing.forkserver import main; main(6, 8, ['__main__'], sys_argv=sys.argv[1:], **{'sys_path': ['/home/edwar/Desktop/OS/proyecto_os', '/usr/lib/python314.zip', '/usr/lib/python3.14', '/usr/lib/python3.14/lib-dynload', '/usr/lib/python3.14/site-packages'], 'main_path': '/home/edwar/Desktop/OS/proyecto_os/main.py', 'authkey_r': 10}) main.py -w 2 -d 0 --metodo-inicio forkserver --log evidencias/fase1/e4_ejecucion.log
+  56861   56840 S    trabajador-1    /usr/bin/python3 -c import sys; from multiprocessing.forkserver import main; main(6, 8, ['__main__'], sys_argv=sys.argv[1:], **{'sys_path': ['/home/edwar/Desktop/OS/proyecto_os', '/usr/lib/python314.zip', '/usr/lib/python3.14', '/usr/lib/python3.14/lib-dynload', '/usr/lib/python3.14/site-packages'], 'main_path': '/home/edwar/Desktop/OS/proyecto_os/main.py', 'authkey_r': 10}) main.py -w 2 -d 0 --metodo-inicio forkserver --log evidencias/fase1/e4_ejecucion.log
+  56862   56840 S    trabajador-2    /usr/bin/python3 -c import sys; from multiprocessing.forkserver import main; main(6, 8, ['__main__'], sys_argv=sys.argv[1:], **{'sys_path': ['/home/edwar/Desktop/OS/proyecto_os', '/usr/lib/python314.zip', '/usr/lib/python3.14', '/usr/lib/python3.14/lib-dynload', '/usr/lib/python3.14/site-packages'], 'main_path': '/home/edwar/Desktop/OS/proyecto_os/main.py', 'authkey_r': 10}) main.py -w 2 -d 0 --metodo-inicio forkserver --log evidencias/fase1/e4_ejecucion.log

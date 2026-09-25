@@ -1,0 +1,85 @@
+Captura: 2026-09-25 15:34:19 | kernel 7.1.8-arch1-3 | PID principal: 56677
+
+===== 1. Jerarquía de procesos e hilos (pstree -p -t: {..} = hilos) =====
+centro_despacho(56677)-+-trabajador-1(56680)
+                       |-trabajador-2(56681)
+                       `-trabajador-3(56683)
+
+===== 2. Procesos: identidad, estado y recursos (ps -o) =====
+    PID    PPID    PGID STAT NLWP %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  56677   56673   56677 Ss      1  5.6  0.2 21752  27792       00:01 centro_despacho python3 main.py -w 3 -d 0 --log evidencias/fase1/e1_ejecucion.log
+  56680   56677   56677 S       1  0.0  0.2 17796  27792       00:01 trabajador-1    python3 main.py -w 3 -d 0 --log evidencias/fase1/e1_ejecucion.log
+  56681   56677   56677 S       1  0.0  0.2 17796  27792       00:01 trabajador-2    python3 main.py -w 3 -d 0 --log evidencias/fase1/e1_ejecucion.log
+  56683   56677   56677 S       1  0.0  0.2 17796  27792       00:01 trabajador-3    python3 main.py -w 3 -d 0 --log evidencias/fase1/e1_ejecucion.log
+
+===== 3. Hilos de cada proceso (ps -eLf filtrado; LWP = TID del kernel) =====
+UID          PID    PPID     LWP  C NLWP STIME TTY          TIME CMD
+edwar      56677   56673   56677  5    1 15:34 ?        00:00:00 python3 main.py -w 3 -d 0 --log evidencias/fase1/e1_ejecucion.log
+edwar      56680   56677   56680  0    1 15:34 ?        00:00:00 python3 main.py -w 3 -d 0 --log evidencias/fase1/e1_ejecucion.log
+edwar      56681   56677   56681  0    1 15:34 ?        00:00:00 python3 main.py -w 3 -d 0 --log evidencias/fase1/e1_ejecucion.log
+edwar      56683   56677   56683  0    1 15:34 ?        00:00:00 python3 main.py -w 3 -d 0 --log evidencias/fase1/e1_ejecucion.log
+
+===== 4. Hilos con nombre, estado y CPU (ps -L) =====
+    PID     LWP STAT %CPU WCHAN                    COMMAND
+  56677   56677 Ss    5.4 hrtimer_nanosleep        centro_despacho
+  56680   56680 S     0.0 hrtimer_nanosleep        trabajador-1
+  56681   56681 S     0.0 hrtimer_nanosleep        trabajador-2
+  56683   56683 S     0.0 hrtimer_nanosleep        trabajador-3
+
+===== 5. /proc/<pid>/status (campos relevantes) =====
+-- PID 56677
+   Name:	centro_despacho
+   State:	S (sleeping)
+   Pid:	56677
+   PPid:	56673
+   VmSize:	   27792 kB
+   VmRSS:	   21752 kB
+   Threads:	1
+   voluntary_ctxt_switches:	11
+   nonvoluntary_ctxt_switches:	6
+   Rss:               21752 kB
+   Pss:                6347 kB
+   Shared_Clean:      10364 kB
+   Private_Dirty:      2096 kB
+-- PID 56680
+   Name:	trabajador-1
+   State:	S (sleeping)
+   Pid:	56680
+   PPid:	56677
+   VmSize:	   27792 kB
+   VmRSS:	   17796 kB
+   Threads:	1
+   voluntary_ctxt_switches:	16
+   nonvoluntary_ctxt_switches:	0
+   Rss:               17796 kB
+   Pss:                5010 kB
+   Shared_Clean:       6772 kB
+   Private_Dirty:      2024 kB
+-- PID 56681
+   Name:	trabajador-2
+   State:	S (sleeping)
+   Pid:	56681
+   PPid:	56677
+   VmSize:	   27792 kB
+   VmRSS:	   17796 kB
+   Threads:	1
+   voluntary_ctxt_switches:	16
+   nonvoluntary_ctxt_switches:	2
+   Rss:               17796 kB
+   Pss:                4967 kB
+   Shared_Clean:       6772 kB
+   Private_Dirty:      1956 kB
+-- PID 56683
+   Name:	trabajador-3
+   State:	S (sleeping)
+   Pid:	56683
+   PPid:	56677
+   VmSize:	   27792 kB
+   VmRSS:	   17796 kB
+   Threads:	1
+   voluntary_ctxt_switches:	16
+   nonvoluntary_ctxt_switches:	0
+   Rss:               17796 kB
+   Pss:                4952 kB
+   Shared_Clean:       6772 kB
+   Private_Dirty:      1924 kB

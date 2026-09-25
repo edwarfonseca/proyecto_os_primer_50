@@ -1,0 +1,22 @@
+Hallazgo: el principal (PID 53948) quedó bloqueado en detener.set() tras el SIGKILL a trabajador-2 (PID 53951).
+Captura: 2026-09-25 15:31:31
+
+## ps -L: estado y canal de espera en el kernel (wchan)
+    PID    PPID     LWP STAT %CPU     ELAPSED WCHAN                COMMAND
+  53948   53869   53948 Ss    0.0       02:39 futex_do_wait        centro_despacho
+  53950   53948   53950 S     0.0       02:39 futex_do_wait        trabajador-1
+  53952   53948   53952 S     0.0       02:39 futex_do_wait        trabajador-3
+
+## /proc/53948/status (principal)
+State:	S (sleeping)
+Threads:	1
+voluntary_ctxt_switches:	16
+nonvoluntary_ctxt_switches:	1
+
+## 2 s después: cambios de contexto voluntarios (sin cambio = no hay progreso)
+voluntary_ctxt_switches:	16
+
+## Últimas líneas del log (no hay 'RESUMEN' ni 'FIN')
+15:28:53.761475 | PID  53950 | PPID  53948 | TID  53950 | trabajador-1    | MainThread       | LATIDO 2
+15:28:53.761467 | PID  53952 | PPID  53948 | TID  53952 | trabajador-3    | MainThread       | LATIDO 2
+15:28:53.964435 | PID  53948 | PPID  53869 | TID  53948 | centro_despacho | MainThread       | SEÑAL SIGTERM recibida: se inicia el cierre ordenado

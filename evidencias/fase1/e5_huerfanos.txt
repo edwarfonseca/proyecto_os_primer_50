@@ -1,0 +1,18 @@
+## Antes: grupo de procesos 56878
+    PID    PPID STAT COMMAND
+  56878   56673 Ss   centro_despacho
+  56880   56878 S    trabajador-1
+  56881   56878 S    trabajador-2
+
+## kill -KILL 56878 (sólo el principal); ps inmediatamente después
+    PID    PPID STAT COMMAND
+  56880    1338 S    trabajador-1
+  56881    1338 S    trabajador-2
+
+## 0.5 s después (los trabajadores detectaron la orfandad y terminaron)
+    PID    PPID STAT COMMAND
+(no queda ningún proceso del grupo)
+
+## Proceso que los adoptó
+    PID    PPID COMMAND         COMMAND
+   1338       1 systemd         /usr/lib/systemd/systemd --user

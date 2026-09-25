@@ -1,0 +1,23 @@
+15:34:22.232554 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 | log=evidencias/fase1/e3_ejecucion.log
+15:34:22.247035 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 56770
+15:34:22.247746 | PID  56770 | PPID  56768 | TID  56770 | trabajador-1    | MainThread       | INICIO trabajador 1
+15:34:22.248038 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 56771
+15:34:22.248776 | PID  56771 | PPID  56768 | TID  56771 | trabajador-2    | MainThread       | INICIO trabajador 2
+15:34:22.249100 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | SINCRONIZADO: 2 trabajadores listos
+15:34:22.249301 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | JERARQUÍA de procesos (leída de /proc):
+15:34:22.249405 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+15:34:22.249753 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       |   56768   56673   centro_despacho  R      1      21832    
+15:34:22.249968 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       |   56770   56768   trabajador-1     S      1      17776    
+15:34:22.250142 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       |   56771   56768   trabajador-2     S      1      17776    
+15:34:23.250048 | PID  56770 | PPID  56768 | TID  56770 | trabajador-1    | MainThread       | LATIDO 1
+15:34:23.250679 | PID  56771 | PPID  56768 | TID  56771 | trabajador-2    | MainThread       | LATIDO 1
+15:34:23.851734 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | SEÑAL SIGINT recibida: se inicia el cierre ordenado
+15:34:23.952110 | PID  56771 | PPID  56768 | TID  56771 | trabajador-2    | MainThread       | FIN trabajador 2 (latidos=1)
+15:34:25.355817 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | trabajador-1 (PID 56770) no terminó en 1.5 s: se envía SIGTERM
+15:34:26.858678 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | trabajador-1 (PID 56770) ignoró SIGTERM (estado T (stopped)): se envía SIGKILL
+15:34:26.862352 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | RESUMEN de terminación:
+15:34:26.862911 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       |   trabajador-1   PID 56770   terminado por señal SIGKILL
+15:34:26.863319 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       |   trabajador-2   PID 56771   exit(0)
+15:34:26.863823 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+15:34:26.864152 | PID  56768 | PPID  56673 | TID  56768 | centro_despacho | MainThread       | FIN centro de despacho (con fallos)
+exit code del principal: 1
