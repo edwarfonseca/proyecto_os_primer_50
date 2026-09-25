@@ -10,7 +10,7 @@
 - [1. Procesos](#fase-1--procesos) ✅
 - [2. Hilos y productor-consumidor](#fase-2--hilos-y-productor-consumidor) ✅
 - [3. Condición de carrera](#fase-3--condición-de-carrera) ✅
-- [4. Corrección por sincronización](#fase-4--corrección-por-sincronización) *(pendiente)*
+- [4. Corrección por sincronización](#fase-4--corrección-por-sincronización) ✅
 - [5. Interbloqueo](#fase-5--interbloqueo) *(pendiente)*
 - [6. CPU y memoria](#fase-6--cpu-y-memoria) *(pendiente)*
 - [7. Registro y observación](#fase-7--registro-y-observación) *(pendiente)*
@@ -1071,7 +1071,252 @@ FIN centro de despacho (con fallos)          → exit code 1
   Fase 4).
 
 ## Fase 4 — Corrección por sincronización
-*(pendiente)*
+
+> Rama `fase-4-sincronizacion` · etiqueta `fase-4` · evidencias en `evidencias/fase4/`
+>
+> Requisitos 8 (corrección) y 15 (antes/después). La versión con el problema **se conserva**
+> (`--modo inseguro --espera activa`) y la corregida es la opción por defecto.
+
+### 4.1 Qué se hizo
+- **Dos mecanismos de sincronización independientes**, cada uno con su parámetro, para poder medir
+  qué aporta cada uno:
+
+  | Mecanismo | Primitiva | Decide | Parámetro |
+  |---|---|---|---|
+  | Exclusión mutua de la sección crítica | `multiprocessing.Lock` (mutex) | **cuál** vehículo toma cada despachador | `--modo seguro\|inseguro` |
+  | Semáforo contador de vehículos libres | `multiprocessing.BoundedSemaphore(V)` | **cuántos** despachadores tienen vehículo, y bloquea sin consumir CPU al que no lo consigue | `--espera bloqueante\|activa` |
+
+- **Sección crítica fina** (defecto): dentro del mutex sólo se busca y se marca el vehículo, que
+  son microsegundos. La validación (`--ventana`) se hace **después**, con el vehículo ya reservado.
+  `--seccion gruesa` deja la validación dentro del mutex, para medir el costo.
+- **Tercer detector:** al liberar, se verifica que el registro siga indicando la solicitud que
+  libera. Si no, se registra `REGISTRO INCONSISTENTE` (actualización perdida o liberación ajena).
+- **Nuevas métricas:** entregas en ruta simultáneas frente al número de vehículos, espera por el
+  mutex, espera por vehículo y reintentos de sondeo. La métrica "servicio" pasa a medirse
+  **con vehículo** (desde la asignación hasta la entrega), sin incluir la espera por un vehículo.
+- **Ajuste de la sonda:** al liberar, se descuenta el ocupante **antes** de que el vehículo quede
+  libre para otro. En el orden inverso, un nuevo ocupante podría registrarse antes que el descuento
+  y producir un falso positivo.
+- Los scripts de fases anteriores fijan ahora sus parámetros para seguir reproduciendo lo mismo:
+  la Fase 3 usa `--modo inseguro --espera activa`; las Fases 1, 2, H3 y H4 usan
+  `-v 100 --ventana 0` (flota sin cuello de botella, como en esas fases).
+- `observar.sh` y E2 suman los cambios de contexto de **todos los hilos** (ver 4.6, D4.6).
+
+Parámetros nuevos: `--modo` (defecto `seguro`), `--espera` (defecto `bloqueante`), `--seccion`
+(defecto `fina`), `--reintento` (defecto 0.005 s, para la espera activa).
+
+### 4.2 El código corregido
+```python
+def asignar(self, id_sol, detener, log):
+    if self.espera == "bloqueante":
+        # P(disponibles): si no hay vehículos libres el hilo se bloquea en el kernel (futex)
+        while not self._disponibles.acquire(timeout=0.5):
+            if detener.value:
+                return None, ...
+    v, espera = self._buscar_y_marcar(id_sol)
+    ...
+
+def _buscar_y_marcar(self, id_sol):
+    with self._mutex:                        # ── inicio de la sección crítica
+        v = self._primer_libre()             # (1) check
+        if v is not None:
+            self.estado[v] = id_sol          # (3) act
+    #                                        # ── fin de la sección crítica
+    if v is not None and self.ventana:
+        time.sleep(self.ventana)             # (2) validación: el vehículo ya es exclusivo
+    return v, espera
+
+def liberar(self, v, id_sol, log):
+    with self._mutex:
+        registrado = self.estado[v]          # verificación: ¿sigue siendo mío?
+        self.estado[v] = 0
+    self._disponibles.release()              # V(disponibles): despierta a un hilo bloqueado
+```
+Invariante que se mantiene: **valor del semáforo `disponibles` ≤ vehículos con `estado == 0`**.
+Quien pasa `P(disponibles)` tiene garantizado al menos un vehículo libre al entrar al mutex.
+
+### 4.3 Por qué cambia el resultado al sincronizar (explicación técnica)
+- La carrera de la Fase 3 exige que dos flujos ejecuten el paso (1) antes de que alguno ejecute el
+  (3). Con el mutex, (1) y (3) se ejecutan **como una unidad indivisible respecto de los demás**:
+  un despachador sólo puede leer `estado[]` cuando nadie está entre (1) y (3). El segundo en
+  llegar se bloquea en el `Lock` y, al entrar, **ya ve el vehículo marcado** y elige otro. Rompe
+  la condición 4 de la sección 3.3 (sin exclusión mutua) y, con ella, la carrera.
+- El `Lock` de `multiprocessing` es un **semáforo POSIX en memoria compartida** (`/dev/shm/sem.*`,
+  visto en F3-E5). `sem_wait` es atómico a nivel de hardware (instrucciones atómicas sobre la
+  palabra del futex) y, si hay que esperar, el kernel duerme al hilo en `futex_wait`. Funciona
+  igual entre hilos de un proceso y entre procesos distintos, que es exactamente lo que se
+  necesita aquí.
+- El semáforo contador **no** evita la carrera por sí solo (E3): garantiza que como máximo V
+  despachadores tengan vehículo, pero no qué vehículo elige cada uno.
+- El programa "tarda más" porque ahora respeta la realidad: 3 vehículos para 6 despachadores. La
+  versión insegura era más rápida porque ponía hasta 6 entregas en 3 vehículos.
+
+### 4.4 Cómo ejecutarlo
+```bash
+python3 main.py -w 2 -t 3 -g 4 -n 24 -v 3                              # corregida (exit 0)
+python3 main.py -w 2 -t 3 -g 4 -n 24 -v 3 --modo inseguro --espera activa   # antes (exit 1)
+python3 main.py -w 4 -t 4 -n 48 -v 2 --ventana 0 --espera activa --reintento 0   # CPU al 175 %
+scripts/evidencias_fase4.sh              # E1–E6 (≈ 15 min)
+scripts/evidencias_fase4.sh 10 e1 e4     # sólo algunas secciones
+```
+
+### 4.5 Evidencias y cómo explicarlas
+
+**E1 — Antes/después con la misma carga y semilla** (`e1_antes_despues.txt`;
+`-w 2 -t 3 -g 4 -n 24 -v 3 --ventana 0.01 -s 42`, 10 ejecuciones por versión)
+
+| Métrica (promedio de 10) | Antes (`inseguro` + `activa`) | Después (`seguro` + `bloqueante`) |
+|---|---|---|
+| Ejecuciones con doble asignación | **10/10** | **0/10** |
+| Dobles asignaciones (sonda = auditoría) | 16.8 | **0** |
+| Registros inconsistentes al liberar | 17.6 | **0** |
+| Entregas en ruta simultáneas (máx.) con 3 vehículos | **6** | 3 |
+| Trabajo total con vehículo | 13.83 s | 13.82 s (la misma carga) |
+| Tiempo total | 2.61 s | 4.89 s |
+| Rendimiento | 9.23 sol/s | 4.91 sol/s |
+| Espera por vehículo (prom.) | 12 ms (sólo la ventana) | 522 ms |
+| Espera por el mutex (prom.) | — | 0.01 ms |
+| CPU media de los trabajadores | 3.2 % | 2.1 % |
+| Código de salida | 1 | 0 |
+
+- *Qué decir:* la corrección elimina **todas** las dobles asignaciones y actualizaciones perdidas
+  en las 10 ejecuciones, y lo verifican tres detectores independientes (sonda, auditoría y
+  verificación al liberar).
+- El "trabajo total" es idéntico: la carga es la misma. La diferencia de tiempo **no es un costo
+  del mutex** (espera promedio de 0.01 ms), sino de respetar la capacidad real. Antes había hasta
+  6 entregas con 3 vehículos; después, 24 entregas con 3 vehículos toman
+  ≈ 13.8 s / 3 ≈ 4.6 s + arranque ≈ 4.9 s. La flota trabaja casi al 100 %.
+- **Un resultado más rápido pero incorrecto no es mejor:** el rendimiento de "antes" era ficticio.
+
+**E2 — La versión corregida por dentro** (`e2_cronologia_V3.txt`, `e2_hilos_*.txt`)
+```
+57.048088 despachador-1-1 | ASIGNADO vehículo V3 a la solicitud 19 | libres ~0/3
+57.538602 despachador-1-1 | ENTREGADA solicitud 19 | V3 liberado
+57.548956 despachador-2-2 | ASIGNADO vehículo V3 a la solicitud 22   ← sólo después de liberarse
+57.549476 despachador-2-2 | DESPACHO solicitud 22 en V3 | ... por vehículo 511 ms
+58.043039 despachador-2-2 | ENTREGADA solicitud 22 | V3 liberado
+58.053343 despachador-1-2 | ASIGNADO vehículo V3 a la solicitud 14
+```
+- *Qué decir:* cada asignación de V3 ocurre ~10 ms **después** de la entrega anterior: el tiempo de
+  `V(disponibles)` → despertar del hilo bloqueado → mutex → marcar. Nunca hay dos solicitudes en V3.
+  La espera por vehículo (511 ms) es real: el hilo estuvo bloqueado en el semáforo.
+- **Los hilos vistos desde el SO** (12 despachadores, 2 vehículos, observación en vivo):
+  ```
+  --espera bloqueante                          --espera activa (sondeo cada 5 ms)
+  despachador-1-1 Sl 0.0 futex_do_wait         despachador-1-1 Sl 0.0 hrtimer_nanosleep
+  despachador-1-2 Sl 0.0 futex_do_wait         despachador-1-2 Sl 0.6 hrtimer_nanosleep
+  despachador-1-3 Sl 0.0 futex_do_wait         despachador-1-3 Sl 1.3 hrtimer_nanosleep
+  despachador-1-5 Sl 0.0 hrtimer_nanosleep     ...
+  En 2 s (todos los hilos de trabajador-1):    En 2 s:
+    52 cambios de contexto, 10 ms de CPU         3940 cambios de contexto, 200 ms de CPU
+  ```
+  Con espera bloqueante, los hilos sin vehículo están en `futex_do_wait` (dormidos en el semáforo
+  hasta que otro haga `V()`). Los que tienen vehículo están en `hrtimer_nanosleep` (en ruta). Con
+  espera activa **todos** aparecen en `hrtimer_nanosleep`, pero los que esperan despiertan cada
+  5 ms a buscar de nuevo: **75 veces más cambios de contexto y 20 veces más CPU** sin hacer
+  ningún trabajo útil.
+
+**E3 — Qué corrige cada mecanismo** (`e3_mecanismos.txt`; misma carga que E1, 10 ejecuciones)
+
+| Modo | Espera | Ejecuciones con fallo | Dobles | Inconsistencias | En ruta máx. | Reintentos | Tiempo (s) |
+|---|---|---|---|---|---|---|---|
+| inseguro | activa | 10/10 | 18.1 | 18.8 | 6/3 | 0 | 2.66 |
+| inseguro | **bloqueante** | **8/10** | 2.8 | 3.0 | 3/3 | 0 | 4.90 |
+| **seguro** | activa | 0/10 | 0 | 0 | 3/3 | **2372.5** | 4.92 |
+| **seguro** | **bloqueante** | **0/10** | **0** | **0** | 3/3 | **0** | 4.94 |
+
+- *Qué decir:*
+  - **Sólo semáforo (fila 2):** el semáforo limita a 3 las entregas en ruta, pero **sigue habiendo
+    dobles asignaciones** en 8 de 10 ejecuciones. Dos despachadores que pasaron `P()` pueden elegir
+    el mismo vehículo mientras otro queda libre. *El semáforo contador controla cuántos, no cuál.*
+  - **Sólo mutex (fila 3):** correcto, pero sin semáforo el que no encuentra vehículo sondea: 2372
+    búsquedas fallidas por ejecución (cada una toma el mutex y recorre la flota).
+  - **Mutex + semáforo (fila 4):** correcto y sin trabajo inútil. Es la solución clásica del
+    problema de **recursos múltiples idénticos**: un semáforo contador para la cantidad y un mutex
+    para el estado compartido.
+
+**E4 — Costo de la espera activa bajo alta demanda** (`e4_espera_activa.txt`, `e4_top_*.txt`;
+16 despachadores compiten por 2 vehículos, 48 solicitudes, modo seguro)
+
+| Espera | Tiempo total (s) | CPU de trabajadores (s) | CPU media (%) | Cambios de contexto voluntarios | Reintentos |
+|---|---|---|---|---|---|
+| bloqueante (semáforo) | 14.88 | **0.26** | **1.7** | 1 486 | 0 |
+| activa, reintento 5 ms | 14.93 | 2.70 | 17.8 | 48 321 | 32 504 |
+| activa, sin pausa | 14.84 | **26.44** | **175.1** | **4 362 832** | 2 037 133 |
+
+- *Qué decir:* **el tiempo total es el mismo** (lo limitan los 2 vehículos). La espera activa sólo
+  añade consumo. Sin pausa, los hilos que esperan mantienen ocupados casi 2 de los 4 núcleos
+  (175 %) y generan 4.3 millones de cambios de contexto: **100 veces más CPU que la espera
+  bloqueante para hacer el mismo trabajo en el mismo tiempo**. Es el síntoma del enunciado
+  ("aumento considerable en el consumo de CPU cuando se procesan muchas solicitudes").
+- `top -H` durante la espera activa (`e4_top_espera_activa.txt`): 11 despachadores entre 10 % y
+  20 % de CPU cada uno, varios en estado `R`. Durante la espera bloqueante (`e4_top_bloqueante.txt`),
+  todos en `S` y 0.0 %.
+- ¿Por qué no llega a 400 %? Cada proceso tiene su GIL: dentro de un trabajador sólo un hilo
+  ejecuta Python a la vez, y la contención del mutex de la flota también serializa.
+
+**E5 — Sección crítica fina frente a gruesa** (`e5_seccion_critica.txt`; validación de 50 ms)
+
+| Sección | Tiempo total (s) | Espera por el mutex prom. (ms) | Espera por el mutex máx. (ms) | Dobles |
+|---|---|---|---|---|
+| fina (validar fuera del mutex) | 5.21 | **0.01** | 0.02 | 0 |
+| gruesa (validar dentro) | 5.30 | **6.34** | **101.71** | 0 |
+
+- *Qué decir:* ambas son correctas. Con la sección gruesa, cada validación de 50 ms retiene el mutex
+  y **serializa** a todos los que quieren asignar: la espera por el mutex sube 600 veces y un
+  despachador llegó a esperar 102 ms (dos validaciones completas). El tiempo total casi no cambia
+  porque aquí el cuello de botella son los 3 vehículos, no el mutex. Con más vehículos o
+  validaciones más largas, la sección gruesa limitaría el rendimiento.
+- Principio: **la sección crítica debe contener sólo lo que necesita exclusión**. Reservar
+  primero y validar después es seguro porque, una vez marcado, el vehículo es exclusivo.
+
+**E6 — La corrección es independiente de hilos o procesos** (`e6_hilos_procesos.txt`; la misma
+carga que F3-E4, que con la versión insegura fallaba hasta en 10/10)
+
+| Procesos × hilos | Ventana 0 | Ventana 1 ms |
+|---|---|---|
+| 1 × 6 | 0/5 | 0/5 |
+| 6 × 1 | 0/5 | 0/5 |
+| 2 × 3 | 0/5 | 0/5 |
+
+- *Qué decir:* el mismo `Lock` protege entre hilos y entre procesos, porque es un semáforo del
+  kernel en memoria compartida y no depende del GIL.
+
+### 4.6 Decisiones de la fase
+- **D4.1 Dos primitivas con responsabilidades distintas** (E3). Un solo `Lock` bastaría para la
+  corrección, pero la espera por vehículo sería activa. Un solo semáforo contador reduciría la
+  carrera sin eliminarla.
+- **D4.2 `BoundedSemaphore` en lugar de `Semaphore`.** Si por un error se liberara un vehículo
+  dos veces, `release()` lanzaría `ValueError` en vez de "crear" un vehículo inexistente.
+- **D4.3 Sección crítica fina por defecto** (E5).
+- **D4.4 `acquire(timeout=0.5)` en el semáforo:** el hilo sigue bloqueado en el kernel, pero cada
+  0.5 s revisa la orden de parada. Un Ctrl+C no queda esperando a que se libere un vehículo.
+- **D4.5 La versión insegura sigue en el código**, seleccionable por parámetro, y ambas comparten
+  todo lo demás: generadores, cola, tiempos y semilla. La comparación sólo cambia el mecanismo de
+  sincronización.
+- **D4.6 Cambios de contexto por proceso.** `/proc/<pid>/status` informa
+  `voluntary_ctxt_switches` **sólo del hilo líder**. Para un proceso multihilo hay que sumar
+  `/proc/<pid>/task/*/status` (lo hacen `observar.sh` y E2). En cambio, `utime`/`stime` de
+  `/proc/<pid>/stat` y `getrusage()` sí acumulan todos los hilos. Se detectó porque la primera
+  medición de E2 daba cifras casi iguales (20 y 22) en ambos modos.
+- **D4.7 Limitación conocida:** si un proceso muere **reteniendo** el mutex de la flota o un
+  vehículo, ese recurso no se libera solo (semáforos POSIX sin dueño, como en H3). Se analiza en
+  la Fase 5 (retención de recursos y recuperación).
+
+### 4.7 Preguntas probables en la sustentación
+- **¿Qué mecanismo usaron y por qué ése?** Mutex para la sección crítica + semáforo contador para
+  los vehículos libres (D4.1, E3). Son semáforos POSIX en memoria compartida: valen entre hilos y
+  entre procesos (E6).
+- **¿Por qué el `Semaphore(3)` solo no basta?** E3, fila 2: cuenta, no elige.
+- **¿La versión corregida es más lenta? ¿Es costo del lock?** No: el mutex cuesta 0.01 ms por
+  asignación. La diferencia es que ahora se respetan los 3 vehículos (E1).
+- **¿Qué es espera activa y por qué es mala?** E4: el mismo tiempo total con 100 veces más CPU.
+  En `ps -L`, `futex_do_wait` frente a despertares constantes.
+- **¿Qué pasa si la validación va dentro del lock?** E5: sigue siendo correcta, pero serializa.
+- **¿Cómo verificaron que la corrección funciona?** 10/10 → 0/10 con tres detectores
+  independientes, y 0 fallos en 30 ejecuciones más con hilos, procesos y ventanas distintas (E6).
+- **¿Cómo cambia lo que muestra el SO?** Hilos en `futex_do_wait` en lugar de despertares
+  periódicos; los cambios de contexto por segundo bajan 75 veces (E2).
 
 ## Fase 5 — Interbloqueo
 *(pendiente)*
@@ -1100,14 +1345,14 @@ FIN centro de despacho (con fallos)          → exit code 1
 | 5 | Cola productor-consumidor | 2 ✅ | `ColaAcotada` (semáforos) | F2-E1, F2-E4, H3 |
 | 6 | Llegada simultánea | 2 ✅ | `threading.Barrier` por ráfaga | F2-E1: 8 llegadas en < 3 ms; H4 |
 | 7 | Carrera en asignación | 3 ✅ | *check-then-act* sin exclusión, `--ventana` | F3-E1..E4: sonda = auditoría, 10/10, exit 1 |
-| 8 | Corrección por sincronización | 4 | `--modo seguro` | contador = 0 |
+| 8 | Corrección por sincronización | 4 ✅ | `--modo seguro` (Lock) + `--espera bloqueante` (BoundedSemaphore) | F4-E1: 10/10 → 0/10; E3, E6 |
 | 9 | Tiempos de despacho/entrega | 2 ✅ | `--despacho`, `--entrega`, `--semilla` | log (servicio por solicitud), F2-E3 |
 | 10 | Recursos en orden distinto | 5 | vehículo↔andén | `wchan`, watchdog |
 | 11 | Estrategia anti-interbloqueo | 5 | `--interbloqueo orden/timeout` | ejecución completa |
 | 12 | Registro de estadísticas | 7 | hilo `monitor`, CSV | CSV + resumen |
-| 13 | Consumo elevado de CPU | 6 | cálculo de ruta | `top -H`, `ps -o pcpu` |
+| 13 | Consumo elevado de CPU | 4, 6 | espera activa (F4-E4); cálculo de ruta (Fase 6) | F4-E4: `top -H`, 175 % CPU |
 | 14 | Observación de procesos e hilos | 1, 2, 7 | `scripts/observar.sh` | capturas + explicación |
-| 15 | Antes/después de sincronizar | 4, 8 | experimentos | tablas y gráficas |
+| 15 | Antes/después de sincronizar | 4 ✅, 8 | misma carga y semilla, modo por parámetro | F4-E1..E5 (tablas); gráficas en la Fase 8 |
 | 9.1 | Diseño | 0 | esta sección | diagramas |
 | 9.3 | Prueba de fallo y corrección (8 pasos) | 3, 4, 5, 8 | modos + semilla | antes/después |
 | 9.4 | Evidencias del SO | todas | ps, pstree, top, /proc | `evidencias/` |

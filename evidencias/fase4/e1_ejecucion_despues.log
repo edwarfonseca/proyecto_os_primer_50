@@ -1,0 +1,219 @@
+16:35:57.021139 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 x 3 hilos | generadores=4 | solicitudes=24 | cola=semaforos(10) | vehículos=3 | modo=seguro | espera=bloqueante | sección=fina | ventana=0.0100 s | semilla=42 | log=logs/fase4/e1_despues_1.log
+16:35:57.033311 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 93114
+16:35:57.034531 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 93115
+16:35:57.034731 | PID  93114 | PPID  93113 | TID  93114 | trabajador-1    | MainThread       | INICIO trabajador 1 con 3 hilos despachadores
+16:35:57.036131 | PID  93115 | PPID  93113 | TID  93115 | trabajador-2    | MainThread       | INICIO trabajador 2 con 3 hilos despachadores
+16:35:57.036313 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | SINCRONIZADO: 2 trabajadores listos
+16:35:57.037634 | PID  93113 | PPID  92249 | TID  93125 | centro_despacho | generador-4      | RECIBIDA solicitud 19 (ráfaga 1) Ara: Tunja -> Garagoa | en cola ~0
+16:35:57.038202 | PID  93113 | PPID  92249 | TID  93125 | centro_despacho | generador-4      | RECIBIDA solicitud 20 (ráfaga 1) D1: Villa de Leyva -> Duitama | en cola ~1
+16:35:57.038302 | PID  93113 | PPID  92249 | TID  93125 | centro_despacho | generador-4      | RECIBIDA solicitud 21 (ráfaga 1) Olímpica: Paipa -> Sogamoso | en cola ~1
+16:35:57.038412 | PID  93113 | PPID  92249 | TID  93125 | centro_despacho | generador-4      | RECIBIDA solicitud 22 (ráfaga 1) Ara: Sogamoso -> Tunja | en cola ~1
+16:35:57.038511 | PID  93113 | PPID  92249 | TID  93125 | centro_despacho | generador-4      | RECIBIDA solicitud 23 (ráfaga 1) Homecenter: Paipa -> Chiquinquirá | en cola ~1
+16:35:57.038343 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 20 bloqueada en el semáforo de vehículos libres
+16:35:57.038619 | PID  93113 | PPID  92249 | TID  93125 | centro_despacho | generador-4      | RECIBIDA solicitud 24 (ráfaga 1) Homecenter: Garagoa -> Sogamoso | en cola ~2
+16:35:57.038705 | PID  93113 | PPID  92249 | TID  93125 | centro_despacho | generador-4      | FIN generador 4: generadas=6, bloqueos por cola llena=0 (0.000 s)
+16:35:57.038053 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | RECIBIDA solicitud 13 (ráfaga 1) Jumbo: Tunja -> Duitama | en cola ~1
+16:35:57.038782 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 22 bloqueada en el semáforo de vehículos libres
+16:35:57.038646 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 21 bloqueada en el semáforo de vehículos libres
+16:35:57.038879 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | RECIBIDA solicitud 14 (ráfaga 1) Alkosto: Garagoa -> Paipa | en cola ~3
+16:35:57.037816 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | RECIBIDA solicitud 7 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~1
+16:35:57.037940 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | RÁFAGA 1: 4 generadores liberados simultáneamente
+16:35:57.039186 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | RECIBIDA solicitud 1 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~6
+16:35:57.039267 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | RECIBIDA solicitud 2 (ráfaga 1) Jumbo: Chiquinquirá -> Paipa | en cola ~7
+16:35:57.039343 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | RECIBIDA solicitud 3 (ráfaga 1) Homecenter: Tunja -> Moniquirá | en cola ~8
+16:35:57.038124 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+16:35:57.039513 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+16:35:57.039073 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | RECIBIDA solicitud 8 (ráfaga 1) Olímpica: Garagoa -> Villa de Leyva | en cola ~5
+16:35:57.039675 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | RECIBIDA solicitud 9 (ráfaga 1) D1: Duitama -> Villa de Leyva | en cola ~10
+16:35:57.039818 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 10 espera
+16:35:57.038978 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | RECIBIDA solicitud 15 (ráfaga 1) D1: Garagoa -> Tunja | en cola ~4
+16:35:57.040030 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 16 espera
+16:35:57.039430 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | RECIBIDA solicitud 4 (ráfaga 1) D1: Moniquirá -> Sogamoso | en cola ~9
+16:35:57.040247 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 5 espera
+16:35:57.040191 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   93113   92249   centro_despacho  R      4      23384    
+16:35:57.040584 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93113   centro_despacho  R
+16:35:57.040661 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93122   generador-1      S
+16:35:57.040721 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93123   generador-2      S
+16:35:57.040777 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93124   generador-3      S
+16:35:57.040933 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   93114   93113   trabajador-1     S      4      19044    
+16:35:57.041177 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93114   trabajador-1     S
+16:35:57.041236 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93116   despachador-1-1  S
+16:35:57.041294 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93117   despachador-1-2  S
+16:35:57.041349 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93118   despachador-1-3  S
+16:35:57.041500 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   93115   93113   trabajador-2     S      4      19132    
+16:35:57.041746 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93115   trabajador-2     S
+16:35:57.041804 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93119   despachador-2-1  S
+16:35:57.041863 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93120   despachador-2-2  S
+16:35:57.041920 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |       └ TID 93121   despachador-2-3  S
+16:35:57.048088 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V3 a la solicitud 19 | libres ~0/3
+16:35:57.048990 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 19 en V3 (Ara: Tunja -> Garagoa) | esperó en cola 0 ms, por vehículo 11 ms
+16:35:57.049487 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V1 a la solicitud 7 | libres ~0/3
+16:35:57.048613 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V2 a la solicitud 13 | libres ~0/3
+16:35:57.050430 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 13 en V2 (Jumbo: Tunja -> Duitama) | esperó en cola 0 ms, por vehículo 12 ms
+16:35:57.049946 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 7 en V1 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms, por vehículo 12 ms
+16:35:57.211066 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 13 en V2
+16:35:57.275630 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 19 en V3
+16:35:57.278257 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 7 en V1
+16:35:57.496207 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 13 | V2 liberado | servicio 458 ms
+16:35:57.499386 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 23 bloqueada en el semáforo de vehículos libres
+16:35:57.499971 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 460 ms
+16:35:57.500687 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | RECIBIDA solicitud 10 (ráfaga 1) Falabella: Villa de Leyva -> Moniquirá | en cola ~10
+16:35:57.501034 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 11 espera
+16:35:57.506830 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V2 a la solicitud 20 | libres ~0/3
+16:35:57.507427 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 20 en V2 (D1: Villa de Leyva -> Duitama) | esperó en cola 0 ms, por vehículo 469 ms
+16:35:57.538602 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 19 | V3 liberado | servicio 501 ms
+16:35:57.539646 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 24 bloqueada en el semáforo de vehículos libres
+16:35:57.539770 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 500 ms
+16:35:57.540412 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | RECIBIDA solicitud 16 (ráfaga 1) Alkosto: Paipa -> Duitama | en cola ~10
+16:35:57.540936 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 17 espera
+16:35:57.548956 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V3 a la solicitud 22 | libres ~0/3
+16:35:57.549476 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 22 en V3 (Ara: Sogamoso -> Tunja) | esperó en cola 0 ms, por vehículo 511 ms
+16:35:57.706114 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 7 | V1 liberado | servicio 668 ms
+16:35:57.707097 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 14 bloqueada en el semáforo de vehículos libres
+16:35:57.707262 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 166 ms
+16:35:57.707799 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | RECIBIDA solicitud 17 (ráfaga 1) Homecenter: Duitama -> Garagoa | en cola ~10
+16:35:57.708439 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 18 espera
+16:35:57.717888 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 23 | libres ~0/3
+16:35:57.718423 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 23 en V1 (Homecenter: Paipa -> Chiquinquirá) | esperó en cola 461 ms, por vehículo 219 ms
+16:35:57.734123 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 20 en V2
+16:35:57.788247 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 22 en V3
+16:35:58.012460 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 23 en V1
+16:35:58.043039 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 22 | V3 liberado | servicio 1004 ms
+16:35:58.045675 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 15 bloqueada en el semáforo de vehículos libres
+16:35:58.046149 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 545 ms
+16:35:58.046961 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | RECIBIDA solicitud 11 (ráfaga 1) D1: Paipa -> Moniquirá | en cola ~10
+16:35:58.047376 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 12 espera
+16:35:58.053343 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 14 | libres ~0/3
+16:35:58.054122 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 14 en V3 (Alkosto: Garagoa -> Paipa) | esperó en cola 668 ms, por vehículo 347 ms
+16:35:58.111966 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 20 | V2 liberado | servicio 1074 ms
+16:35:58.113147 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 8 bloqueada en el semáforo de vehículos libres
+16:35:58.113256 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 1073 ms
+16:35:58.113894 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | RECIBIDA solicitud 5 (ráfaga 1) Éxito: Tunja -> Sogamoso | en cola ~10
+16:35:58.114860 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 6 espera
+16:35:58.122920 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V2 a la solicitud 21 | libres ~0/3
+16:35:58.123599 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 21 en V2 (Olímpica: Paipa -> Sogamoso) | esperó en cola 0 ms, por vehículo 1085 ms
+16:35:58.265906 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 14 en V3
+16:35:58.413413 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 21 en V2
+16:35:58.534755 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 23 | V1 liberado | servicio 1035 ms
+16:35:58.535580 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 1 bloqueada en el semáforo de vehículos libres
+16:35:58.535782 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 488 ms
+16:35:58.536298 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | RECIBIDA solicitud 12 (ráfaga 1) Éxito: Tunja -> Paipa | en cola ~10
+16:35:58.537412 | PID  93113 | PPID  92249 | TID  93123 | centro_despacho | generador-2      | FIN generador 2: generadas=6, bloqueos por cola llena=3 (1.493 s)
+16:35:58.546808 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V1 a la solicitud 24 | libres ~0/3
+16:35:58.547269 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 24 en V1 (Homecenter: Garagoa -> Sogamoso) | esperó en cola 501 ms, por vehículo 1008 ms
+16:35:58.677727 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 14 | V3 liberado | servicio 971 ms
+16:35:58.678859 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 2 bloqueada en el semáforo de vehículos libres
+16:35:58.678991 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 970 ms
+16:35:58.679930 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | RECIBIDA solicitud 18 (ráfaga 1) Olímpica: Tunja -> Moniquirá | en cola ~10
+16:35:58.680294 | PID  93113 | PPID  92249 | TID  93124 | centro_despacho | generador-3      | FIN generador 3: generadas=6, bloqueos por cola llena=3 (1.635 s)
+16:35:58.688503 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V3 a la solicitud 1 | libres ~0/3
+16:35:58.689052 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1 en V3 (Homecenter: Sogamoso -> Tunja) | esperó en cola 1496 ms, por vehículo 154 ms
+16:35:58.760820 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 21 | V2 liberado | servicio 1722 ms
+16:35:58.761838 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 3 bloqueada en el semáforo de vehículos libres
+16:35:58.761942 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 647 ms
+16:35:58.762448 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | RECIBIDA solicitud 6 (ráfaga 1) Homecenter: Duitama -> Villa de Leyva | en cola ~10
+16:35:58.763291 | PID  93113 | PPID  92249 | TID  93122 | centro_despacho | generador-1      | FIN generador 1: generadas=6, bloqueos por cola llena=2 (1.719 s)
+16:35:58.771745 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V2 a la solicitud 15 | libres ~0/3
+16:35:58.772252 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 15 en V2 (D1: Garagoa -> Tunja) | esperó en cola 1007 ms, por vehículo 727 ms
+16:35:58.838162 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 24 en V1
+16:35:58.911823 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1 en V3
+16:35:58.964272 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | GENERACIÓN terminada: se envían 6 centinelas (uno por hilo despachador)
+16:35:59.040000 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 24 | V1 liberado | servicio 1500 ms
+16:35:59.040877 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 4 bloqueada en el semáforo de vehículos libres
+16:35:59.047860 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 15 en V2
+16:35:59.050425 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V1 a la solicitud 8 | libres ~0/3
+16:35:59.050985 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 8 en V1 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 1074 ms, por vehículo 938 ms
+16:35:59.338674 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 8 en V1
+16:35:59.349589 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 15 | V2 liberado | servicio 1304 ms
+16:35:59.350335 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 9 bloqueada en el semáforo de vehículos libres
+16:35:59.359880 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 4 | libres ~0/3
+16:35:59.360354 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 4 en V2 (D1: Moniquirá -> Sogamoso) | esperó en cola 2001 ms, por vehículo 319 ms
+16:35:59.377646 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1 | V3 liberado | servicio 842 ms
+16:35:59.379175 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 10 bloqueada en el semáforo de vehículos libres
+16:35:59.388616 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 2 | libres ~0/3
+16:35:59.389138 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 2 en V3 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 1640 ms, por vehículo 710 ms
+16:35:59.515945 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 4 en V2
+16:35:59.541390 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 8 | V1 liberado | servicio 1428 ms
+16:35:59.543171 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 16 bloqueada en el semáforo de vehículos libres
+16:35:59.552269 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V1 a la solicitud 3 | libres ~0/3
+16:35:59.552976 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 3 en V1 (Homecenter: Tunja -> Moniquirá) | esperó en cola 1722 ms, por vehículo 791 ms
+16:35:59.571761 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 2 en V3
+16:35:59.775624 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 3 en V1
+16:35:59.780467 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 2 | V3 liberado | servicio 1102 ms
+16:35:59.780951 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 17 bloqueada en el semáforo de vehículos libres
+16:35:59.790706 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V3 a la solicitud 9 | libres ~0/3
+16:35:59.790950 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 9 en V3 (D1: Duitama -> Villa de Leyva) | esperó en cola 2311 ms, por vehículo 441 ms
+16:35:59.816171 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 4 | V2 liberado | servicio 775 ms
+16:35:59.817030 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 11 bloqueada en el semáforo de vehículos libres
+16:35:59.826821 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V2 a la solicitud 10 | libres ~0/3
+16:35:59.827314 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 10 en V2 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 2339 ms, por vehículo 448 ms
+16:35:59.904302 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 9 en V3
+16:35:59.945024 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 10 en V2
+16:36:00.133154 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 9 | V3 liberado | servicio 783 ms
+16:36:00.134245 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 5 bloqueada en el semáforo de vehículos libres
+16:36:00.143598 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 17 | libres ~0/3
+16:36:00.144146 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 17 en V3 (Homecenter: Duitama -> Garagoa) | esperó en cola 2240 ms, por vehículo 363 ms
+16:36:00.343151 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 3 | V1 liberado | servicio 1581 ms
+16:36:00.344152 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 12 bloqueada en el semáforo de vehículos libres
+16:36:00.347765 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 10 | V2 liberado | servicio 969 ms
+16:36:00.348795 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 18 bloqueada en el semáforo de vehículos libres
+16:36:00.354045 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V1 a la solicitud 16 | libres ~0/3
+16:36:00.354480 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 16 en V1 (Alkosto: Paipa -> Duitama) | esperó en cola 2503 ms, por vehículo 811 ms
+16:36:00.358079 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V2 a la solicitud 5 | libres ~0/3
+16:36:00.358485 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 5 en V2 (Éxito: Tunja -> Sogamoso) | esperó en cola 3094 ms, por vehículo 224 ms
+16:36:00.429884 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 17 en V3
+16:36:00.538192 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 16 en V1
+16:36:00.571059 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 5 en V2
+16:36:00.902993 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 5 | V2 liberado | servicio 769 ms
+16:36:00.904138 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 6 bloqueada en el semáforo de vehículos libres
+16:36:00.913342 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 11 | libres ~0/3
+16:36:00.913946 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 11 en V2 (D1: Paipa -> Moniquirá) | esperó en cola 2316 ms, por vehículo 1097 ms
+16:36:00.920066 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 16 | V1 liberado | servicio 1377 ms
+16:36:00.921282 | PID  93115 | PPID  93113 | TID  93119 | trabajador-2    | despachador-2-1  | CENTINELA recibido: el hilo termina
+16:36:00.931075 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V1 a la solicitud 12 | libres ~0/3
+16:36:00.931741 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 12 en V1 (Éxito: Tunja -> Paipa) | esperó en cola 2297 ms, por vehículo 588 ms
+16:36:00.960689 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 17 | V3 liberado | servicio 1180 ms
+16:36:00.961605 | PID  93114 | PPID  93113 | TID  93117 | trabajador-1    | despachador-1-2  | CENTINELA recibido: el hilo termina
+16:36:00.971694 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V3 a la solicitud 18 | libres ~0/3
+16:36:00.972072 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 18 en V3 (Olímpica: Tunja -> Moniquirá) | esperó en cola 2640 ms, por vehículo 623 ms
+16:36:01.098679 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 18 en V3
+16:36:01.182642 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 11 en V2
+16:36:01.187455 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 12 en V1
+16:36:01.469526 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 18 | V3 liberado | servicio 1121 ms
+16:36:01.469733 | PID  93114 | PPID  93113 | TID  93118 | trabajador-1    | despachador-1-3  | CENTINELA recibido: el hilo termina
+16:36:01.479629 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V3 a la solicitud 6 | libres ~0/3
+16:36:01.479791 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 6 en V3 (Homecenter: Duitama -> Villa de Leyva) | esperó en cola 2789 ms, por vehículo 576 ms
+16:36:01.581416 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 11 | V2 liberado | servicio 1764 ms
+16:36:01.582030 | PID  93114 | PPID  93113 | TID  93116 | trabajador-1    | despachador-1-1  | CENTINELA recibido: el hilo termina
+16:36:01.644342 | PID  93114 | PPID  93113 | TID  93114 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=4, despachador-1-2=4, despachador-1-3=5
+16:36:01.665496 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 12 | V1 liberado | servicio 1321 ms
+16:36:01.666667 | PID  93115 | PPID  93113 | TID  93121 | trabajador-2    | despachador-2-3  | CENTINELA recibido: el hilo termina
+16:36:01.667034 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 93114): exit(0)
+16:36:01.703163 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 6 en V3
+16:36:01.961975 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 6 | V3 liberado | servicio 1058 ms
+16:36:01.963027 | PID  93115 | PPID  93113 | TID  93120 | trabajador-2    | despachador-2-2  | CENTINELA recibido: el hilo termina
+16:36:02.045138 | PID  93115 | PPID  93113 | TID  93115 | trabajador-2    | MainThread       | FIN trabajador 2 | atendidas por hilo: despachador-2-1=3, despachador-2-2=5, despachador-2-3=3
+16:36:02.164984 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | TERMINÓ trabajador-2 (PID 93115): exit(0)
+16:36:02.216127 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | RESUMEN de terminación:
+16:36:02.216870 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   trabajador-1   PID 93114   exit(0)
+16:36:02.217299 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   trabajador-2   PID 93115   exit(0)
+16:36:02.217716 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+16:36:02.218210 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | ESTADÍSTICAS:
+16:36:02.218489 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   solicitudes: generadas=24 entregadas=24 canceladas=0 no atendidas=0
+16:36:02.218812 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=8, tiempo bloqueados=4.847 s
+16:36:02.219134 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=1379 máx=3094
+16:36:02.219401 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   servicio con vehículo (s): prom=0.576 | trabajo total (suma)=13.82 s
+16:36:02.219670 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   tiempo total=4.92 s | rendimiento=4.87 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=2.81
+16:36:02.220116 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   hilos ocupados a la vez: máx=6 (capacidad = 2 trabajadores x 3 hilos = 6)
+16:36:02.220691 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=13, trabajador-2=11
+16:36:02.221013 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=4, despachador-1-2=4, despachador-1-3=5, despachador-2-1=3, despachador-2-2=5, despachador-2-3=3
+16:36:02.221354 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   CPU: principal=0.13 s, trabajadores=0.12 s | tiempo real=5.18 s | uso medio de CPU de los trabajadores=2.2 %
+16:36:02.221716 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=391, involuntarios=12
+16:36:02.222107 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   FLOTA: 3 vehículos | modo=seguro | espera=bloqueante | sección=fina | asignaciones=24 | reparto: V1=7, V2=8, V3=9
+16:36:02.222506 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   entregas con vehículo a la vez: máx=3 con 3 vehículos
+16:36:02.222857 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   espera por vehículo (ms): prom=520 máx=1097 | reintentos de búsqueda (espera activa)=0
+16:36:02.223174 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   espera por el mutex de la flota (ms): prom=0.01 máx=0.02
+16:36:02.223691 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   DOBLES ASIGNACIONES: sonda en vivo=0 | auditoría: asignaciones sobre un vehículo ocupado=0, pares solapados=0 (entre procesos=0, entre hilos del mismo proceso=0)
+16:36:02.224001 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   REGISTROS INCONSISTENTES al liberar (actualizaciones perdidas)=0
+16:36:02.224306 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       |   estado final de la flota: libres=3/3
+16:36:02.224633 | PID  93113 | PPID  92249 | TID  93113 | centro_despacho | MainThread       | FIN centro de despacho (correcto)

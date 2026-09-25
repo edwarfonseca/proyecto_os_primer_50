@@ -106,10 +106,11 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] Prueba reproducible: 10/10 ejecuciones con la misma semilla (E2).
 - [x] Ventana 0–10 ms (E3), hilos vs procesos y efecto del GIL (E4), memoria compartida en `/proc/<pid>/maps` (E5).
 
-### Fase 4 — Corrección
-- [ ] `Lock` que hace atómica la búsqueda + marcado (sección crítica mínima).
-- [ ] `Semaphore(V)` que cuenta vehículos libres: sin espera activa cuando no hay vehículos.
-- [ ] Re-ejecución con la misma semilla: 0 dobles asignaciones; medición del costo (tiempo total, throughput).
+### Fase 4 — Corrección ✅
+- [x] `--modo seguro`: `Lock` que hace indivisible la búsqueda + marcado (sección crítica fina; `--seccion gruesa` para comparar).
+- [x] `--espera bloqueante`: `BoundedSemaphore(V)` que cuenta vehículos libres (sin espera activa).
+- [x] Verificación al liberar (actualizaciones perdidas) como tercer detector.
+- [x] Antes/después con la misma semilla: 10/10 → 0/10 (E1); qué corrige cada mecanismo (E3); costo de la espera activa en CPU (E4); sección fina vs gruesa (E5); hilos/procesos (E6).
 
 ### Fase 5 — Interbloqueo
 - [ ] Recurso 2: andenes de carga. Operación *despacho*: vehículo → andén. Operación *retorno/mantenimiento*: andén → vehículo.

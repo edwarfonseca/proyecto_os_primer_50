@@ -1,0 +1,7 @@
+Carga: -w 2 -t 3 -g 4 -n 24 -v 3 --ventana 0.01 -s 42 (10 ejecuciones por combinación)
+
+MODO       ESPERA       EJEC. CON FALLO    DOBLES     INCONS.    EN RUTA    REINTENT.  TIEMPO(s) 
+inseguro   activa       10/10              18.10      18.80      6.00/3     0.00       2.66      
+inseguro   bloqueante   8/10               2.80       3.00       3.00/3     0.00       4.90      
+seguro     activa       0/10               0.00       0.00       3.00/3     2372.50    4.92      
+seguro     bloqueante   0/10               0.00       0.00       3.00/3     0.00       4.94      

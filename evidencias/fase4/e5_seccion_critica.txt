@@ -1,0 +1,5 @@
+Carga: -w 2 -t 3 -g 4 -n 24 -v 3 --ventana 0.05 (validación de 50 ms), modo seguro
+
+SECCIÓN   TIEMPO(s)  ESPERA MUTEX PROM(ms)  ESPERA MUTEX MÁX(ms)  DOBLES        
+fina       5.21       0.01                   0.02                   0             
+gruesa     5.30       6.34                   101.71                 0             
