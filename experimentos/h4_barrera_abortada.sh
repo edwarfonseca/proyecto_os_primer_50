@@ -7,8 +7,10 @@
 # Uso: experimentos/h4_barrera_abortada.sh ETIQUETA [REPETICIONES]
 #   ETIQUETA: nombre del archivo de resumen (p. ej. antes / despues)
 #
-# Para reproducir la versión con el problema (commit anterior a la corrección):
-#   git show fase2-h4-antes:despacho/generador.py > /tmp/generador_h4.py   (ver bitácora)
+# Para reproducir la versión con el problema (etiqueta anterior a la corrección):
+#   git checkout fase2-h4-antes -- despacho/generador.py
+#   experimentos/h4_barrera_abortada.sh antes
+#   git checkout HEAD -- despacho/generador.py
 
 set -uo pipefail
 cd "$(dirname "$0")/.."

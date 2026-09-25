@@ -44,8 +44,10 @@ class Generador(threading.Thread):
         pendientes = iter(self.ids) if self.ids is not None else itertools.count(self.idg * 10**6)
         rafagas = range(1, self.rafagas + 1) if self.rafagas is not None else itertools.count(1)
 
+        interrumpido = False
         for r in rafagas:
             if self.detener.value:
+                interrumpido = True
                 break
             lote = [self._crear(i, r) for i in itertools.islice(pendientes, tam)]
             try:
@@ -54,15 +56,21 @@ class Generador(threading.Thread):
                     self.log.info("RÁFAGA %d: %d generadores liberados simultáneamente",
                                   r, self.barrera.parties)
             except threading.BrokenBarrierError:
-                break                                   # otro generador abortó (parada)
-            for s in lote:
-                if not self._encolar(s):
-                    break
+                self.log.info("RÁFAGA %d abortada por una parada", r)
+                interrumpido = True
+                break
+            if not all(self._encolar(s) for s in lote):
+                interrumpido = True
+                break
             if self.rafagas is None or r < self.rafagas:
                 self._dormir(self.cfg.intervalo)
 
-        # Si este hilo sale por una parada, libera a los que sigan esperando en la barrera.
-        self.barrera.abort()
+        if interrumpido:
+            # Sólo en una parada puede quedar otro generador esperando en la barrera.
+            # No se hace abort() al terminar normalmente: un generador ya liberado de la
+            # última barrera pero que aún no volvió a ejecutarse vería la barrera rota y
+            # perdería su ráfaga (hallazgo H4).
+            self.barrera.abort()
         self.log.info("FIN generador %d: generadas=%d, bloqueos por cola llena=%d (%.3f s)",
                       self.idg, self.generadas, self.bloqueos, self.t_bloqueado)
 
