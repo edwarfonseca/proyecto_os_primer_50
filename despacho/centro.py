@@ -15,13 +15,18 @@ from .config import Config
 from .flota import Flota
 from .generador import crear_generadores
 from .modelo import CANCELADA, ENTREGADA, Resultado
+from .recursos import Recursos
+from .taller import proceso_taller
 from .trabajador import proceso_trabajador
+from .vigilante import Vigilante
 
 
 class CentroDespacho:
     def __init__(self, cfg: Config):
         self.cfg = cfg
         self.trabajadores: list[mp.Process] = []
+        self.taller: mp.Process | None = None
+        self.vigilante: Vigilante | None = None
         self.generadores = []
         self.resultados_recibidos: list[Resultado] = []
         self._senal: int | None = None
@@ -36,10 +41,12 @@ class CentroDespacho:
         c = self.cfg
         self.log.info("INICIO centro de despacho | método=%s | trabajadores=%d x %d hilos | "
                       "generadores=%d | solicitudes=%s | cola=%s(%d) | vehículos=%d | "
-                      "modo=%s | espera=%s | sección=%s | ventana=%.4f s | semilla=%d | log=%s",
+                      "modo=%s | espera=%s | sección=%s | ventana=%.4f s | andenes=%d | "
+                      "inspectores=%d | interbloqueo=%s | semilla=%d | log=%s",
                       c.metodo_inicio, c.trabajadores, c.hilos, c.generadores,
                       c.solicitudes or "continuo", c.tipo_cola, c.capacidad_cola, c.vehiculos,
-                      c.modo, c.espera, c.seccion, c.ventana, c.semilla, c.ruta_log)
+                      c.modo, c.espera, c.seccion, c.ventana, c.andenes, c.inspectores,
+                      c.interbloqueo, c.semilla, c.ruta_log)
 
         so_utils.habilitar_volcado_hilos()
         ctx = mp.get_context(c.metodo_inicio)
@@ -66,6 +73,8 @@ class CentroDespacho:
         # Flota compartida: se crea antes del fork para que todos los procesos hereden el
         # mismo segmento de memoria compartida (/dev/shm) mapeado en su espacio de direcciones.
         self.flota = Flota(ctx, c)
+        # Locks de vehículos en el patio y de andenes, con el registro para el grafo de espera.
+        self.recursos = Recursos(ctx, c)
 
         # Los procesos se crean ANTES de lanzar cualquier hilo en el principal: hacer
         # fork() de un proceso con varios hilos sólo copia el hilo que llama y puede
@@ -76,6 +85,8 @@ class CentroDespacho:
 
         self.t_inicio = time.monotonic()
         try:
+            self.vigilante = Vigilante(self.recursos, self._pid_de_slot, self.log)
+            self.vigilante.start()
             self.generadores = crear_generadores(c, self.cola, self.detener, self.log)
             for g in self.generadores:
                 g.start()
@@ -99,10 +110,15 @@ class CentroDespacho:
             for i in range(1, self.cfg.trabajadores + 1):
                 p = ctx.Process(target=proceso_trabajador, name=f"trabajador-{i}",
                                 args=(i, self.detener, listos, self.cola, self.resultados,
-                                      self.flota, self.cfg))
+                                      self.flota, self.recursos, self.cfg))
                 p.start()
                 self.trabajadores.append(p)
                 self.log.info("CREADO %s -> PID %d", p.name, p.pid)
+            if self.cfg.inspectores:
+                self.taller = ctx.Process(target=proceso_taller, name="taller",
+                                          args=(self.detener, listos, self.recursos, self.cfg))
+                self.taller.start()
+                self.log.info("CREADO taller -> PID %d", self.taller.pid)
         finally:
             signal.signal(signal.SIGINT, previo)
 
@@ -117,13 +133,22 @@ class CentroDespacho:
         signal.signal(signal.SIGTERM, manejador)
 
     def _esperar_arranque(self, listos) -> None:
+        esperados = len(self._hijos())
         limite = time.monotonic() + 10
-        for n in range(self.cfg.trabajadores):
+        for n in range(esperados):
             if not listos.acquire(timeout=max(0.0, limite - time.monotonic())):
-                self.log.error("ARRANQUE incompleto: sólo %d de %d trabajadores listos",
-                               n, self.cfg.trabajadores)
+                self.log.error("ARRANQUE incompleto: sólo %d de %d procesos hijos listos",
+                               n, esperados)
                 return
-        self.log.info("SINCRONIZADO: %d trabajadores listos", self.cfg.trabajadores)
+        self.log.info("SINCRONIZADO: %d procesos hijos listos", esperados)
+
+    def _hijos(self) -> list:
+        return self.trabajadores + ([self.taller] if self.taller else [])
+
+    def _pid_de_slot(self, slot: int) -> int:
+        if slot < self.recursos.n_despachadores:
+            return self.trabajadores[slot // self.cfg.hilos].pid
+        return self.taller.pid
 
     # -- observación y supervisión -----------------------------------------------
 
@@ -131,7 +156,7 @@ class CentroDespacho:
         self.log.info("JERARQUÍA de procesos e hilos (leída de /proc):")
         self.log.info("  %-7s %-7s %-16s %-6s %-6s %-9s", "PID", "PPID", "NOMBRE",
                       "ESTADO", "HILOS", "RSS(kB)")
-        for pid in [os.getpid()] + [p.pid for p in self.trabajadores]:
+        for pid in [os.getpid()] + [p.pid for p in self._hijos()]:
             i = so_utils.info_proceso(pid)
             if not i:
                 continue
@@ -150,6 +175,8 @@ class CentroDespacho:
 
             if self._senal is not None and not self.detener.value:
                 self._abortar(f"SEÑAL {signal.Signals(self._senal).name} recibida")
+            if self.vigilante.aborto_solicitado and not self.detener.value:
+                self._abortar("INTERBLOQUEO sin recuperación posible")
             if fin is not None and time.monotonic() >= fin and not self.detener.value:
                 self._abortar(f"DURACIÓN máxima cumplida ({c.duracion:.1f} s)")
 
@@ -203,11 +230,11 @@ class CentroDespacho:
     def _vigilar_trabajadores(self) -> bool:
         """Detecta trabajadores que terminaron inesperadamente. Devuelve si queda alguno."""
         vivos = 0
-        for p in self.trabajadores:
+        for p in self._hijos():
             # is_alive() hace waitpid(WNOHANG): si el hijo terminó, lo recoge y así no
             # queda como zombi (estado Z) en la tabla de procesos.
             if p.is_alive():
-                vivos += 1
+                vivos += p is not self.taller      # el taller no atiende solicitudes
             elif p.pid not in self._caidos:
                 self._caidos.add(p.pid)
                 nivel = self.log.info if p.exitcode == 0 else self.log.warning
@@ -225,7 +252,10 @@ class CentroDespacho:
 
     def _finalizar(self) -> int:
         self.detener.value = 1
-        for p in self.trabajadores:
+        if self.vigilante:
+            self.vigilante.fin.set()
+            self.vigilante.join(timeout=2)
+        for p in self._hijos():
             self._esperar_proceso(p, self.cfg.espera_fin)
             if p.is_alive():
                 self.log.warning("%s (PID %d) no terminó en %.1f s: se envía SIGTERM",
@@ -245,15 +275,15 @@ class CentroDespacho:
         self._recoger_resultados(timeout=0.05)
 
         self.log.info("RESUMEN de terminación:")
-        for p in self.trabajadores:
+        for p in self._hijos():
             self.log.info("  %-14s PID %-7d %s", p.name, p.pid,
                           so_utils.describir_salida(p.exitcode))
-        huerfanos = [p.pid for p in self.trabajadores if so_utils.info_proceso(p.pid)]
+        huerfanos = [p.pid for p in self._hijos() if so_utils.info_proceso(p.pid)]
         self.log.info("VERIFICACIÓN: procesos hijos que siguen en /proc: %s",
                       huerfanos or "ninguno (sin zombis ni huérfanos)")
         cuadra = self._estadisticas()
 
-        exito = all(p.exitcode == 0 for p in self.trabajadores) and cuadra
+        exito = all(p.exitcode == 0 for p in self._hijos()) and cuadra
         self.log.info("FIN centro de despacho (%s)", "correcto" if exito else "con fallos")
         return 0 if exito else 1
 
@@ -308,6 +338,7 @@ class CentroDespacho:
         L.info("  cambios de contexto trabajadores: voluntarios=%d, involuntarios=%d",
                hijos.ru_nvcsw, hijos.ru_nivcsw)
         dobles = self._estadisticas_flota(entregadas)
+        interbloqueos = self._estadisticas_recursos()
         if perdidas:
             L.warning("  BALANCE: %d solicitudes quedaron sin registrar (trabajador caído o "
                       "cola bloqueada)", perdidas)
@@ -317,7 +348,7 @@ class CentroDespacho:
         if incompletas:
             L.warning("  BALANCE: se pidieron %d solicitudes y se generaron %d",
                       self.cfg.solicitudes, generadas)
-        return perdidas == 0 and not incompletas and dobles == 0
+        return perdidas == 0 and not incompletas and dobles == 0 and interbloqueos == 0
 
     def _estadisticas_flota(self, entregadas) -> int:
         """Métricas de la flota y auditoría de dobles asignaciones. Devuelve las detectadas."""
@@ -364,6 +395,19 @@ class CentroDespacho:
               fl.inconsistencias.value)
         L.info("  estado final de la flota: libres=%d/%d", fl.libres(), fl.n)
         return max(en_vivo, conflictivas, fl.inconsistencias.value)
+
+    def _estadisticas_recursos(self) -> int:
+        """Métricas de andenes, taller e interbloqueos. Devuelve los no resueltos."""
+        rc, L = self.recursos, self.log
+        detectados = self.vigilante.detectados if self.vigilante else 0
+        L.info("  RECURSOS: %d vehículos + %d andenes | estrategia=%s | cargues=%d | "
+               "inspecciones=%d", rc.nv, rc.na, rc.estrategia, rc.operaciones[0],
+               rc.operaciones[1])
+        nivel = L.warning if detectados and rc.estrategia != "deteccion" else L.info
+        nivel("  INTERBLOQUEOS: detectados=%d | recuperaciones (víctimas)=%d | reintentos por "
+              "tiempo límite=%d", detectados, rc.recuperaciones.value, rc.reintentos.value)
+        # Con detección y recuperación los ciclos se resuelven: no son un fallo del sistema.
+        return 0 if rc.estrategia == "deteccion" else detectados
 
     @staticmethod
     def _auditar_solapamientos(rs):
