@@ -1,0 +1,9 @@
+Carga: -w 2 -t 3 -g 4 -n 24 -v 3 -a 2 -i 1 -s 42 (10 ejecuciones por estrategia)
+
+ESTRATEGIA  SIN RESOLVER       ENTREGADAS   TIEMPO(s)    INSPECC.     DETECTADOS   RECUPERACIONES REINTENTOS   EXIT=0    
+sin_orden   10/10              15.90/24     0.00         5.50         1.00         0.00           0.00         0/10      
+orden       0/10               24.00/24     5.17         12.10        0.00         0.00           0.00         10/10     
+timeout     0/10               24.00/24     5.31         13.00        0.00         0.00           5.00         10/10     
+deteccion   0/10               24.00/24     5.98         10.80        1.20         1.20           0.00         10/10     
+
+TIEMPO(s): promedio sólo de las ejecuciones que terminaron (sin interbloqueo sin resolver).

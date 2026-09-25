@@ -1,0 +1,193 @@
+Captura: 2026-09-25 17:07:04 | kernel 7.1.8-arch1-3 | PID principal: 115050
+
+===== 1. Jerarquía de procesos e hilos (pstree -p -t: {..} = hilos) =====
+centro_despacho(115050)-+-taller(115065)-+-{inspector-1}(115069)
+                        |                `-{inspector-2}(115070)
+                        |-trabajador-1(115060)-+-{QueueFeederThre}(115074)
+                        |                      |-{despachador-1-1}(115062)
+                        |                      |-{despachador-1-2}(115063)
+                        |                      `-{despachador-1-3}(115064)
+                        |-trabajador-2(115061)-+-{QueueFeederThre}(115075)
+                        |                      |-{despachador-2-1}(115066)
+                        |                      |-{despachador-2-2}(115067)
+                        |                      `-{despachador-2-3}(115068)
+                        |-{generador-1}(115072)
+                        |-{generador-2}(115073)
+                        `-{vigilante}(115071)
+
+===== 2. Procesos: identidad, estado y recursos (ps -o) =====
+    PID    PPID    PGID STAT NLWP %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+ 115050  108567  115050 Ssl     4  2.3  0.2 23328 251012       00:06 centro_despacho python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+ 115060  115050  115050 Sl      5  0.8  0.2 19520 324628       00:06 trabajador-1    python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+ 115061  115050  115050 Sl      5  0.8  0.2 19516 324628       00:06 trabajador-2    python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+ 115065  115050  115050 Sl      3  0.6  0.2 19192 177132       00:06 taller          python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+
+===== 3. Hilos de cada proceso (ps -eLf filtrado; LWP = TID del kernel) =====
+UID          PID    PPID     LWP  C NLWP STIME TTY          TIME CMD
+edwar     115050  108567  115050  1    4 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115050  108567  115071  0    4 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115050  108567  115072  0    4 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115050  108567  115073  0    4 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115060  115050  115060  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115060  115050  115062  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115060  115050  115063  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115060  115050  115064  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115060  115050  115074  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115061  115050  115061  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115061  115050  115066  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115061  115050  115067  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115061  115050  115068  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115061  115050  115075  0    5 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115065  115050  115065  0    3 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115065  115050  115069  0    3 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+edwar     115065  115050  115070  0    3 17:06 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 --interbloqueo orden --log evidencias/fase5/e5_ejecucion.log
+
+===== 4. Hilos con nombre, estado y CPU (ps -L) =====
+    PID     LWP STAT %CPU WCHAN                    COMMAND
+ 115050  115050 Ssl   1.5 poll_schedule_timeout.co centro_despacho
+ 115050  115071 Ssl   0.0 futex_do_wait            vigilante
+ 115050  115072 Ssl   0.1 futex_do_wait            generador-1
+ 115050  115073 Ssl   0.3 hrtimer_nanosleep        generador-2
+ 115060  115060 Sl    0.0 hrtimer_nanosleep        trabajador-1
+ 115060  115062 Sl    0.1 hrtimer_nanosleep        despachador-1-1
+ 115060  115063 Sl    0.1 futex_do_wait            despachador-1-2
+ 115060  115064 Sl    0.1 futex_do_wait            despachador-1-3
+ 115060  115074 Sl    0.0 futex_do_wait            QueueFeederThre
+ 115061  115061 Sl    0.0 hrtimer_nanosleep        trabajador-2
+ 115061  115066 Sl    0.1 futex_do_wait            despachador-2-1
+ 115061  115067 Sl    0.1 hrtimer_nanosleep        despachador-2-2
+ 115061  115068 Sl    0.1 hrtimer_nanosleep        despachador-2-3
+ 115061  115075 Sl    0.0 futex_do_wait            QueueFeederThre
+ 115065  115065 Sl    0.0 hrtimer_nanosleep        taller
+ 115065  115069 Sl    0.1 hrtimer_nanosleep        inspector-1
+ 115065  115070 Sl    0.1 hrtimer_nanosleep        inspector-2
+
+===== 5. /proc/<pid>/status (campos relevantes) =====
+-- PID 115050
+   Name:	centro_despacho
+   State:	S (sleeping)
+   Pid:	115050
+   PPid:	108567
+   VmSize:	  251012 kB
+   VmRSS:	   23328 kB
+   Threads:	4
+   cambios de contexto (todos los hilos): voluntarios=338 involuntarios=18
+   Rss:               23328 kB
+   Pss:                7815 kB
+   Shared_Clean:      10564 kB
+   Private_Dirty:      3332 kB
+-- PID 115060
+   Name:	trabajador-1
+   State:	S (sleeping)
+   Pid:	115060
+   PPid:	115050
+   VmSize:	  324628 kB
+   VmRSS:	   19520 kB
+   Threads:	5
+   cambios de contexto (todos los hilos): voluntarios=265 involuntarios=12
+   Rss:               19520 kB
+   Pss:                6244 kB
+   Shared_Clean:       7232 kB
+   Private_Dirty:      3072 kB
+-- PID 115061
+   Name:	trabajador-2
+   State:	S (sleeping)
+   Pid:	115061
+   PPid:	115050
+   VmSize:	  324628 kB
+   VmRSS:	   19516 kB
+   Threads:	5
+   cambios de contexto (todos los hilos): voluntarios=234 involuntarios=7
+   Rss:               19516 kB
+   Pss:                6210 kB
+   Shared_Clean:       7232 kB
+   Private_Dirty:      3016 kB
+-- PID 115065
+   Name:	taller
+   State:	S (sleeping)
+   Pid:	115065
+   PPid:	115050
+   VmSize:	  177132 kB
+   VmRSS:	   19192 kB
+   Threads:	3
+   cambios de contexto (todos los hilos): voluntarios=240 involuntarios=5
+   Rss:               19192 kB
+   Pss:                5964 kB
+   Shared_Clean:       7036 kB
+   Private_Dirty:      2776 kB
+
+===== 6. Memoria compartida: segmentos de /dev/shm mapeados por cada proceso =====
+   (mismo INODO en varios procesos = mismas páginas físicas; pym-* = RawArray/RawValue,
+    sem.* = semáforos y locks POSIX; '(deleted)' = sin nombre, vive mientras esté mapeado)
+-- PID 115050 (centro_despacho)
+   inodo 12293    /dev/shm/pym-115050-g0a6rm8x (deleted)
+   inodo 12294    /dev/shm/sem.q8z0bW (deleted)
+   inodo 12295    /dev/shm/sem.GkRyj8 (deleted)
+   inodo 12296    /dev/shm/sem.tgtewk (deleted)
+   inodo 12297    /dev/shm/sem.xfUXtM (deleted)
+   inodo 12298    /dev/shm/sem.mBa7Qb (deleted)
+   inodo 12299    /dev/shm/sem.i5zYj6 (deleted)
+   inodo 12300    /dev/shm/sem.dQBXuk (deleted)
+   inodo 12301    /dev/shm/sem.9nv7rm (deleted)
+   inodo 12302    /dev/shm/sem.j00iFL (deleted)
+   inodo 12303    /dev/shm/sem.WWBRND (deleted)
+   inodo 12304    /dev/shm/sem.puoHWr (deleted)
+   inodo 12305    /dev/shm/sem.5Jwdy5 (deleted)
+   inodo 12306    /dev/shm/sem.iXiYXy (deleted)
+   inodo 12307    /dev/shm/sem.I7nPdz (deleted)
+   inodo 12308    /dev/shm/sem.YAA1aS (deleted)
+   inodo 12309    /dev/shm/sem.mN8ohX (deleted)
+-- PID 115060 (trabajador-1)
+   inodo 12293    /dev/shm/pym-115050-g0a6rm8x (deleted)
+   inodo 12294    /dev/shm/sem.q8z0bW (deleted)
+   inodo 12295    /dev/shm/sem.GkRyj8 (deleted)
+   inodo 12296    /dev/shm/sem.tgtewk (deleted)
+   inodo 12297    /dev/shm/sem.xfUXtM (deleted)
+   inodo 12298    /dev/shm/sem.mBa7Qb (deleted)
+   inodo 12299    /dev/shm/sem.i5zYj6 (deleted)
+   inodo 12300    /dev/shm/sem.dQBXuk (deleted)
+   inodo 12301    /dev/shm/sem.9nv7rm (deleted)
+   inodo 12302    /dev/shm/sem.j00iFL (deleted)
+   inodo 12303    /dev/shm/sem.WWBRND (deleted)
+   inodo 12304    /dev/shm/sem.puoHWr (deleted)
+   inodo 12305    /dev/shm/sem.5Jwdy5 (deleted)
+   inodo 12306    /dev/shm/sem.iXiYXy (deleted)
+   inodo 12307    /dev/shm/sem.I7nPdz (deleted)
+   inodo 12308    /dev/shm/sem.YAA1aS (deleted)
+   inodo 12309    /dev/shm/sem.mN8ohX (deleted)
+-- PID 115061 (trabajador-2)
+   inodo 12293    /dev/shm/pym-115050-g0a6rm8x (deleted)
+   inodo 12294    /dev/shm/sem.q8z0bW (deleted)
+   inodo 12295    /dev/shm/sem.GkRyj8 (deleted)
+   inodo 12296    /dev/shm/sem.tgtewk (deleted)
+   inodo 12297    /dev/shm/sem.xfUXtM (deleted)
+   inodo 12298    /dev/shm/sem.mBa7Qb (deleted)
+   inodo 12299    /dev/shm/sem.i5zYj6 (deleted)
+   inodo 12300    /dev/shm/sem.dQBXuk (deleted)
+   inodo 12301    /dev/shm/sem.9nv7rm (deleted)
+   inodo 12302    /dev/shm/sem.j00iFL (deleted)
+   inodo 12303    /dev/shm/sem.WWBRND (deleted)
+   inodo 12304    /dev/shm/sem.puoHWr (deleted)
+   inodo 12305    /dev/shm/sem.5Jwdy5 (deleted)
+   inodo 12306    /dev/shm/sem.iXiYXy (deleted)
+   inodo 12307    /dev/shm/sem.I7nPdz (deleted)
+   inodo 12308    /dev/shm/sem.YAA1aS (deleted)
+   inodo 12309    /dev/shm/sem.mN8ohX (deleted)
+-- PID 115065 (taller)
+   inodo 12293    /dev/shm/pym-115050-g0a6rm8x (deleted)
+   inodo 12294    /dev/shm/sem.q8z0bW (deleted)
+   inodo 12295    /dev/shm/sem.GkRyj8 (deleted)
+   inodo 12296    /dev/shm/sem.tgtewk (deleted)
+   inodo 12297    /dev/shm/sem.xfUXtM (deleted)
+   inodo 12298    /dev/shm/sem.mBa7Qb (deleted)
+   inodo 12299    /dev/shm/sem.i5zYj6 (deleted)
+   inodo 12300    /dev/shm/sem.dQBXuk (deleted)
+   inodo 12301    /dev/shm/sem.9nv7rm (deleted)
+   inodo 12302    /dev/shm/sem.j00iFL (deleted)
+   inodo 12303    /dev/shm/sem.WWBRND (deleted)
+   inodo 12304    /dev/shm/sem.puoHWr (deleted)
+   inodo 12305    /dev/shm/sem.5Jwdy5 (deleted)
+   inodo 12306    /dev/shm/sem.iXiYXy (deleted)
+   inodo 12307    /dev/shm/sem.I7nPdz (deleted)
+   inodo 12308    /dev/shm/sem.YAA1aS (deleted)
+   inodo 12309    /dev/shm/sem.mN8ohX (deleted)

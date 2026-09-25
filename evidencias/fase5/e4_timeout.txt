@@ -1,0 +1,6 @@
+Carga: -w 2 -t 3 -g 4 -n 24 -v 3 -a 2 -i 1 -s 42 --interbloqueo timeout, --alistar-anden 0.2 (inspección más larga), 5 ejecuciones
+
+TIMEOUT(s)       REINTENTOS     TIEMPO(s)    INSPECC.     EXIT=0    
+0.01             34.00          7.05         10.60        5/5       
+0.1              9.60           5.78         9.60         5/5       
+0.5              2.60           6.03         9.00         5/5       

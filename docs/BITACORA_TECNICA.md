@@ -11,7 +11,7 @@
 - [2. Hilos y productor-consumidor](#fase-2--hilos-y-productor-consumidor) ✅
 - [3. Condición de carrera](#fase-3--condición-de-carrera) ✅
 - [4. Corrección por sincronización](#fase-4--corrección-por-sincronización) ✅
-- [5. Interbloqueo](#fase-5--interbloqueo) *(pendiente)*
+- [5. Interbloqueo](#fase-5--interbloqueo) ✅
 - [6. CPU y memoria](#fase-6--cpu-y-memoria) *(pendiente)*
 - [7. Registro y observación](#fase-7--registro-y-observación) *(pendiente)*
 - [8. Experimentos y comparación antes/después](#fase-8--experimentos-y-comparación-antesdespués) *(pendiente)*
@@ -155,7 +155,7 @@ centro_despacho(P)            ← proceso principal
 | `resultados` | Cola sin límite | Trabajadores → principal | `put`/`get` | Interna de `multiprocessing.Queue` (un solo lector: el principal) |
 | `vehiculos[V]` | Arreglo compartido (`RawArray`, `/dev/shm`) | Todos los despachadores de todos los trabajadores | Buscar libre + marcar ocupado; liberar | Fase 3: ninguno (versión con el problema). Fase 4: `multiprocessing.Lock` + `Semaphore(V)` |
 | Contadores | `Value`/`Array` | Todos | Incrementos `x += 1` (leer-modificar-escribir) | Lock asociado al `Value` |
-| `andenes[A]` | Locks | Despachadores | Carga/descarga | Orden global de adquisición / timeout |
+| Vehículos (en el patio) y `andenes[A]` | Un `Lock` por recurso + registro de dueños y esperas | Despachadores (trabajadores) e inspectores (taller) | Cargue (vehículo→andén) e inspección (andén→vehículo) | Orden global (defecto) / tiempo límite / detección y recuperación (Fase 5) |
 
 ### 0.8 Posibles situaciones de bloqueo (identificadas a priori)
 1. **Interbloqueo vehículo↔andén**: despacho toma vehículo y luego andén; retorno toma andén y
@@ -1319,7 +1319,279 @@ carga que F3-E4, que con la versión insegura fallaba hasta en 10/10)
   periódicos; los cambios de contexto por segundo bajan 75 veces (E2).
 
 ## Fase 5 — Interbloqueo
-*(pendiente)*
+
+> Rama `fase-5-interbloqueo` · etiqueta `fase-5` · evidencias en `evidencias/fase5/`
+>
+> Requisitos 10 (dos operaciones que piden recursos en distinto orden, análisis de la
+> posibilidad de interbloqueo) y 11 (estrategia para evitarlo).
+
+### 5.1 Qué se hizo
+- **Segundo tipo de recurso: andenes de cargue** (`-a`, defecto 2). Junto con los vehículos, son
+  recursos físicos del centro protegidos por un `multiprocessing.Lock` cada uno
+  (`despacho/recursos.py`).
+- **Dos operaciones que necesitan un vehículo y un andén a la vez, en orden opuesto:**
+
+  | Operación | Quién | Orden natural | Qué hace |
+  |---|---|---|---|
+  | **Cargue** | despachador (proceso trabajador) | **vehículo → andén** | prepara el vehículo en el patio (mitad del tiempo de despacho) y luego lo carga en un andén (la otra mitad) |
+  | **Inspección** | inspector (nuevo proceso `taller`) | **andén → vehículo** | alista un andén (`--alistar-anden`, 0.05 s) y luego trae el vehículo para revisarlo (0.05–0.15 s) |
+
+- **Nuevo proceso `taller`** (hijo del principal, `-i` hilos inspectores, defecto 1), con las
+  mismas garantías que los trabajadores: ignora `SIGINT`, detecta la orfandad y responde a
+  `SIGUSR1` con un volcado de pilas.
+- **Registro compartido de recursos** (instrumentación): quién tiene cada recurso y qué espera cada
+  hilo. Con él se construye el **grafo de espera**.
+- **Hilo `vigilante`** en el principal (`despacho/vigilante.py`): cada 0.5 s toma una foto del
+  registro, busca ciclos y actúa según la estrategia.
+- **Cuatro estrategias** (`--interbloqueo`, defecto `orden`): `sin_orden` (el problema), `orden`,
+  `timeout` y `deteccion`.
+
+Parámetros nuevos: `-a/--andenes`, `-i/--inspectores`, `--intervalo-inspeccion`,
+`--alistar-anden`, `--interbloqueo`, `--timeout-recurso` (defecto 0.1 s).
+
+### 5.2 Cómo se forma el interbloqueo
+
+```mermaid
+sequenceDiagram
+    participant D as despachador-2-3<br/>(trabajador-2)
+    participant V2 as Lock V2<br/>(vehículo)
+    participant A2 as Lock A2<br/>(andén)
+    participant I as inspector-1<br/>(taller)
+    I->>A2: acquire() ✔ (alista el andén A2)
+    D->>V2: acquire() ✔ (prepara el vehículo V2)
+    I->>V2: acquire() … espera (V2 lo tiene el despachador)
+    D->>A2: acquire() … espera (A2 lo tiene el inspector)
+    Note over D,I: cada uno retiene lo que el otro necesita:<br/>ninguno avanzará jamás
+```
+
+Grafo de asignación de recursos en ese instante (evidencia E1):
+```mermaid
+flowchart LR
+    I(("inspector-1")) -- espera --> V2["V2"]
+    V2 -- asignado a --> D(("despachador-2-3"))
+    D -- espera --> A2["A2"]
+    A2 -- asignado a --> I
+```
+Si se eliminan los recursos del grafo queda el **grafo de espera**:
+`inspector-1 → despachador-2-3 → inspector-1`. **Un ciclo en el grafo de espera es un
+interbloqueo** cuando cada recurso tiene una sola instancia, como aquí, porque cada lock es un
+recurso único.
+
+### 5.3 Las cuatro condiciones de Coffman en este sistema
+
+| Condición | Dónde se cumple en el sistema | ¿Qué estrategia la rompe? |
+|---|---|---|
+| **1. Exclusión mutua** | Un vehículo o un andén sólo puede usarlo una operación a la vez (un `Lock` por recurso) | Ninguna: es inherente al problema (un andén no puede cargar dos camiones) |
+| **2. Retención y espera** | El despachador retiene el vehículo mientras espera el andén; el inspector retiene el andén mientras espera el vehículo | **`timeout`**: si el segundo recurso no llega a tiempo, suelta el primero |
+| **3. No expropiación** | Un `Lock` sólo lo suelta quien lo tiene; nadie puede quitárselo | **`deteccion`**: el vigilante obliga a una víctima a soltar lo que tiene (expropiación) |
+| **4. Espera circular** | Cargue: vehículo → andén; inspección: andén → vehículo. Con órdenes opuestos puede formarse el ciclo | **`orden`**: todos piden en el mismo orden global (vehículos antes que andenes) |
+
+Las cuatro condiciones son **necesarias**: basta romper una para que el interbloqueo sea imposible
+(prevención) o para deshacerlo cuando ocurre (recuperación). La dispersión del tiempo de preparación
+("retención") es lo que convierte la **posibilidad** del ciclo en una **probabilidad** alta (E2).
+
+### 5.4 El código de cada estrategia
+```python
+def con_dos(self, slot, primero, segundo, antes, durante, detener, log):
+    if self.estrategia == "orden":
+        primero, segundo = sorted((primero, segundo))   # ORDEN: V1<V2<V3<A1<A2 para todos
+    intentos = 0
+    while True:
+        if self._tomar(slot, primero, ...):             # retiene el primero...
+            try:
+                time.sleep(antes)                        # ...mientras trabaja con él
+                if self._tomar(slot, segundo, ..., con_limite=True):
+                    try:
+                        time.sleep(durante)
+                        return intentos
+                    finally:
+                        self._soltar(slot, segundo)
+            finally:
+                self._soltar(slot, primero)              # TIMEOUT/DETECCIÓN: suelta y reintenta
+        intentos += 1
+        time.sleep(random.uniform(0, min(0.5, 0.02 * 2 ** intentos)))   # espera aleatoria creciente
+```
+- `sin_orden` / `orden`: `lock.acquire()` sin límite (el hilo duerme en el kernel hasta obtenerlo).
+- `timeout`: el segundo recurso con `lock.acquire(timeout=0.1)`; si vence, se suelta el primero.
+- `deteccion`: espera "abortable" (`acquire(timeout=0.05)` en bucle, revisando si fue elegida
+  víctima). La víctima suelta lo que retiene y reintenta más tarde.
+
+**Detección de ciclos** (`Recursos.ciclos`): cada hilo espera a lo sumo un recurso, así que cada
+nodo del grafo de espera tiene como máximo una arista saliente (`hilo → dueño del recurso que
+espera`). Basta seguir las aristas desde cada nodo hasta repetir un nodo (ciclo) o llegar a un hilo
+que no espera nada. Es O(n) para n hilos.
+
+### 5.5 Cómo ejecutarlo
+```bash
+python3 main.py --interbloqueo sin_orden          # se interbloquea (8-10 de cada 10), exit 1
+python3 main.py --interbloqueo orden              # prevención por orden global (defecto)
+python3 main.py --interbloqueo timeout            # prevención por tiempo límite
+python3 main.py --interbloqueo deteccion          # detección y recuperación
+python3 main.py --interbloqueo sin_orden --espera-fin 30   # deja 30 s para observarlo:
+scripts/observar.sh                               #   en otra terminal
+kill -USR1 <PID de trabajador o taller>           #   pila de cada hilo (stderr)
+scripts/evidencias_fase5.sh                       # E1–E5 (≈ 12 min)
+scripts/evidencias_fase5.sh 10 e1                 # sólo la observación del interbloqueo
+```
+
+### 5.6 Evidencias y cómo explicarlas
+
+**E1 — Un interbloqueo real, observado desde el SO** (`e1_observacion.txt`, `e1_cronologia.txt`,
+`e1_volcado_pilas.txt`)
+```
+INTERBLOQUEO DETECTADO (ciclo en el grafo de espera):
+  inspector-1 [tiene A2, espera V2] -> despachador-2-3 [tiene V2, espera A2] -> inspector-1
+
+    PID     LWP STAT %CPU WCHAN                  COMMAND
+ 108115  108122 Sl    0.0 futex_do_wait          despachador-2-3
+ 108119  108123 Sl    0.0 futex_do_wait          inspector-1
+ (y los otros 5 despachadores también en futex_do_wait)
+
+inspector-1      estado=S wchan=futex_do_wait | ctx voluntarios 14 -> 14 | ticks CPU 0 -> 0
+despachador-2-3  estado=S wchan=futex_do_wait | ctx voluntarios 11 -> 11 | ticks CPU 0 -> 0
+entregas registradas en 2 s: 7 -> 7
+```
+- *Qué decir:*
+  - **El vigilante nombra el ciclo exacto:** quién tiene qué y quién espera qué.
+  - **El SO lo confirma de forma independiente:** los dos hilos están dormidos (`S`) en un futex
+    (el lock), con **cero** CPU y **cero** cambios de contexto en 2 s. El kernel no los vuelve a
+    planificar porque nadie liberará lo que esperan. Es la diferencia entre un sistema **lento**
+    (hilos que avanzan poco) y uno **interbloqueado** (hilos que no avanzan nada).
+  - **El bloqueo se propaga:** los demás despachadores esperan el andén A2 (retenido por el
+    inspector) o un vehículo retenido por un despachador bloqueado. El sistema entero se detiene
+    (7 → 7 entregas). Es el síntoma "algunos despachos quedan esperando".
+  - **El volcado de pilas** (`kill -USR1`, que el vigilante envía solo) muestra a ambos hilos en la
+    misma línea: `recursos.py, line 121 in _tomar` (`lock.acquire()`), llamada desde
+    `con_dos`, line 98: la petición del **segundo** recurso, con el primero retenido.
+- **Cronología** (`e1_cronologia.txt`): `40.331 inspector-1 | INSPECCIÓN pide A2 y luego V2` →
+  `40.447 despachador-2-3 | ASIGNADO vehículo V2` → el despachador prepara V2 y pide un andén (A2).
+  El vigilante lo detecta a las 41.460 (≈ 1 s: dos fotos consecutivas con el mismo ciclo).
+- **Recuperación imposible con `sin_orden`:** los hilos están en `acquire()` sin límite y no pueden
+  atender la orden de parada. El principal los termina con `SIGTERM` tras el plazo:
+  `entregadas=7 canceladas=14 no atendidas=3`, código de salida 1. Terminar procesos es la forma
+  más drástica de recuperación, y pierde el trabajo en curso (las 3 "no atendidas").
+- Detalle adicional (`nota_volcados_mezclados.txt`): en la primera versión, el vigilante enviaba
+  `SIGUSR1` a los dos procesos a la vez y sus volcados salieron **mezclados carácter a carácter**
+  en el stderr compartido: otro ejemplo, en vivo, de escrituras concurrentes sin sincronizar.
+  Ahora las señales se escalonan 0.5 s.
+
+**E2 — ¿Qué tan probable es?** (`e2_reproducibilidad.txt`; `sin_orden`, 10 ejecuciones)
+
+| Ejecución | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Interbloqueo | sí | sí | sí | sí | sí | sí | sí | sí | no | no |
+| Segundos hasta detectarlo | 1.5 | 5.0 | 1.5 | 3.0 | 1.5 | 2.0 | 4.5 | 1.5 | — | — |
+| Entregadas / 24 | 9 | 23 | 4 | 11 | 5 | 13 | 21 | 4 | 24 | 24 |
+
+- *Qué decir:* el interbloqueo es una **posibilidad**, no una certeza: ocurrió en 8 de 10
+  ejecuciones (y en 10 de 10 en E3, así que 18 de 20 en total). Depende de que el inspector tome
+  un andén justo cuando un despachador prepara el vehículo que el inspector va a pedir y luego pide
+  ese mismo andén. Cuando ocurre, lo hace pronto (1.5–5 s) y deja el trabajo a medias. Dos
+  ejecuciones terminaron bien: **"funcionó en mis pruebas" no demuestra que no pueda ocurrir**.
+
+**E3 — Comparación de las cuatro estrategias** (`e3_estrategias.txt`; misma carga, 10 ejecuciones
+por estrategia)
+
+| Estrategia | Condición que rompe | Interbloqueos sin resolver | Entregadas | Tiempo (s) | Inspecciones | Detectados / recuperados | Reintentos | Exit 0 |
+|---|---|---|---|---|---|---|---|---|
+| `sin_orden` | — | **10/10** | 15.9/24 | — | 5.5 | 1.0 / 0 | 0 | 0/10 |
+| `orden` | espera circular | 0/10 | 24/24 | **5.17** | 12.1 | 0 / 0 | 0 | 10/10 |
+| `timeout` | retención y espera | 0/10 | 24/24 | 5.31 | 13.0 | 0 / 0 | 5.0 | 10/10 |
+| `deteccion` | no expropiación | 0/10 | 24/24 | 5.98 | 10.8 | 1.2 / **1.2** | 0 | 10/10 |
+
+- *Qué decir:*
+  - **Las tres estrategias resuelven el problema** (0 de 30 ejecuciones bloqueadas, 24/24
+    entregas).
+  - **`orden` es la más eficiente:** cero reintentos, cero detecciones, el menor tiempo. El costo
+    es de diseño: todos los programadores deben respetar el orden global, y si una operación
+    descubre el segundo recurso sólo después de tomar el primero, el orden no se puede aplicar.
+  - **`timeout`** funciona sin coordinar el orden, a cambio de trabajo repetido (≈ 5 reintentos por
+    ejecución: preparación o alistamiento que se hace de nuevo) y del riesgo de *livelock* si todos
+    reintentan a la vez. Por eso la espera antes del reintento es **aleatoria y creciente**.
+  - **`deteccion`** deja ocurrir el interbloqueo (1.2 por ejecución, todos resueltos) y paga la
+    latencia de detectarlo (≈ 1 s por ciclo, dos fotos del vigilante): es la más lenta.
+    Conviene cuando los interbloqueos son raros y prevenirlos es caro.
+  - Las diferencias de inspecciones reflejan cuánto tiempo pasa el taller esperando o reintentando.
+
+**E4 — Estrategia `timeout`: cómo elegir el tiempo límite** (`e4_timeout.txt`; inspección con
+andén retenido 0.2 s, 5 ejecuciones)
+
+| Tiempo límite | Reintentos | Tiempo total (s) |
+|---|---|---|
+| 0.01 s | 34.0 | 7.05 |
+| 0.1 s | 9.6 | **5.78** |
+| 0.5 s | 2.6 | 6.03 |
+
+- *Qué decir:* un límite **muy corto** confunde una espera normal con un interbloqueo: se rinde ante
+  recursos que se iban a liberar enseguida (34 reintentos, cada uno repite trabajo) y es el más
+  lento. Un límite **muy largo** reacciona tarde ante un interbloqueo real (cada ciclo inmoviliza a
+  los hilos 0.5 s). El mejor valor está en el orden de la duración normal de uso del recurso.
+
+**E5 — `orden` en ejecución** (`e5_observacion.txt`, `e5_observar.txt`; 1 andén, 2 inspectores:
+máxima competencia)
+```
+despachador-2-1  Sl  futex_do_wait        ← esperando un lock (el andén único)
+inspector-1      Sl  futex_do_wait
+despachador-1-1  Sl  hrtimer_nanosleep    ← trabajando (preparando, cargando o en ruta)
+...
+RECURSOS: 3 vehículos + 1 andenes | estrategia=orden | cargues=32 | inspecciones=25
+INTERBLOQUEOS: detectados=0
+```
+- *Qué decir:* con `orden` sigue habiendo **esperas** por locks (`futex_do_wait`), pero son
+  **transitorias**: en la foto siguiente esos hilos avanzan. Esperar un recurso es normal; lo
+  anormal es que la espera sea circular. `pstree` muestra la nueva jerarquía: el proceso `taller`
+  con sus hilos `inspector-*` y el hilo `vigilante` en el principal.
+
+### 5.7 Decisiones de la fase
+- **D5.1 Un proceso distinto para la inspección.** El interbloqueo ocurre **entre procesos**
+  (trabajador y taller), sobre locks del kernel en memoria compartida. Además, el sistema tiene
+  ahora procesos hijos con responsabilidades diferentes.
+- **D5.2 Registro con orden de actualización cuidado.** El dueño se registra después de adquirir y
+  se borra antes de soltar. Así el registro nunca muestra como dueño a quien ya soltó el recurso, y
+  el vigilante no ve ciclos falsos. Además exige el mismo ciclo en **dos fotos consecutivas**.
+- **D5.3 Elección de la víctima.** Se prefiere al inspector: aplazar una inspección cuesta menos que
+  retrasar un despacho con un cliente esperando. Es el criterio clásico de "menor costo de
+  retroceso". La víctima **no muere**: sólo suelta y reintenta (retroceso de la operación, no
+  terminación del proceso).
+- **D5.4 Espera aleatoria creciente** (*backoff exponencial con fluctuación*) en `timeout` y en
+  `deteccion`: si las dos operaciones reintentaran tras el mismo tiempo fijo, volverían a chocar
+  una y otra vez (*livelock*: activos pero sin progreso).
+- **D5.5 ¿Por qué no el algoritmo del banquero (evitación)?** Exige conocer por adelantado la
+  demanda máxima de cada proceso y consultar un estado global antes de cada asignación. Aquí cada
+  operación necesita exactamente dos recursos concretos que se conocen al empezar, y el orden
+  global resuelve el problema sin ese costo. El banquero conviene con recursos de varias
+  instancias y demandas variables.
+- **D5.6 El vigilante también sirve de diagnóstico** en las estrategias que no se recuperan: nombra
+  el ciclo, pide el volcado de pilas a los procesos involucrados y detiene el sistema, en lugar de
+  dejarlo colgado indefinidamente.
+- **D5.7 Retención de recursos por un proceso muerto** (pendiente de la Fase 4, D4.7). Se verificó
+  que un `multiprocessing.Lock` **no registra dueño**: si su dueño muere queda tomado para siempre,
+  pero otro proceso puede liberarlo (`release()` ajeno funciona). Técnicamente, el principal podría
+  recuperar los recursos de un trabajador caído usando el registro (que sabe qué tiene cada hilo).
+  **No se implementó a propósito:** si el dueño murió dentro de la sección crítica, el estado
+  protegido puede haber quedado a medio actualizar, y liberar el lock lo expondría inconsistente.
+  Por eso los mutex robustos de POSIX (`PTHREAD_MUTEX_ROBUST`) no se liberan en silencio: entregan
+  `EOWNERDEAD` al siguiente dueño para obligarlo a reparar el estado. Python no expone esa
+  primitiva. En este sistema, la respuesta ante un trabajador caído es detectarlo, contabilizar lo
+  perdido y cerrar ordenadamente (Fases 1–2).
+
+### 5.8 Preguntas probables en la sustentación
+- **¿Dónde está el interbloqueo y cómo lo provocan?** Tabla de 5.1 y diagrama de 5.2: dos
+  operaciones con órdenes opuestos sobre dos recursos exclusivos.
+- **¿Cuáles son las condiciones de Coffman y dónde se ven en su sistema?** Tabla de 5.3.
+- **¿Cómo saben que es un interbloqueo y no lentitud?** E1: ciclo en el grafo de espera + hilos en
+  `futex_do_wait` con 0 CPU y 0 cambios de contexto + 0 entregas nuevas.
+- **¿Qué estrategia eligieron y por qué?** `orden` por defecto (E3: la más eficiente, sin
+  reintentos ni detecciones). Las otras dos quedan implementadas y medidas como alternativas.
+- **¿Qué diferencia hay entre prevención, evitación y detección?** Prevención = romper una
+  condición por diseño (`orden`, `timeout`). Evitación = decidir cada asignación con información de
+  demandas futuras (banquero, D5.5). Detección = dejar que ocurra, encontrarlo y recuperarse
+  (`deteccion`).
+- **¿Qué es un livelock?** D5.4 y E4 con límite de 0.01 s: los hilos están activos, reintentando,
+  pero avanzan poco.
+- **¿Por qué el sistema no se recupera solo con `sin_orden`?** Los hilos están en `acquire()` sin
+  límite; ni siquiera pueden ver la orden de parada. Sólo `SIGTERM` los saca.
+- **¿Qué pasa si un proceso muere con un recurso tomado?** D5.7.
 
 ## Fase 6 — CPU y memoria
 *(pendiente)*
@@ -1347,8 +1619,8 @@ carga que F3-E4, que con la versión insegura fallaba hasta en 10/10)
 | 7 | Carrera en asignación | 3 ✅ | *check-then-act* sin exclusión, `--ventana` | F3-E1..E4: sonda = auditoría, 10/10, exit 1 |
 | 8 | Corrección por sincronización | 4 ✅ | `--modo seguro` (Lock) + `--espera bloqueante` (BoundedSemaphore) | F4-E1: 10/10 → 0/10; E3, E6 |
 | 9 | Tiempos de despacho/entrega | 2 ✅ | `--despacho`, `--entrega`, `--semilla` | log (servicio por solicitud), F2-E3 |
-| 10 | Recursos en orden distinto | 5 | vehículo↔andén | `wchan`, watchdog |
-| 11 | Estrategia anti-interbloqueo | 5 | `--interbloqueo orden/timeout` | ejecución completa |
+| 10 | Recursos en orden distinto | 5 ✅ | cargue vehículo→andén vs inspección andén→vehículo | F5-E1: ciclo, `futex_do_wait`, 0 CPU; E2: 8/10 |
+| 11 | Estrategia anti-interbloqueo | 5 ✅ | `--interbloqueo orden` (defecto), `timeout`, `deteccion` | F5-E3: 10/10 → 0/10 en las tres; E4 |
 | 12 | Registro de estadísticas | 7 | hilo `monitor`, CSV | CSV + resumen |
 | 13 | Consumo elevado de CPU | 4, 6 | espera activa (F4-E4); cálculo de ruta (Fase 6) | F4-E4: `top -H`, 175 % CPU |
 | 14 | Observación de procesos e hilos | 1, 2, 7 | `scripts/observar.sh` | capturas + explicación |

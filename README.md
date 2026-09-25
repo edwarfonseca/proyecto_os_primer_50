@@ -24,6 +24,8 @@ python3 main.py -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 -k 5   # ráfagas simultáne
 python3 main.py -n 0 --tam-rafaga 3 --intervalo 0.5        # generación continua hasta Ctrl+C
 python3 main.py -v 3                                       # flota de 3 vehículos, versión corregida
 python3 main.py -v 3 --modo inseguro --espera activa       # versión con la condición de carrera
+python3 main.py --interbloqueo sin_orden                   # versión que se interbloquea
+python3 main.py --interbloqueo deteccion                   # detección y recuperación
 ```
 
 ## Observación con herramientas del SO
@@ -39,6 +41,7 @@ scripts/evidencias_fase1.sh        # escenarios de procesos, señales, zombis y 
 scripts/evidencias_fase2.sh        # ráfagas, hilos en el SO, escalamiento, capacidad de cola
 scripts/evidencias_fase3.sh        # condición de carrera en la asignación de vehículos
 scripts/evidencias_fase4.sh        # corrección: antes/después, mecanismos, espera activa
+scripts/evidencias_fase5.sh        # interbloqueo: observación, estrategias, tiempo límite
 python3 experimentos/h1_event_bloqueado.py [--corregido]
 experimentos/h3_trabajador_caido.sh 10
 experimentos/h4_barrera_abortada.sh despues 30

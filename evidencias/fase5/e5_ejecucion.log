@@ -1,0 +1,353 @@
+17:06:58.701103 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 x 3 hilos | generadores=2 | solicitudes=continuo | cola=semaforos(10) | vehículos=3 | modo=seguro | espera=bloqueante | sección=fina | ventana=0.0100 s | andenes=1 | inspectores=2 | interbloqueo=orden | semilla=42 | log=evidencias/fase5/e5_ejecucion.log
+17:06:58.714571 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 115060
+17:06:58.715707 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 115061
+17:06:58.715911 | PID 115060 | PPID 115050 | TID 115060 | trabajador-1    | MainThread       | INICIO trabajador 1 con 3 hilos despachadores
+17:06:58.717228 | PID 115061 | PPID 115050 | TID 115061 | trabajador-2    | MainThread       | INICIO trabajador 2 con 3 hilos despachadores
+17:06:58.717019 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | CREADO taller -> PID 115065
+17:06:58.718267 | PID 115065 | PPID 115050 | TID 115065 | taller          | MainThread       | INICIO taller con 2 hilos inspectores
+17:06:58.718586 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | SINCRONIZADO: 3 procesos hijos listos
+17:06:58.719560 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+17:06:58.719767 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+17:06:58.719914 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RÁFAGA 1: 2 generadores liberados simultáneamente
+17:06:58.720152 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000000 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~1
+17:06:58.720347 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000001 (ráfaga 1) Jumbo: Chiquinquirá -> Paipa | en cola ~1
+17:06:58.720470 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000002 (ráfaga 1) Homecenter: Tunja -> Moniquirá | en cola ~1
+17:06:58.719676 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000000 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~1
+17:06:58.720797 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000001 (ráfaga 1) Olímpica: Garagoa -> Villa de Leyva | en cola ~1
+17:06:58.720648 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 1000002 bloqueada en el semáforo de vehículos libres
+17:06:58.720972 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000002 (ráfaga 1) D1: Duitama -> Villa de Leyva | en cola ~1
+17:06:58.720970 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 2000001 bloqueada en el semáforo de vehículos libres
+17:06:58.720698 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   115050  108567  centro_despacho  R      4      23240    
+17:06:58.721098 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 2000002 bloqueada en el semáforo de vehículos libres
+17:06:58.721356 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115050  centro_despacho  R
+17:06:58.721428 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115071  vigilante        S
+17:06:58.721481 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115072  generador-1      S
+17:06:58.721534 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115073  generador-2      S
+17:06:58.721695 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   115060  115050  trabajador-1     S      4      19332    
+17:06:58.721935 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115060  trabajador-1     S
+17:06:58.721994 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115062  despachador-1-1  S
+17:06:58.722044 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115063  despachador-1-2  S
+17:06:58.722087 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115064  despachador-1-3  S
+17:06:58.722222 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   115061  115050  trabajador-2     S      4      19356    
+17:06:58.722445 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115061  trabajador-2     S
+17:06:58.722503 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115066  despachador-2-1  S
+17:06:58.722568 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115067  despachador-2-2  S
+17:06:58.722616 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115068  despachador-2-3  S
+17:06:58.722751 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   115065  115050  taller           S      3      19096    
+17:06:58.722958 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115065  taller           S
+17:06:58.723014 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115069  inspector-1      S
+17:06:58.723062 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |       └ TID 115070  inspector-2      S
+17:06:58.730244 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 2000000 | libres ~0/3
+17:06:58.730840 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000000 en V2 (Jumbo: Paipa -> Duitama) | esperó en cola 1 ms, por vehículo 11 ms
+17:06:58.730668 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 1000001 | libres ~0/3
+17:06:58.731201 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1000001 en V1 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 0 ms, por vehículo 11 ms
+17:06:58.730446 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 1000000 | libres ~0/3
+17:06:58.731423 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000000 en V3 (Homecenter: Sogamoso -> Tunja) | esperó en cola 0 ms, por vehículo 11 ms
+17:06:58.848773 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V3
+17:06:58.903117 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:06:58.913942 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1000001 en V1 (cargada en A1)
+17:06:59.025795 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000000 en V3 (cargada en A1)
+17:06:59.122851 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1000001 | V1 liberado | servicio 402 ms
+17:06:59.133492 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V1 a la solicitud 1000002 | libres ~0/3
+17:06:59.134199 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 1000002 en V1 (Homecenter: Tunja -> Moniquirá) | esperó en cola 0 ms, por vehículo 413 ms
+17:06:59.140317 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000000 en V2 (cargada en A1)
+17:06:59.221719 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000003 (ráfaga 2) Falabella: Villa de Leyva -> Moniquirá | en cola ~1
+17:06:59.221979 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 2000003 bloqueada en el semáforo de vehículos libres
+17:06:59.222788 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000004 (ráfaga 2) D1: Paipa -> Moniquirá | en cola ~1
+17:06:59.223358 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000005 (ráfaga 2) Éxito: Tunja -> Paipa | en cola ~2
+17:06:59.222225 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RÁFAGA 2: 2 generadores liberados simultáneamente
+17:06:59.224162 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000003 (ráfaga 2) D1: Moniquirá -> Sogamoso | en cola ~3
+17:06:59.224652 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000004 (ráfaga 2) Éxito: Tunja -> Sogamoso | en cola ~4
+17:06:59.225065 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000005 (ráfaga 2) Homecenter: Duitama -> Villa de Leyva | en cola ~5
+17:06:59.238383 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V3 en A1
+17:06:59.313146 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:06:59.406290 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V3
+17:06:59.424517 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 1000002 en V1 (cargada en A1)
+17:06:59.453161 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:06:59.491859 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000000 | V3 liberado | servicio 772 ms
+17:06:59.492952 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 2000004 bloqueada en el semáforo de vehículos libres
+17:06:59.502294 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V3 a la solicitud 2000001 | libres ~0/3
+17:06:59.502975 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 2000001 en V3 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 0 ms, por vehículo 782 ms
+17:06:59.542241 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V3 en A1
+17:06:59.568362 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000000 | V2 liberado | servicio 848 ms
+17:06:59.569300 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 2000005 bloqueada en el semáforo de vehículos libres
+17:06:59.578805 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V2 a la solicitud 2000002 | libres ~0/3
+17:06:59.579423 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 2000002 en V2 (D1: Duitama -> Villa de Leyva) | esperó en cola 0 ms, por vehículo 858 ms
+17:06:59.664251 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:06:59.670429 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V2
+17:06:59.720940 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 2000002 en V2 (cargada en A1)
+17:06:59.726013 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000006 (ráfaga 3) Homecenter: Paipa -> Tunja | en cola ~4
+17:06:59.727205 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000007 (ráfaga 3) D1: Villa de Leyva -> Sogamoso | en cola ~5
+17:06:59.727902 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000008 (ráfaga 3) Ara: Chiquinquirá -> Moniquirá | en cola ~6
+17:06:59.726598 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RÁFAGA 3: 2 generadores liberados simultáneamente
+17:06:59.728784 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000006 (ráfaga 3) Jumbo: Paipa -> Moniquirá | en cola ~7
+17:06:59.729216 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000007 (ráfaga 3) Éxito: Paipa -> Moniquirá | en cola ~8
+17:06:59.729622 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000008 (ráfaga 3) Falabella: Tunja -> Chiquinquirá | en cola ~9
+17:06:59.861645 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:06:59.865153 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 2000001 en V3 (cargada en A1)
+17:06:59.950024 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 2000002 | V2 liberado | servicio 1229 ms
+17:06:59.952208 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 1000003 bloqueada en el semáforo de vehículos libres
+17:06:59.960421 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V2 a la solicitud 2000004 | libres ~0/3
+17:06:59.961050 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 2000004 en V2 (D1: Paipa -> Moniquirá) | esperó en cola 270 ms, por vehículo 468 ms
+17:06:59.988757 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V2 en A1
+17:06:59.992409 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 1000002 | V1 liberado | servicio 1272 ms
+17:06:59.993714 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 1000004 bloqueada en el semáforo de vehículos libres
+17:07:00.003145 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V1 a la solicitud 2000005 | libres ~0/3
+17:07:00.004031 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000005 en V1 (Éxito: Tunja -> Paipa) | esperó en cola 346 ms, por vehículo 435 ms
+17:07:00.068203 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 2000001 | V3 liberado | servicio 1347 ms
+17:07:00.068921 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 1000005 bloqueada en el semáforo de vehículos libres
+17:07:00.078660 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V3 a la solicitud 2000003 | libres ~0/3
+17:07:00.079291 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 2000003 en V3 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 0 ms, por vehículo 857 ms
+17:07:00.173960 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:07:00.230529 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000009 (ráfaga 4) Ara: Tunja -> Moniquirá | en cola ~7
+17:07:00.231780 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000010 (ráfaga 4) D1: Sogamoso -> Garagoa | en cola ~8
+17:07:00.232497 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000011 (ráfaga 4) Homecenter: Villa de Leyva -> Paipa | en cola ~9
+17:07:00.231181 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RÁFAGA 4: 2 generadores liberados simultáneamente
+17:07:00.233609 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000009 (ráfaga 4) Ara: Garagoa -> Tunja | en cola ~10
+17:07:00.234159 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 1000010 espera
+17:07:00.262869 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:00.301812 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000005 en V1 (cargada en A1)
+17:07:00.361028 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 2000003 en V3 (cargada en A1)
+17:07:00.496029 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 2000004 en V2 (cargada en A1)
+17:07:00.508322 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:07:00.628438 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:00.744626 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:00.754440 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:07:00.763942 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 2000003 | V3 liberado | servicio 1542 ms
+17:07:00.764359 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 1000006 bloqueada en el semáforo de vehículos libres
+17:07:00.764486 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 530 ms
+17:07:00.765112 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000010 (ráfaga 4) Éxito: Tunja -> Paipa | en cola ~10
+17:07:00.765394 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 1000011 espera
+17:07:00.774191 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V3 a la solicitud 1000003 | libres ~0/3
+17:07:00.774563 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 1000003 en V3 (D1: Moniquirá -> Sogamoso) | esperó en cola 728 ms, por vehículo 822 ms
+17:07:00.779611 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000005 | V1 liberado | servicio 1210 ms
+17:07:00.780144 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 1000007 bloqueada en el semáforo de vehículos libres
+17:07:00.780226 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 15 ms
+17:07:00.780637 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000011 (ráfaga 4) Homecenter: Tunja -> Paipa | en cola ~10
+17:07:00.789800 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V1 a la solicitud 1000004 | libres ~0/3
+17:07:00.790131 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 1000004 en V1 (Éxito: Tunja -> Sogamoso) | esperó en cola 769 ms, por vehículo 796 ms
+17:07:00.894825 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 2000004 | V2 liberado | servicio 1402 ms
+17:07:00.895870 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 1000008 bloqueada en el semáforo de vehículos libres
+17:07:00.905193 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V2 a la solicitud 1000005 | libres ~0/3
+17:07:00.905768 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 1000005 en V2 (Homecenter: Duitama -> Villa de Leyva) | esperó en cola 844 ms, por vehículo 837 ms
+17:07:00.908982 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:00.986961 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 1000003 en V3 (cargada en A1)
+17:07:01.065117 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:01.108247 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:07:01.121651 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 1000004 en V1 (cargada en A1)
+17:07:01.233841 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 1000005 en V2 (cargada en A1)
+17:07:01.281611 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000012 (ráfaga 5) Alkosto: Garagoa -> Tunja | en cola ~10
+17:07:01.282191 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 1000013 espera
+17:07:01.281950 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RÁFAGA 5: 2 generadores liberados simultáneamente
+17:07:01.282581 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2000012 espera
+17:07:01.286673 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 1000003 | V3 liberado | servicio 1334 ms
+17:07:01.287284 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 2000006 bloqueada en el semáforo de vehículos libres
+17:07:01.287451 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 5 ms
+17:07:01.287906 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000013 (ráfaga 5) Olímpica: Paipa -> Tunja | en cola ~10
+17:07:01.288487 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 1000014 espera
+17:07:01.296951 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 1000008 | libres ~0/3
+17:07:01.297872 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000008 en V3 (Ara: Chiquinquirá -> Moniquirá) | esperó en cola 1168 ms, por vehículo 402 ms
+17:07:01.301368 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:01.405236 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:07:01.453238 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 1000004 | V1 liberado | servicio 1460 ms
+17:07:01.454055 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 2000007 bloqueada en el semáforo de vehículos libres
+17:07:01.454245 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 171 ms
+17:07:01.454806 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000012 (ráfaga 5) Homecenter: Paipa -> Sogamoso | en cola ~10
+17:07:01.455613 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2000013 espera
+17:07:01.463691 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 1000006 | libres ~0/3
+17:07:01.464441 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1000006 en V1 (Homecenter: Paipa -> Tunja) | esperó en cola 1039 ms, por vehículo 700 ms
+17:07:01.492379 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 1000005 | V2 liberado | servicio 1423 ms
+17:07:01.493363 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 2000008 bloqueada en el semáforo de vehículos libres
+17:07:01.493493 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 37 ms
+17:07:01.493998 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000013 (ráfaga 5) Jumbo: Tunja -> Villa de Leyva | en cola ~10
+17:07:01.494446 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2000014 espera
+17:07:01.498461 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000008 en V3 (cargada en A1)
+17:07:01.502718 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 1000007 | libres ~0/3
+17:07:01.503324 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 1000007 en V2 (D1: Villa de Leyva -> Sogamoso) | esperó en cola 1053 ms, por vehículo 723 ms
+17:07:01.576169 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:07:01.593499 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1000006 en V1 (cargada en A1)
+17:07:01.631877 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:01.737351 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 1000007 en V2 (cargada en A1)
+17:07:01.840459 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:01.887254 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000008 | V3 liberado | servicio 991 ms
+17:07:01.887800 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 2000009 bloqueada en el semáforo de vehículos libres
+17:07:01.888022 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 599 ms
+17:07:01.888655 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000014 (ráfaga 5) Olímpica: Garagoa -> Moniquirá | en cola ~10
+17:07:01.897436 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V3 a la solicitud 2000007 | libres ~0/3
+17:07:01.897951 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 2000007 en V3 (Éxito: Paipa -> Moniquirá) | esperó en cola 1725 ms, por vehículo 444 ms
+17:07:01.929479 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:07:02.035713 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 2000007 en V3 (cargada en A1)
+17:07:02.038322 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1000006 | V1 liberado | servicio 1274 ms
+17:07:02.039087 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 2000010 bloqueada en el semáforo de vehículos libres
+17:07:02.039207 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 544 ms
+17:07:02.039846 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000014 (ráfaga 5) D1: Villa de Leyva -> Paipa | en cola ~10
+17:07:02.048724 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V1 a la solicitud 2000006 | libres ~0/3
+17:07:02.049238 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 2000006 en V1 (Jumbo: Paipa -> Moniquirá) | esperó en cola 1559 ms, por vehículo 762 ms
+17:07:02.158921 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:02.160843 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 1000007 | V2 liberado | servicio 1381 ms
+17:07:02.162090 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 2000011 bloqueada en el semáforo de vehículos libres
+17:07:02.171686 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V2 a la solicitud 2000009 | libres ~0/3
+17:07:02.172240 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 2000009 en V2 (Ara: Tunja -> Moniquirá) | esperó en cola 1657 ms, por vehículo 284 ms
+17:07:02.236699 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:07:02.294102 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 2000006 en V1 (cargada en A1)
+17:07:02.443180 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 2000009 en V2 (cargada en A1)
+17:07:02.508464 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 2000007 | V3 liberado | servicio 1054 ms
+17:07:02.509387 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 1000009 bloqueada en el semáforo de vehículos libres
+17:07:02.518808 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V3 a la solicitud 2000010 | libres ~0/3
+17:07:02.519328 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 2000010 en V3 (D1: Sogamoso -> Garagoa) | esperó en cola 1808 ms, por vehículo 480 ms
+17:07:02.541686 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000015 (ráfaga 6) Ara: Chiquinquirá -> Duitama | en cola ~9
+17:07:02.543109 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000016 (ráfaga 6) Homecenter: Paipa -> Villa de Leyva | en cola ~10
+17:07:02.543620 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2000017 espera
+17:07:02.542436 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RÁFAGA 6: 2 generadores liberados simultáneamente
+17:07:02.544320 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 1000015 espera
+17:07:02.557631 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:02.664801 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:07:02.738462 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 2000010 en V3 (cargada en A1)
+17:07:02.738864 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:02.823095 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 2000009 | V2 liberado | servicio 935 ms
+17:07:02.824080 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 1000010 bloqueada en el semáforo de vehículos libres
+17:07:02.824200 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 280 ms
+17:07:02.824737 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000017 (ráfaga 6) Olímpica: Paipa -> Duitama | en cola ~10
+17:07:02.833495 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V2 a la solicitud 2000008 | libres ~0/3
+17:07:02.834073 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 2000008 en V2 (Falabella: Tunja -> Chiquinquirá) | esperó en cola 1764 ms, por vehículo 1341 ms
+17:07:02.864872 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 2000006 | V1 liberado | servicio 1578 ms
+17:07:02.865808 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 1000011 bloqueada en el semáforo de vehículos libres
+17:07:02.867149 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 322 ms
+17:07:02.867738 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000015 (ráfaga 6) Ara: Sogamoso -> Duitama | en cola ~10
+17:07:02.869123 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 1000016 espera
+17:07:02.874687 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:07:02.876760 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V1 a la solicitud 1000009 | libres ~0/3
+17:07:02.877385 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 1000009 en V1 (Ara: Garagoa -> Tunja) | esperó en cola 2276 ms, por vehículo 368 ms
+17:07:02.896891 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:03.064826 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:07:03.084780 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V3
+17:07:03.189038 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:07:03.189788 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 2000008 en V2 (cargada en A1)
+17:07:03.314077 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V3 en A1
+17:07:03.323928 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 2000010 | V3 liberado | servicio 1285 ms
+17:07:03.325490 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 1000012 bloqueada en el semáforo de vehículos libres
+17:07:03.326476 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 457 ms
+17:07:03.326928 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000016 (ráfaga 6) D1: Garagoa -> Paipa | en cola ~10
+17:07:03.327359 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 1000017 espera
+17:07:03.334780 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 1000010 | libres ~0/3
+17:07:03.335431 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000010 en V3 (Éxito: Tunja -> Paipa) | esperó en cola 2590 ms, por vehículo 511 ms
+17:07:03.405340 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 1000009 en V1 (cargada en A1)
+17:07:03.452005 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:03.542748 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000010 en V3 (cargada en A1)
+17:07:03.623375 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:07:03.684659 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 2000008 | V2 liberado | servicio 2191 ms
+17:07:03.685483 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 1000013 bloqueada en el semáforo de vehículos libres
+17:07:03.685650 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 358 ms
+17:07:03.686137 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000017 (ráfaga 6) D1: Sogamoso -> Villa de Leyva | en cola ~10
+17:07:03.694968 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V2 a la solicitud 1000012 | libres ~0/3
+17:07:03.695518 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1000012 en V2 (Alkosto: Garagoa -> Tunja) | esperó en cola 2044 ms, por vehículo 370 ms
+17:07:03.751507 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000010 | V3 liberado | servicio 927 ms
+17:07:03.752462 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 2000012 bloqueada en el semáforo de vehículos libres
+17:07:03.761690 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V3 a la solicitud 1000011 | libres ~0/3
+17:07:03.761962 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 1000011 en V3 (Homecenter: Tunja -> Paipa) | esperó en cola 2100 ms, por vehículo 896 ms
+17:07:03.813330 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:03.818642 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 1000009 | V1 liberado | servicio 1309 ms
+17:07:03.818900 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 2000013 bloqueada en el semáforo de vehículos libres
+17:07:03.828772 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V1 a la solicitud 2000011 | libres ~0/3
+17:07:03.828973 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000011 en V1 (Homecenter: Villa de Leyva -> Paipa) | esperó en cola 1930 ms, por vehículo 1667 ms
+17:07:03.889396 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:07:03.962461 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1000012 en V2 (cargada en A1)
+17:07:04.038804 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 1000011 en V3 (cargada en A1)
+17:07:04.062474 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:04.118029 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000011 en V1 (cargada en A1)
+17:07:04.187409 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000018 (ráfaga 7) Jumbo: Tunja -> Chiquinquirá | en cola ~9
+17:07:04.188717 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1000012 | V2 liberado | servicio 863 ms
+17:07:04.188990 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000019 (ráfaga 7) Alkosto: Villa de Leyva -> Moniquirá | en cola ~10
+17:07:04.189679 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 1000020 espera
+17:07:04.190017 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 1000014 bloqueada en el semáforo de vehículos libres
+17:07:04.190438 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 0 ms
+17:07:04.188118 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RÁFAGA 7: 2 generadores liberados simultáneamente
+17:07:04.193238 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2000018 espera
+17:07:04.192350 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RECIBIDA solicitud 1000020 (ráfaga 7) Homecenter: Moniquirá -> Tunja | en cola ~10
+17:07:04.199674 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V2 a la solicitud 2000012 | libres ~0/3
+17:07:04.200498 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 2000012 en V2 (Homecenter: Paipa -> Sogamoso) | esperó en cola 2470 ms, por vehículo 448 ms
+17:07:04.231056 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:07:04.266845 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 1000011 | V3 liberado | servicio 1401 ms
+17:07:04.268463 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 2000014 bloqueada en el semáforo de vehículos libres
+17:07:04.268969 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 75 ms
+17:07:04.269602 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000018 (ráfaga 7) Jumbo: Paipa -> Moniquirá | en cola ~10
+17:07:04.270027 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2000019 espera
+17:07:04.278589 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V3 a la solicitud 2000013 | libres ~0/3
+17:07:04.279316 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 2000013 en V3 (Jumbo: Tunja -> Villa de Leyva) | esperó en cola 2363 ms, por vehículo 460 ms
+17:07:04.326616 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 2000012 en V2 (cargada en A1)
+17:07:04.382107 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V3
+17:07:04.407643 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:04.513034 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000011 | V1 liberado | servicio 2351 ms
+17:07:04.514174 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 2000015 bloqueada en el semáforo de vehículos libres
+17:07:04.514332 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 244 ms
+17:07:04.514966 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000019 (ráfaga 7) Falabella: Chiquinquirá -> Villa de Leyva | en cola ~10
+17:07:04.515485 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2000020 espera
+17:07:04.516479 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 2000013 en V3 (cargada en A1)
+17:07:04.523392 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V1 a la solicitud 1000013 | libres ~0/3
+17:07:04.524018 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 1000013 en V1 (Olímpica: Paipa -> Tunja) | esperó en cola 2403 ms, por vehículo 839 ms
+17:07:04.635865 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V3 en A1
+17:07:04.722288 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 2000013 | V3 liberado | servicio 903 ms
+17:07:04.723994 | PID 115061 | PPID 115050 | TID 115066 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 2000016 bloqueada en el semáforo de vehículos libres
+17:07:04.724573 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 208 ms
+17:07:04.725262 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | RECIBIDA solicitud 2000020 (ráfaga 7) Ara: Villa de Leyva -> Moniquirá | en cola ~10
+17:07:04.732457 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN pide A1 y luego V1
+17:07:04.733450 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V3 a la solicitud 2000014 | libres ~0/3
+17:07:04.734020 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 2000014 en V3 (D1: Villa de Leyva -> Paipa) | esperó en cola 2774 ms, por vehículo 466 ms
+17:07:04.737211 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 1000013 en V1 (cargada en A1)
+17:07:04.835492 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 2000012 | V2 liberado | servicio 1083 ms
+17:07:04.835773 | PID 115060 | PPID 115050 | TID 115063 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 2000017 bloqueada en el semáforo de vehículos libres
+17:07:04.845799 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 2000015 | libres ~0/3
+17:07:04.845991 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000015 en V2 (Ara: Chiquinquirá -> Duitama) | esperó en cola 1973 ms, por vehículo 332 ms
+17:07:04.902304 | PID 115065 | PPID 115050 | TID 115070 | taller          | inspector-2      | INSPECCIÓN terminada: V1 en A1
+17:07:04.968999 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:07:04.972876 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 1000013 | V1 liberado | servicio 1287 ms
+17:07:04.973105 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 1000015 bloqueada en el semáforo de vehículos libres
+17:07:04.973404 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | SEÑAL SIGINT recibida: se detiene la generación y se cancelan las solicitudes en cola
+17:07:04.983105 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 1000014 | libres ~0/3
+17:07:04.983273 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1000014 en V1 (Olímpica: Garagoa -> Moniquirá) | esperó en cola 2902 ms, por vehículo 793 ms
+17:07:05.034537 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 2000014 en V3 (cargada en A1)
+17:07:05.126453 | PID 115050 | PPID 108567 | TID 115073 | centro_despacho | generador-2      | FIN generador 2: generadas=21, bloqueos por cola llena=7 (1.560 s)
+17:07:05.127161 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | RÁFAGA 8 abortada por una parada
+17:07:05.128100 | PID 115050 | PPID 108567 | TID 115072 | centro_despacho | generador-1      | FIN generador 1: generadas=21, bloqueos por cola llena=8 (2.286 s)
+17:07:05.144380 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000015 en V2 (cargada en A1)
+17:07:05.214513 | PID 115065 | PPID 115050 | TID 115069 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:07:05.228524 | PID 115065 | PPID 115050 | TID 115065 | taller          | MainThread       | FIN taller | inspecciones: inspector-1=12, inspector-2=13
+17:07:05.337392 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | TERMINÓ taller (PID 115065): exit(0)
+17:07:05.370258 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1000014 en V1 (cargada en A1)
+17:07:05.418075 | PID 115060 | PPID 115050 | TID 115062 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000015 | V2 liberado | servicio 904 ms
+17:07:05.428487 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V2 a la solicitud 1000015 | libres ~0/3
+17:07:05.429396 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 1000015 en V2 (Ara: Sogamoso -> Duitama) | esperó en cola 2429 ms, por vehículo 456 ms
+17:07:05.597084 | PID 115061 | PPID 115050 | TID 115068 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 2000014 | V3 liberado | servicio 1329 ms
+17:07:05.711608 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 1000015 en V2 (cargada en A1)
+17:07:05.872192 | PID 115060 | PPID 115050 | TID 115064 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1000014 | V1 liberado | servicio 1682 ms
+17:07:06.283475 | PID 115061 | PPID 115050 | TID 115067 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 1000015 | V2 liberado | servicio 1310 ms
+17:07:06.430447 | PID 115060 | PPID 115050 | TID 115060 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=5, despachador-1-2=6, despachador-1-3=6
+17:07:06.485668 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 115060): exit(0)
+17:07:06.831854 | PID 115061 | PPID 115050 | TID 115061 | trabajador-2    | MainThread       | FIN trabajador 2 | atendidas por hilo: despachador-2-1=5, despachador-2-2=5, despachador-2-3=5
+17:07:06.887469 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | TERMINÓ trabajador-2 (PID 115061): exit(0)
+17:07:06.938869 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | RESUMEN de terminación:
+17:07:06.939568 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   trabajador-1   PID 115060  exit(0)
+17:07:06.940014 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   trabajador-2   PID 115061  exit(0)
+17:07:06.940406 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   taller         PID 115065  exit(0)
+17:07:06.941019 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+17:07:06.941789 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | ESTADÍSTICAS:
+17:07:06.942245 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   solicitudes: generadas=42 entregadas=32 canceladas=10 no atendidas=0
+17:07:06.942686 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=15, tiempo bloqueados=3.846 s
+17:07:06.943219 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=1343 máx=2902
+17:07:06.943728 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   servicio con vehículo (s): prom=0.664 | trabajo total (suma)=21.24 s
+17:07:06.944159 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   tiempo total=7.56 s | rendimiento=4.23 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=2.81
+17:07:06.944995 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   hilos ocupados a la vez: máx=6 (capacidad = 2 trabajadores x 3 hilos = 6)
+17:07:06.945914 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=17, trabajador-2=15
+17:07:06.946368 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=5, despachador-1-2=6, despachador-1-3=6, despachador-2-1=5, despachador-2-2=5, despachador-2-3=5
+17:07:06.946886 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   CPU: principal=0.18 s, trabajadores=0.21 s | tiempo real=8.23 s | uso medio de CPU de los trabajadores=2.6 %
+17:07:06.947480 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=831, involuntarios=28
+17:07:06.948093 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   FLOTA: 3 vehículos | modo=seguro | espera=bloqueante | sección=fina | asignaciones=32 | reparto: V1=10, V2=11, V3=11
+17:07:06.948770 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   entregas con vehículo a la vez: máx=3 con 3 vehículos
+17:07:06.949295 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   espera por vehículo (ms): prom=595 máx=1667 | reintentos de búsqueda (espera activa)=0
+17:07:06.949988 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   espera por el mutex de la flota (ms): prom=0.01 máx=0.02
+17:07:06.950800 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   DOBLES ASIGNACIONES: sonda en vivo=0 | auditoría: asignaciones sobre un vehículo ocupado=0, pares solapados=0 (entre procesos=0, entre hilos del mismo proceso=0)
+17:07:06.951315 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   REGISTROS INCONSISTENTES al liberar (actualizaciones perdidas)=0
+17:07:06.951964 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   estado final de la flota: libres=3/3
+17:07:06.952422 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   RECURSOS: 3 vehículos + 1 andenes | estrategia=orden | cargues=32 | inspecciones=25
+17:07:06.952754 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       |   INTERBLOQUEOS: detectados=0 | recuperaciones (víctimas)=0 | reintentos por tiempo límite=0
+17:07:06.953082 | PID 115050 | PPID 108567 | TID 115050 | centro_despacho | MainThread       | FIN centro de despacho (correcto)
