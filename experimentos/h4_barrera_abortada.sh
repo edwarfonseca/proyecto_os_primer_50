@@ -14,6 +14,9 @@
 
 set -uo pipefail
 cd "$(dirname "$0")/.."
+# La flota (Fase 3+) no existía en esta fase: se usan vehículos de sobra y sin ventana
+# para que no sea un cuello de botella y los resultados sigan siendo comparables.
+SIN_FLOTA="-v 100 --ventana 0"
 ETIQUETA="${1:?indique una etiqueta, p. ej. antes o despues}"
 N="${2:-30}"
 DIR=evidencias/fase2/h4
@@ -29,7 +32,7 @@ fallos=0
 for i in $(seq "$N"); do
     L="logs/h4/${ETIQUETA}_$i.log"
     rm -f "$L"
-    python3 main.py -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 --intervalo 0.05 -k 5 \
+    python3 main.py $SIN_FLOTA -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 --intervalo 0.05 -k 5 \
         --despacho 0.005-0.01 --entrega 0.005-0.01 --log "$L" > /dev/null
     g=$(grep -oE "generadas=[0-9]+ entregadas" "$L" | grep -oE "[0-9]+")
     if [[ "$g" != 24 ]]; then

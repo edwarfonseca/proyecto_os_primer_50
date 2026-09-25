@@ -12,6 +12,9 @@
 
 set -uo pipefail
 cd "$(dirname "$0")/.."
+# La flota (Fase 3+) no existía en esta fase: se usan vehículos de sobra y sin ventana
+# para que no sea un cuello de botella y los resultados sigan siendo comparables.
+SIN_FLOTA="-v 100 --ventana 0"
 DIR="${DIR:-evidencias/fase2}"
 mkdir -p "$DIR"
 rm -f "$DIR"/e[0-9]_*
@@ -20,7 +23,7 @@ rm -f "$DIR"/e[0-9]_*
 valor() { sed -n '/ESTADÍSTICAS:/,$p' "$1" | grep -oE "$2=[0-9.]+" | head -1 | cut -d= -f2; }
 
 echo "== E1: ráfagas simultáneas y cola acotada =="
-python3 main.py -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 --intervalo 0.8 -k 5 \
+python3 main.py $SIN_FLOTA -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 --intervalo 0.8 -k 5 \
     --log "$DIR/e1_ejecucion.log" > /dev/null
 echo "exit code: $?" | tee -a "$DIR/e1_ejecucion.log"
 {
@@ -29,7 +32,7 @@ echo "exit code: $?" | tee -a "$DIR/e1_ejecucion.log"
 } > "$DIR/e1_rafagas.txt"
 
 echo "== E2: observación con herramientas del SO =="
-setsid python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 \
+setsid python3 main.py $SIN_FLOTA -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 \
     --entrega 0.5-1.5 --log "$DIR/e2_ejecucion.log" > /dev/null &
 PID=$!
 sleep 3
@@ -57,7 +60,7 @@ echo "== E3: escalamiento con la misma carga =="
     for conf in "1 1" "1 2" "1 4" "1 8" "2 4" "4 2" "4 4"; do
         set -- $conf
         L="$DIR/e3_w$1_t$2.log"
-        python3 main.py -w "$1" -t "$2" -g 4 -n 36 -k 36 --log "$L" > /dev/null
+        python3 main.py $SIN_FLOTA -w "$1" -t "$2" -g 4 -n 36 -k 36 --log "$L" > /dev/null
         printf "%-12s %-6s %-6s %-12s %-14s %-14s %-12s %-10s\n" "$1" "$2" "$(($1 * $2))" \
             "$(valor "$L" "tiempo total")" "$(valor "$L" "rendimiento")" \
             "$(grep -oE 'trabajo/tiempo\)=[0-9.]+' "$L" | cut -d= -f2)" \
@@ -73,7 +76,7 @@ echo "== E4: capacidad de la cola =="
         "T.BLOQUEADOS(s)" "ESPERA PROM(ms)" "ESPERA MÁX(ms)" "TIEMPO(s)"
     for k in 1 3 10 30; do
         L="$DIR/e4_k$k.log"
-        python3 main.py -w 1 -t 3 -g 3 -n 30 -k "$k" --log "$L" > /dev/null
+        python3 main.py $SIN_FLOTA -w 1 -t 3 -g 3 -n 30 -k "$k" --log "$L" > /dev/null
         printf "%-10s %-12s %-18s %-20s %-20s %-10s\n" "$k" "$(valor "$L" "bloqueos por cola llena")" \
             "$(valor "$L" "tiempo bloqueados")" "$(valor "$L" "prom")" "$(valor "$L" "máx")" \
             "$(valor "$L" "tiempo total")"

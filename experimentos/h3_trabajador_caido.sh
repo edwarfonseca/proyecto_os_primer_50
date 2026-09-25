@@ -10,6 +10,9 @@
 
 set -uo pipefail
 cd "$(dirname "$0")/.."
+# La flota (Fase 3+) no existía en esta fase: se usan vehículos de sobra y sin ventana
+# para que no sea un cuello de botella y los resultados sigan siendo comparables.
+SIN_FLOTA="-v 100 --ventana 0"
 REPETICIONES="${1:-8}"
 DIR=evidencias/fase2/h3
 mkdir -p "$DIR"
@@ -20,7 +23,7 @@ printf "%-10s %-4s %-24s %-60s\n" "COLA" "RUN" "DESPACHOS TRAS SIGKILL" "BALANCE
 for tipo in mp semaforos; do
     for i in $(seq "$REPETICIONES"); do
         L="$DIR/${tipo}_$i.log"
-        setsid python3 main.py -w 3 -t 2 -n 0 --tam-rafaga 1 --intervalo 1.5 \
+        setsid python3 main.py $SIN_FLOTA -w 3 -t 2 -n 0 --tam-rafaga 1 --intervalo 1.5 \
             --despacho 0.02-0.05 --entrega 0.05-0.1 --espera-fin 1.5 --cola "$tipo" \
             --log "$L" > /dev/null 2> "$L.stderr" &
         P=$!
