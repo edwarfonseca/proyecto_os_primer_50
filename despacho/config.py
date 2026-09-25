@@ -59,8 +59,13 @@ def _rango(texto: str) -> tuple[float, float]:
 def leer_argumentos(argv=None) -> Config:
     p = argparse.ArgumentParser(
         prog="main.py",
-        description="Centro de despacho: procesos trabajadores con hilos que atienden "
-                    "solicitudes de transporte desde una cola productor-consumidor.",
+        description="Centro de despacho y logística: procesos trabajadores con hilos atienden "
+                    "solicitudes desde una cola productor-consumidor, asignan vehículos de una "
+                    "flota compartida, cargan en andenes (con un taller que inspecciona) y "
+                    "planifican rutas. Cada fenómeno (condición de carrera, interbloqueo, espera "
+                    "activa, carga de CPU y memoria) se activa o corrige por parámetro.",
+        epilog="Ejemplos: python3 main.py --vista resumen | python3 main.py --modo inseguro "
+               "--espera activa | python3 main.py --interbloqueo sin_orden | scripts/demo.sh",
     )
     g = p.add_argument_group("procesos e hilos")
     g.add_argument("-w", "--trabajadores", type=int, default=2,
