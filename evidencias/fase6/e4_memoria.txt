@@ -1,0 +1,33 @@
+Carga: 200 entregas, traza GPS de 256 KB por entrega, 2 trabajadores x 3 hilos
+RSS de cada proceso (MB) en el tiempo; historial=0 -> sin límite; historial=20 -> 20 trazas por proceso
+
+t(s)    trabajador-1 sin límite trabajador-1 acotado     centro_despacho (acotado)
+0.0     18.8                     19.2                     23.0                    
+0.25    22.6                     22.9                     23.2                    
+0.51    26.0                     26.2                     23.2                    
+0.77    29.5                     26.8                     23.2                    
+1.03    33.1                     26.8                     23.3                    
+1.28    35.7                     26.6                     23.3                    
+1.54    39.2                     26.7                     23.3                    
+1.8     42.0                     26.5                     23.3                    
+2.06    45.5                     26.8                     23.5                    
+
+## historial=0
+MainThread       | MEMORIA trabajador 1 | historial: 100 trazas (25.0 MB), 0 descartadas | RSS=46.2 MB, PSS=33.9 MB, privada modificada=29.6 MB
+MainThread       | MEMORIA trabajador 2 | historial: 100 trazas (25.0 MB), 0 descartadas | RSS=46.0 MB, PSS=35.8 MB, privada modificada=30.3 MB
+|   MEMORIA Y CPU por proceso (muestreo de /proc cada 0.2 s, serie en logs/fase6/e4_historial_0.recursos.csv):
+|     PROCESO          HILOS  RSS MB (inicial/pico/final) PSS pico   PRIVADA pico CPU s    CPU %  
+|     centro_despacho  5      23.0 / 23.5 / 23.5         15.9       12.5         0.36     15.5   
+|     trabajador-1     5      18.8 / 45.5 / 45.5         33.3       29.0         0.33     16.0   
+|     trabajador-2     5      18.9 / 44.5 / 44.5         32.6       28.2         0.32     15.5   
+|     PSS total (suma de picos)=81.9 MB | RSS total (suma de picos)=113.6 MB
+
+## historial=20
+MainThread       | MEMORIA trabajador 1 | historial: 20 trazas (5.0 MB), 81 descartadas | RSS=27.0 MB, PSS=14.6 MB, privada modificada=10.3 MB
+MainThread       | MEMORIA trabajador 2 | historial: 20 trazas (5.0 MB), 79 descartadas | RSS=26.9 MB, PSS=14.6 MB, privada modificada=10.2 MB
+|   MEMORIA Y CPU por proceso (muestreo de /proc cada 0.2 s, serie en logs/fase6/e4_historial_20.recursos.csv):
+|     PROCESO          HILOS  RSS MB (inicial/pico/final) PSS pico   PRIVADA pico CPU s    CPU %  
+|     centro_despacho  5      23.0 / 23.5 / 23.5         15.9       12.5         0.34     14.7   
+|     trabajador-1     5      19.2 / 26.8 / 26.8         14.7       10.5         0.28     13.6   
+|     trabajador-2     5      19.2 / 26.9 / 26.8         14.8       10.5         0.27     13.1   
+|     PSS total (suma de picos)=45.4 MB | RSS total (suma de picos)=77.2 MB

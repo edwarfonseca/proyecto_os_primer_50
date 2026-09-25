@@ -15,6 +15,7 @@ from .config import Config
 from .flota import Flota
 from .generador import crear_generadores
 from .modelo import CANCELADA, ENTREGADA, Resultado
+from .muestreador import Muestreador
 from .recursos import Recursos
 from .taller import proceso_taller
 from .trabajador import proceso_trabajador
@@ -27,6 +28,7 @@ class CentroDespacho:
         self.trabajadores: list[mp.Process] = []
         self.taller: mp.Process | None = None
         self.vigilante: Vigilante | None = None
+        self.muestreador: Muestreador | None = None
         self.generadores = []
         self.resultados_recibidos: list[Resultado] = []
         self._senal: int | None = None
@@ -42,11 +44,13 @@ class CentroDespacho:
         self.log.info("INICIO centro de despacho | método=%s | trabajadores=%d x %d hilos | "
                       "generadores=%d | solicitudes=%s | cola=%s(%d) | vehículos=%d | "
                       "modo=%s | espera=%s | sección=%s | ventana=%.4f s | andenes=%d | "
-                      "inspectores=%d | interbloqueo=%s | semilla=%d | log=%s",
+                      "inspectores=%d | interbloqueo=%s | puntos=%d | traza=%d KB | historial=%s"
+                      " | semilla=%d | log=%s",
                       c.metodo_inicio, c.trabajadores, c.hilos, c.generadores,
                       c.solicitudes or "continuo", c.tipo_cola, c.capacidad_cola, c.vehiculos,
                       c.modo, c.espera, c.seccion, c.ventana, c.andenes, c.inspectores,
-                      c.interbloqueo, c.semilla, c.ruta_log)
+                      c.interbloqueo, c.puntos, c.traza_kb, c.historial or "sin límite",
+                      c.semilla, c.ruta_log)
 
         so_utils.habilitar_volcado_hilos()
         ctx = mp.get_context(c.metodo_inicio)
@@ -87,6 +91,12 @@ class CentroDespacho:
         try:
             self.vigilante = Vigilante(self.recursos, self._pid_de_slot, self.log)
             self.vigilante.start()
+            # El muestreador sólo lee /proc: no llama a is_alive(), que hace waitpid(), para
+            # no competir con el hilo principal por recoger el estado de salida de un hijo.
+            pids = [(os.getpid(), "centro_despacho")] + [(h.pid, h.name) for h in self._hijos()]
+            self.muestreador = Muestreador(lambda: pids,
+                                           c.ruta_log.with_suffix(".recursos.csv"), c.muestreo)
+            self.muestreador.start()
             self.generadores = crear_generadores(c, self.cola, self.detener, self.log)
             for g in self.generadores:
                 g.start()
@@ -273,6 +283,9 @@ class CentroDespacho:
         for g in self.generadores:
             g.join(timeout=self.cfg.espera_fin)
         self._recoger_resultados(timeout=0.05)
+        if self.muestreador:
+            self.muestreador.fin.set()
+            self.muestreador.join(timeout=2)
 
         self.log.info("RESUMEN de terminación:")
         for p in self._hijos():
@@ -339,6 +352,7 @@ class CentroDespacho:
                hijos.ru_nvcsw, hijos.ru_nivcsw)
         dobles = self._estadisticas_flota(entregadas)
         interbloqueos = self._estadisticas_recursos()
+        self._estadisticas_cpu_memoria(entregadas)
         if perdidas:
             L.warning("  BALANCE: %d solicitudes quedaron sin registrar (trabajador caído o "
                       "cola bloqueada)", perdidas)
@@ -408,6 +422,34 @@ class CentroDespacho:
               "tiempo límite=%d", detectados, rc.recuperaciones.value, rc.reintentos.value)
         # Con detección y recuperación los ciclos se resuelven: no son un fallo del sistema.
         return 0 if rc.estrategia == "deteccion" else detectados
+
+    def _estadisticas_cpu_memoria(self, entregadas) -> None:
+        L = self.log
+        rutas = [r for r in entregadas if r.t_ruta_cpu > 0]
+        if rutas:
+            cpu = statistics.fmean(r.t_ruta_cpu for r in rutas)
+            real = statistics.fmean(r.t_ruta_real for r in rutas)
+            L.info("  RUTAS: %d planificadas (%d puntos) | CPU por ruta prom=%.1f ms | real por "
+                   "ruta prom=%.1f ms | real/CPU=%.2f | CPU total en rutas=%.2f s | suma de "
+                   "longitudes=%.1f", len(rutas), self.cfg.puntos, cpu * 1000, real * 1000,
+                   real / cpu, sum(r.t_ruta_cpu for r in rutas),
+                   sum(r.costo_ruta for r in rutas))
+        if not self.muestreador or not self.muestreador.series:
+            return
+        L.info("  MEMORIA Y CPU por proceso (muestreo de /proc cada %.1f s, serie en %s):",
+               self.cfg.muestreo, self.cfg.ruta_log.with_suffix(".recursos.csv"))
+        L.info("    %-16s %-6s %-26s %-10s %-12s %-8s %-7s", "PROCESO", "HILOS",
+               "RSS MB (inicial/pico/final)", "PSS pico", "PRIVADA pico", "CPU s", "CPU %")
+        resumen = self.muestreador.resumen()
+        for nombre, m in resumen.items():
+            L.info("    %-16s %-6d %-26s %-10.1f %-12.1f %-8.2f %-7.1f", nombre, m["hilos_max"],
+                   f"{m['rss_ini'] / 1024:.1f} / {m['rss_pico'] / 1024:.1f} / "
+                   f"{m['rss_fin'] / 1024:.1f}", m["pss_pico"] / 1024,
+                   m["privada_pico"] / 1024, m["cpu_s"],
+                   100 * m["cpu_s"] / m["duracion"] if m["duracion"] else 0.0)
+        L.info("    PSS total (suma de picos)=%.1f MB | RSS total (suma de picos)=%.1f MB",
+               sum(m["pss_pico"] for m in resumen.values()) / 1024,
+               sum(m["rss_pico"] for m in resumen.values()) / 1024)
 
     @staticmethod
     def _auditar_solapamientos(rs):

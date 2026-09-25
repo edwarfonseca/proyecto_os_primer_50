@@ -1,0 +1,20 @@
+## 4 proceso(s) x 1 hilo(s) calculando rutas: top -H (2.a muestra de 1 s)
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+ 121332 edwar     20   0  178016  19888   7424 S  98.8   0.3   0:03.95 despachador-1-1
+ 121334 edwar     20   0  178016  19892   7420 R  96.8   0.3   0:04.00 despachador-2-1
+ 121336 edwar     20   0  178016  19888   7420 R  94.8   0.3   0:03.92 despachador-3-1
+ 121337 edwar     20   0  178016  19880   7416 R  94.8   0.3   0:03.89 despachador-4-1
+ 121330 edwar     20   0  178016  19888   7424 S   0.0   0.3   0:00.00 trabajador-1
+ 121348 edwar     20   0  178016  19888   7424 R   0.0   0.3   0:00.00 QueueFeederThre
+ 121331 edwar     20   0  178016  19892   7420 S   0.0   0.3   0:00.00 trabajador-2
+ 121345 edwar     20   0  178016  19892   7420 S   0.0   0.3   0:00.00 QueueFeederThre
+ 121333 edwar     20   0  178016  19888   7420 S   0.0   0.3   0:00.00 trabajador-3
+ 121347 edwar     20   0  178016  19888   7420 S   0.0   0.3   0:00.00 QueueFeederThre
+ 121335 edwar     20   0  178016  19880   7416 S   0.0   0.3   0:00.00 trabajador-4
+ 121346 edwar     20   0  178016  19880   7416 S   0.0   0.3   0:00.00 QueueFeederThre
+
+
+## ps -L: estado de los hilos despachadores (R = ejecutándose o listo)
+despachador-1-1:Rl  despachador-2-1:Rl  despachador-3-1:Rl  despachador-4-1:Rl  
+despachador-1-1:Rl  despachador-2-1:Rl  despachador-3-1:Rl  despachador-4-1:Rl  
+despachador-1-1:Rl  despachador-2-1:Rl  despachador-3-1:Rl  despachador-4-1:Rl  
