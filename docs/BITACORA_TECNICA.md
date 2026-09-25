@@ -14,7 +14,7 @@
 - [5. Interbloqueo](#fase-5--interbloqueo) ✅
 - [6. CPU y memoria](#fase-6--cpu-y-memoria) ✅
 - [7. Registro y observación](#fase-7--registro-y-observación) ✅
-- [8. Experimentos y comparación antes/después](#fase-8--experimentos-y-comparación-antesdespués) *(pendiente)*
+- [8. Experimentos y comparación antes/después](#fase-8--experimentos-y-comparación-antesdespués) ✅
 - [9. Guion de demostración y sustentación](#fase-9--guion-de-demostración-y-sustentación) *(pendiente)*
 - [Anexo A. Matriz de trazabilidad](#anexo-a-matriz-de-trazabilidad)
 - [Anexo B. Glosario de comandos del SO usados](#anexo-b-comandos-del-so)
@@ -1470,7 +1470,7 @@ entregas registradas en 2 s: 7 -> 7
   atender la orden de parada. El principal los termina con `SIGTERM` tras el plazo:
   `entregadas=7 canceladas=14 no atendidas=3`, código de salida 1. Terminar procesos es la forma
   más drástica de recuperación, y pierde el trabajo en curso (las 3 "no atendidas").
-- Detalle adicional (`nota_volcados_mezclados.txt`): en la primera versión, el vigilante enviaba
+- **Hallazgo H5** (`nota_volcados_mezclados.txt`): en la primera versión, el vigilante enviaba
   `SIGUSR1` a los dos procesos a la vez y sus volcados salieron **mezclados carácter a carácter**
   en el stderr compartido: otro ejemplo, en vivo, de escrituras concurrentes sin sincronizar.
   Ahora las señales se escalonan 0.5 s.
@@ -1997,7 +1997,200 @@ incrementos)
   (`observar.sh`) y la vista en vivo `monitor_so.sh` (E2). Anexo B.
 
 ## Fase 8 — Experimentos y comparación antes/después
-*(pendiente)*
+
+> Rama `fase-8-experimentos` · etiqueta `fase-8` · evidencias en `evidencias/fase8/`
+>
+> Requisito 15 (comportamiento antes y después de sincronizar), punto 20 de la sección 9.3
+> (comparación antes/después) y "pruebas reproducibles y sustentadas" (10 % de la nota).
+> Esta sección **consolida** todo el proyecto: cada síntoma del enunciado, su causa, su
+> corrección y la evidencia medida antes y después.
+
+### 8.1 Qué se hizo
+- **Batería de experimentos** (`experimentos/bateria.py`): 21 configuraciones × 3 repeticiones =
+  **63 ejecuciones reales** del sistema. Extrae las métricas del bloque de estadísticas de cada log
+  y las acumula en `evidencias/fase8/resultados.csv`, una fila por ejecución con 25 métricas.
+
+  | Grupo | Qué compara | Configuraciones |
+  |---|---|---|
+  | `antes_despues` | versión con la condición de carrera frente a la corregida, con distinta cantidad de solicitudes **simultáneas** | N ∈ {10, 25, 50, 100, 200} × {antes, después} |
+  | `interbloqueo` | las cuatro estrategias frente al interbloqueo | {sin_orden, orden, timeout, deteccion} × N ∈ {24, 48} |
+  | `espera` | espera bloqueante frente a espera activa bajo alta demanda | {bloqueante, activa 5 ms, activa sin pausa} |
+
+- **Aislamiento de cada fenómeno:** cada grupo desactiva lo que no está midiendo (por ejemplo,
+  `antes_despues` corre sin taller, con andenes de sobra y sin carga de CPU/memoria), para que las
+  diferencias se deban sólo a lo que se compara.
+- **Informe automático** (`experimentos/informe_fase8.py`): media ± desviación estándar por
+  configuración, 8 gráficas SVG y sus **tablas gemelas** (`evidencias/fase8/resumen.md`). Integra
+  también los datos de CPU y memoria de la Fase 6.
+- **Gráficas SVG sin dependencias externas** (`experimentos/graficas.py`, sólo la biblioteca
+  estándar). `matplotlib` no estaba instalado y no se quiso agregar una dependencia para
+  reproducir el proyecto. Cada SVG tiene modo claro y oscuro, tooltips nativos en cada punto,
+  leyenda y etiquetas directas. La paleta categórica se **validó** para daltonismo con un
+  verificador (separación ΔE ≥ 8 entre colores vecinos en ambos modos).
+- Todas las gráficas se **renderizaron y revisaron visualmente** (`rsvg-convert` → PNG). Eso reveló
+  tres problemas que se corrigieron:
+  1. `librsvg` no entiende las variables CSS (`var(--color)`) y las gráficas salían negras. Se
+     cambió a colores directos por clase.
+  2. Un eje x ordinal (10, 25, 50, 100, 200 equiespaciados) hacía que un crecimiento **lineal**
+     pareciera exponencial. Se cambió a escala lineal.
+  3. Una barra en 0 para `sin_orden` sugería que era la estrategia más rápida, cuando no termina.
+     Se retiró de esa gráfica y la tabla lo muestra como "—".
+
+### 8.2 Cómo ejecutarlo
+```bash
+scripts/evidencias_fase8.sh                  # batería completa (3 repeticiones, ≈ 25 min) + informe
+scripts/evidencias_fase8.sh 1                # una repetición (≈ 8 min)
+scripts/evidencias_fase8.sh --solo-informe   # regenera gráficas y tablas desde resultados.csv
+python3 experimentos/bateria.py 3 espera     # un solo grupo (se agrega al CSV existente)
+```
+Archivos: `resultados.csv` (datos crudos), `resumen.md` (tablas), `graficas/*.svg`,
+`series/*.estado.csv` (series del monitor usadas en G3), `bateria_salida.txt` (salida de la batería).
+
+### 8.3 Resultados
+
+**1. Antes/después con distinta cantidad de solicitudes simultáneas** (2 trabajadores × 3 hilos,
+3 vehículos, todas las solicitudes en una ráfaga, 3 repeticiones por celda)
+
+| Solicitudes | Versión | Dobles asignaciones | % de asignaciones en conflicto | Registros inconsistentes | Entregas simultáneas máx. (3 vehículos) | Tiempo total (s) | Rendimiento (sol/s) | Exit 0 |
+|---|---|---|---|---|---|---|---|---|
+| 10 | antes | 6.3 ± 0.6 | 63 % | 7.7 | **6** | 1.52 | 6.61 | 0/3 |
+| 10 | después | **0** | 0 % | 0 | 3 | 2.08 | 4.83 | 3/3 |
+| 50 | antes | 40.3 ± 0.6 | 81 % | 41.0 | **6** | 6.10 | 8.19 | 0/3 |
+| 50 | después | **0** | 0 % | 0 | 3 | 10.53 | 4.75 | 3/3 |
+| 200 | antes | 156.3 ± 13.9 | 78 % | 157.0 | **6** | 23.38 | 8.56 | 0/3 |
+| 200 | después | **0** | 0 % | 0 | 3 | 41.53 | 4.82 | 3/3 |
+
+(Tabla completa con 25 y 100 solicitudes en `evidencias/fase8/resumen.md`.)
+
+![Dobles asignaciones de vehículo por ejecución](../evidencias/fase8/graficas/g1_dobles_asignaciones.svg)
+
+![Tiempo total para atender todas las solicitudes](../evidencias/fase8/graficas/g2_tiempo_total.svg)
+
+![Solicitudes finalizadas a lo largo de la ejecución](../evidencias/fase8/graficas/g3_finalizadas_en_el_tiempo.svg)
+
+- *Qué decir:*
+  - **La condición de carrera crece linealmente con la carga** (G1): alrededor del 78 % de las
+    asignaciones cae sobre un vehículo ocupado, sin importar cuántas solicitudes lleguen. Con 200
+    solicitudes son 156 dobles asignaciones por ejecución. La versión corregida tuvo **cero en las
+    15 ejecuciones**.
+  - **El rendimiento de "antes" es físicamente imposible.** Con 3 vehículos y un servicio medio de
+    ≈ 0.61 s (preparación 0.2 + ruta 0.4 + validación 0.01), el máximo teórico es
+    3 / 0.61 ≈ **4.9 solicitudes/s**. La versión corregida rinde **4.75–4.96 sol/s**, prácticamente
+    ese máximo: la flota trabaja al 100 %. La insegura rinde 8.5 sol/s porque tiene hasta **6
+    entregas en ruta con 3 vehículos**. Su "ventaja" es la prueba del error.
+  - G2 y G3 muestran el mismo hecho en el tiempo: la corregida tarda ≈ 1.8 veces más, con una
+    pendiente constante (ritmo de la flota), y la insegura avanza más rápido sobre vehículos que no
+    tiene.
+  - La desviación estándar es pequeña en el tiempo de la versión corregida (± 0.02–0.14 s): su
+    comportamiento es predecible. En "antes", la cantidad de conflictos varía entre ejecuciones con
+    la misma carga, la firma de una condición de carrera (F3-E2).
+
+**2. Estrategias frente al interbloqueo** (6 ejecuciones por estrategia: 24 y 48 solicitudes)
+
+| Estrategia | Interbloqueos sin resolver | Detectados / recuperados (prom.) | Reintentos por tiempo límite (prom.) | Entregadas | Tiempo total, 48 solicitudes (s) |
+|---|---|---|---|---|---|
+| `sin_orden` | **6/6** | 1 / 0 | 0 | 12.7/24 y 20.3/48 | no termina |
+| `orden` | 0/6 | 0 / 0 | 0 | todas | **10.64 ± 0.13** |
+| `timeout` | 0/6 | 0 / 0 | 8.0–9.3 | todas | 10.83 ± 0.29 |
+| `deteccion` | 0/6 | 3.0–3.7 / 3.0–3.7 | 0 | todas | 12.19 ± 0.95 |
+
+![Ejecuciones que terminaron en interbloqueo sin resolver](../evidencias/fase8/graficas/g4_interbloqueos_por_estrategia.svg)
+
+![Tiempo total por estrategia](../evidencias/fase8/graficas/g5_tiempo_por_estrategia.svg)
+
+- *Qué decir:* confirma F5-E3 con más ejecuciones y más carga. Sin estrategia, el sistema se
+  interbloqueó en **todas** las ejecuciones y dejó la mitad del trabajo sin hacer. Las tres
+  estrategias lo evitan en el 100 %. `orden` es la más eficiente. `deteccion` es la más lenta y la
+  más variable (± 0.95 s; con 24 solicitudes, ± 6.2 s): cada interbloqueo cuesta la latencia de
+  detección (≈ 1 s), y cuántos ocurren depende del intercalado.
+
+**3. Espera bloqueante frente a espera activa** (16 despachadores, 2 vehículos, 48 solicitudes)
+
+| Espera | Tiempo total (s) | CPU de los trabajadores (s) | CPU media | Cambios de contexto voluntarios | Reintentos de sondeo |
+|---|---|---|---|---|---|
+| bloqueante (semáforo) | 14.80 ± 0.04 | **0.26** | 1.8 % | 1 571 | 0 |
+| activa, reintento 5 ms | 14.81 ± 0.15 | 2.91 | 19.3 % | 49 982 | 33 064 |
+| activa, sin pausa | 14.87 ± 0.19 | **25.62** | **169 %** | 4 223 135 | 2 025 958 |
+
+![CPU consumida para el mismo trabajo](../evidencias/fase8/graficas/g6_cpu_segun_espera.svg)
+
+- *Qué decir:* **el mismo trabajo en el mismo tiempo (14.8 s), con 99 veces más CPU** si se espera
+  sondeando sin pausa. Es el síntoma "aumento considerable del consumo de CPU cuando se procesan
+  muchas solicitudes", reproducido con 3 repeticiones y con muy poca variación.
+
+**4. CPU: hilos frente a procesos** y **5. memoria** (datos de la Fase 6, integrados en el informe)
+
+![Aceleración de una tarea de CPU: hilos frente a procesos](../evidencias/fase8/graficas/g7_aceleracion_cpu.svg)
+
+![Memoria residente de trabajador-1](../evidencias/fase8/graficas/g8_memoria_rss.svg)
+
+- *Qué decir:* G7 resume el efecto del GIL: la aceleración con hilos es plana (≈ 1x) y con procesos
+  llega a 1.85x, limitada por los 2 núcleos físicos (F6-E1). En G7 el eje x (1, 2, 4, 8) está
+  equiespaciado porque cada punto duplica al anterior. G8 contrasta el crecimiento lineal de la
+  memoria sin límite con la meseta del historial acotado (F6-E4).
+
+### 8.4 Comparación antes/después consolidada: síntomas del enunciado
+
+| Síntoma del enunciado | Causa (concepto de SO) | Corrección implementada | Antes | Después | Evidencia |
+|---|---|---|---|---|---|
+| **"Dos solicitudes pueden ser asignadas al mismo vehículo"** | Condición de carrera *check-then-act* sobre estado compartido en memoria compartida (`/dev/shm`), sin exclusión mutua; paralelismo real entre procesos y cambios de hilo al liberar el GIL | Mutex sobre la sección crítica (fina) + semáforo contador de vehículos | 63–81 % de las asignaciones en conflicto, hasta 6 entregas con 3 vehículos, 10/10 ejecuciones con fallo | 0 conflictos en 15 + 10 + 30 ejecuciones | F3-E1..E5, F4-E1/E3/E6, F8-G1 |
+| **"Algunos despachos quedan esperando"** (1) | Interbloqueo: cargue (vehículo → andén) e inspección (andén → vehículo) con órdenes opuestos; se cumplen las 4 condiciones de Coffman | Orden global de recursos (rompe la espera circular); alternativas `timeout` y `deteccion` | 18/20 (F5) y 6/6 (F8) ejecuciones interbloqueadas; hilos en `futex_do_wait` con 0 CPU | 0 de 48 ejecuciones con las tres estrategias | F5-E1..E4, F8-G4/G5 |
+| **"Algunos despachos quedan esperando"** (2) | Inanición: un proceso muere reteniendo el lock de lectores de `multiprocessing.Queue` (H3) | Cola propia con semáforos: el consumidor espera sin retener ningún lock | 4/10 ejecuciones sin ningún despacho tras la caída | 0/10 | F2-H3, F7-E3b |
+| **"Aumento considerable en el consumo de CPU"** (1) | Espera activa (sondeo) de los despachadores sin vehículo | Semáforo contador: el hilo se bloquea en el kernel (futex) | 25.6 s de CPU, 169 %, 4.2 M cambios de contexto | 0.26 s de CPU, 1.8 %, 1 571 cambios | F4-E2/E4, F8-G6 |
+| **"Aumento considerable en el consumo de CPU"** (2) | Cálculo de rutas CPU-bound: con hilos, el GIL serializa y no se aprovechan los núcleos | Arquitectura híbrida: procesos para la CPU, hilos para las esperas | 0.98x con 8 hilos (real/CPU 5.3) | 1.76x con 4 procesos (límite: 2 núcleos físicos) | F6-E1..E3, F8-G7 |
+| Registros inconsistentes (derivado del primero) | Actualizaciones perdidas: la segunda escritura sobrescribe la primera; liberación prematura | La misma exclusión mutua; verificación al liberar | 17.6 registros inconsistentes por ejecución | 0 | F4-E1, F8-tabla 1 |
+
+### 8.5 Comparación antes/después: hallazgos del desarrollo
+
+Problemas reales **no provocados a propósito** que aparecieron durante el desarrollo. Todos se
+reprodujeron, se explicaron con conceptos de SO, se corrigieron y se midieron antes y después:
+
+| # | Problema | Concepto de SO | Antes | Después | Dónde |
+|---|---|---|---|---|---|
+| H1 | `multiprocessing.Event.set()` bloquea todo el sistema si muere un proceso que esperaba | Primitiva compartida con protocolo de confirmación, no tolerante a la muerte de un participante | bloqueo total, determinista | la orden de parada retorna al instante | F1, `experimentos/h1_event_bloqueado.py` |
+| H2 | Trabajadores huérfanos que nunca terminan | Re-asignación del padre (*subreaper* `systemd --user`) | vivos indefinidamente | terminan en ≤ 0.1 s | F1-E5 |
+| H3 | Inanición de consumidores con `multiprocessing.Queue` | Lock retenido por un proceso muerto (sin expropiación) | 4/10 | 0/10 | F2, `experimentos/h3_trabajador_caido.sh` |
+| H4 | Un generador pierde su última ráfaga | Condición de carrera entre `Barrier.wait()` y `Barrier.abort()` | 13/30 | 0/30 | F2, `experimentos/h4_barrera_abortada.sh` |
+| H5 | Volcados de pila mezclados carácter a carácter | Escrituras concurrentes sin sincronizar sobre un descriptor compartido (stderr) | ilegibles | legibles (señales escalonadas) | F5-E1 |
+| H6 | `Value(lock=True)` pierde incrementos | El lock protege cada acceso, no la secuencia leer-modificar-escribir | 62 % perdido (procesos), 54 % (hilos) | 0 % con `get_lock()` | F7-E4, `experimentos/h6_contador_compartido.py` |
+
+### 8.6 Decisiones y validez de los resultados
+- **D8.1 Repeticiones y dispersión.** Cada celda tiene 3 repeticiones, con media ± desviación
+  estándar muestral. Es poco para inferencia estadística formal, pero las diferencias que sustentan
+  las conclusiones son de **órdenes de magnitud** (0 frente a 156 conflictos, 0.26 frente a 25.6 s de
+  CPU, 0/6 frente a 6/6 interbloqueos) y la dispersión es pequeña frente a ellas. Las frecuencias de
+  eventos intermitentes (H3, H4, interbloqueo) se midieron con 10 a 30 repeticiones en sus fases.
+- **D8.2 Misma carga en cada comparación.** Semilla fija (42): cada par antes/después procesa
+  exactamente las mismas solicitudes con los mismos tiempos. Sólo cambia el mecanismo comparado.
+- **D8.3 Una sola escala por gráfica.** Tiempo y conflictos van en gráficas separadas (G1 y G2), no
+  en una gráfica con dos ejes y, que inventaría una relación visual entre magnitudes distintas.
+- **D8.4 Amenazas a la validez**, conocidas y declaradas:
+  1. Portátil con gobernador `powersave` y *turbo*: la frecuencia varía con la carga y la
+     temperatura, lo que afecta los tiempos absolutos (no las comparaciones relativas, que se
+     hicieron en la misma sesión).
+  2. Otros procesos del sistema compiten por la CPU (las mediciones se tomaron sin otras cargas
+     del proyecto en paralelo).
+  3. Los tiempos de servicio son simulados (`sleep`): el sistema reproduce la *forma* de un despacho
+     real (espera, CPU, recursos), no sus tiempos.
+  4. Las estrategias se evaluaron con un inspector y dos andenes. Con más inspectores o menos
+     andenes la frecuencia de interbloqueos cambia, pero no la conclusión.
+- **D8.5 Datos crudos versionados.** `resultados.csv` y las series de `series/` están en el
+  repositorio: cualquier gráfica o tabla se puede regenerar y auditar
+  (`--solo-informe`) sin volver a ejecutar la batería.
+
+### 8.7 Preguntas probables en la sustentación
+- **¿Cómo demuestran que la corrección funciona y no fue suerte?** 0 conflictos en 55 ejecuciones
+  de la versión corregida (F4: 10 + 30; F8: 15), frente a conflictos en todas las ejecuciones de la
+  insegura, con la misma carga y tres detectores independientes.
+- **¿Por qué la versión insegura es más rápida? ¿No es mejor?** Rinde 8.5 sol/s con una capacidad
+  física de 4.9: es imposible sin usar vehículos ocupados. La corregida opera en el máximo teórico
+  (8.3, tabla 1).
+- **¿Qué pasa con más solicitudes?** Los conflictos crecen linealmente (≈ 0.78 por solicitud); la
+  versión corregida mantiene un rendimiento constante de ≈ 4.8 sol/s, el límite de la flota (G1, G2).
+- **¿Cuál es el costo de la sincronización?** Esperar el mutex: 0.01 ms por asignación (F4-E1).
+  El resto del "costo" es respetar la capacidad real.
+- **¿Qué síntoma corresponde a qué causa?** Tabla 8.4.
+- **¿Cómo reproduzco una gráfica?** `scripts/evidencias_fase8.sh --solo-informe` (8.2).
 
 ## Fase 9 — Guion de demostración y sustentación
 *(pendiente)*
@@ -2021,9 +2214,9 @@ incrementos)
 | 12 | Registro de recibidas, pendientes, vehículos disponibles/asignados, finalizadas | 7 ✅ | hilo `monitor`, `Contadores`, `<log>.estado.csv` | F7-E1 (conservación), E3 (alerta), E5 |
 | 13 | Consumo elevado de CPU | 4, 6 ✅ | espera activa (F4-E4); ruta óptima por fuerza bruta `-p` (F6) | F4-E4: 175 % CPU; F6-E1: GIL vs procesos (334 %); F6-E2: `top -H` |
 | 14 | Observación de procesos e hilos | 1, 2, 7 ✅ | `observar.sh`, `monitor_so.sh`, nombres de hilo en el kernel | F1-E1, F2-E2, F7-E2 |
-| 15 | Antes/después de sincronizar | 4 ✅, 8 | misma carga y semilla, modo por parámetro | F4-E1..E5 (tablas); gráficas en la Fase 8 |
+| 15 | Antes/después de sincronizar | 4 ✅, 8 ✅ | misma carga y semilla, modo por parámetro; batería de 63 ejecuciones | F4-E1..E5; F8: tablas 8.3–8.5, gráficas G1–G8 |
 | 9.1 | Diseño | 0 | esta sección | diagramas |
-| 9.3 | Prueba de fallo y corrección (8 pasos) | 3, 4, 5, 8 | modos + semilla | antes/después |
+| 9.3 | Prueba de fallo y corrección (8 pasos) | 3, 4, 5, 8 ✅ | modos + semilla; H1–H6 con los 8 pasos | F3/F4 (carrera), F5 (interbloqueo), tablas 8.4 y 8.5 |
 | 9.4 | Evidencias del SO | todas | ps, pstree, top, /proc | `evidencias/` |
 | 19 (informe) | Pruebas de CPU y memoria | 6 ✅ | `muestreador` (/proc), `thread_time`, `getrusage`, historial acotado/sin límite | F6-E1..E4, series CSV |
 

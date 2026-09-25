@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="viz" viewBox="0 0 720 236" width="720" height="236" role="img" aria-label="CPU consumida para el mismo trabajo">
+<style>
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .titulo { font-size: 16px; font-weight: 600; }
+  .subtitulo { font-size: 12px; }
+  .marca { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .etiqueta { font-size: 12px; }
+  .valor { font-size: 12px; font-weight: 600; }
+  .rejilla, .eje { stroke-width: 1; }
+  .linea { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .punto { stroke-width: 2; }
+  .fondo{fill:#fcfcfb} .titulo{fill:#0b0b0b} .subtitulo,.etiqueta{fill:#52514e} .marca{fill:#898781} .valor{fill:#0b0b0b} .rejilla{stroke:#e1e0d9} .eje{stroke:#c3c2b7} .punto{stroke:#fcfcfb} .l1{stroke:#2a78d6} .f1{fill:#2a78d6} .l2{stroke:#eb6834} .f2{fill:#eb6834} .l3{stroke:#1baf7a} .f3{fill:#1baf7a} .l4{stroke:#eda100} .f4{fill:#eda100}
+  @media (prefers-color-scheme: dark) { .fondo{fill:#1a1a19} .titulo{fill:#ffffff} .subtitulo,.etiqueta{fill:#c3c2b7} .marca{fill:#898781} .valor{fill:#ffffff} .rejilla{stroke:#2c2c2a} .eje{stroke:#383835} .punto{stroke:#1a1a19} .l1{stroke:#3987e5} .f1{fill:#3987e5} .l2{stroke:#d95926} .f2{fill:#d95926} .l3{stroke:#199e70} .f3{fill:#199e70} .l4{stroke:#c98500} .f4{fill:#c98500} }
+</style>
+<rect class="fondo" width="720" height="236" rx="8"/>
+<title>CPU consumida para el mismo trabajo</title>
+<text x="24.0" y="30.0" class="titulo" text-anchor="start" >CPU consumida para el mismo trabajo</text>
+<text x="24.0" y="49.0" class="subtitulo" text-anchor="start" >16 despachadores y 2 vehículos · el tiempo total es el mismo en los tres casos</text>
+<line x1="190.0" y1="66" x2="190.0" y2="186" class="eje"/>
+<text x="190.0" y="204.0" class="marca" text-anchor="middle" >0</text>
+<line x1="336.7" y1="66" x2="336.7" y2="186" class="rejilla"/>
+<text x="336.7" y="204.0" class="marca" text-anchor="middle" >10</text>
+<line x1="483.3" y1="66" x2="483.3" y2="186" class="rejilla"/>
+<text x="483.3" y="204.0" class="marca" text-anchor="middle" >20</text>
+<line x1="630.0" y1="66" x2="630.0" y2="186" class="rejilla"/>
+<text x="630.0" y="204.0" class="marca" text-anchor="middle" >30</text>
+<text x="410.0" y="224.0" class="etiqueta" text-anchor="middle" >segundos de CPU de los trabajadores</text>
+<text x="180.0" y="95.0" class="etiqueta" text-anchor="end" >bloqueante (semáforo)</text>
+<path d="M190.0,81.0 H191.9 Q193.9,81.0 193.9,82.9 V99.1 Q193.9,101.0 191.9,101.0 H190.0 Z" class="f1"><title>bloqueante (semáforo): 0.26 s</title></path>
+<text x="201.9" y="95.0" class="valor" text-anchor="start" >0.26 s</text>
+<text x="180.0" y="133.0" class="etiqueta" text-anchor="end" >activa, reintento 5 ms</text>
+<path d="M190.0,119.0 H228.7 Q232.7,119.0 232.7,123.0 V135.0 Q232.7,139.0 228.7,139.0 H190.0 Z" class="f1"><title>activa, reintento 5 ms: 2.91 s</title></path>
+<text x="240.7" y="133.0" class="valor" text-anchor="start" >2.91 s</text>
+<text x="180.0" y="171.0" class="etiqueta" text-anchor="end" >activa, sin pausa</text>
+<path d="M190.0,157.0 H561.8 Q565.8,157.0 565.8,161.0 V173.0 Q565.8,177.0 561.8,177.0 H190.0 Z" class="f1"><title>activa, sin pausa: 25.62 s</title></path>
+<text x="573.8" y="171.0" class="valor" text-anchor="start" >25.62 s</text>
+</svg>

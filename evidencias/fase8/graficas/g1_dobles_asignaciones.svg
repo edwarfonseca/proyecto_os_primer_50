@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="viz" viewBox="0 0 720 420" width="720" height="420" role="img" aria-label="Dobles asignaciones de vehículo por ejecución">
+<style>
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .titulo { font-size: 16px; font-weight: 600; }
+  .subtitulo { font-size: 12px; }
+  .marca { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .etiqueta { font-size: 12px; }
+  .valor { font-size: 12px; font-weight: 600; }
+  .rejilla, .eje { stroke-width: 1; }
+  .linea { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .punto { stroke-width: 2; }
+  .fondo{fill:#fcfcfb} .titulo{fill:#0b0b0b} .subtitulo,.etiqueta{fill:#52514e} .marca{fill:#898781} .valor{fill:#0b0b0b} .rejilla{stroke:#e1e0d9} .eje{stroke:#c3c2b7} .punto{stroke:#fcfcfb} .l1{stroke:#2a78d6} .f1{fill:#2a78d6} .l2{stroke:#eb6834} .f2{fill:#eb6834} .l3{stroke:#1baf7a} .f3{fill:#1baf7a} .l4{stroke:#eda100} .f4{fill:#eda100}
+  @media (prefers-color-scheme: dark) { .fondo{fill:#1a1a19} .titulo{fill:#ffffff} .subtitulo,.etiqueta{fill:#c3c2b7} .marca{fill:#898781} .valor{fill:#ffffff} .rejilla{stroke:#2c2c2a} .eje{stroke:#383835} .punto{stroke:#1a1a19} .l1{stroke:#3987e5} .f1{fill:#3987e5} .l2{stroke:#d95926} .f2{fill:#d95926} .l3{stroke:#199e70} .f3{fill:#199e70} .l4{stroke:#c98500} .f4{fill:#c98500} }
+</style>
+<rect class="fondo" width="720" height="420" rx="8"/>
+<title>Dobles asignaciones de vehículo por ejecución</title>
+<text x="24.0" y="30.0" class="titulo" text-anchor="start" >Dobles asignaciones de vehículo por ejecución</text>
+<text x="24.0" y="49.0" class="subtitulo" text-anchor="start" >Media de 3 ejecuciones · 3 vehículos, 6 despachadores · la versión corregida no tuvo ninguna</text>
+<line x1="24" y1="68" x2="40" y2="68" class="linea l1"/>
+<text x="46.0" y="72.0" class="etiqueta" text-anchor="start" >Antes (inseguro)</text>
+<line x1="170" y1="68" x2="186" y2="68" class="linea l2"/>
+<text x="192.0" y="72.0" class="etiqueta" text-anchor="start" >Después (corregido)</text>
+<line x1="70" y1="362.0" x2="550" y2="362.0" class="eje"/>
+<text x="62.0" y="366.0" class="marca" text-anchor="end" >0</text>
+<line x1="70" y1="295.5" x2="550" y2="295.5" class="rejilla"/>
+<text x="62.0" y="299.5" class="marca" text-anchor="end" >50</text>
+<line x1="70" y1="229.0" x2="550" y2="229.0" class="rejilla"/>
+<text x="62.0" y="233.0" class="marca" text-anchor="end" >100</text>
+<line x1="70" y1="162.5" x2="550" y2="162.5" class="rejilla"/>
+<text x="62.0" y="166.5" class="marca" text-anchor="end" >150</text>
+<line x1="70" y1="96.0" x2="550" y2="96.0" class="rejilla"/>
+<text x="62.0" y="100.0" class="marca" text-anchor="end" >200</text>
+<text x="94.0" y="382.0" class="marca" text-anchor="middle" >10</text>
+<text x="130.0" y="382.0" class="marca" text-anchor="middle" >25</text>
+<text x="190.0" y="382.0" class="marca" text-anchor="middle" >50</text>
+<text x="310.0" y="382.0" class="marca" text-anchor="middle" >100</text>
+<text x="550.0" y="382.0" class="marca" text-anchor="middle" >200</text>
+<text x="310.0" y="406.0" class="etiqueta" text-anchor="middle" >solicitudes simultáneas</text>
+<text x="18.0" y="229.0" class="etiqueta" text-anchor="middle" transform="rotate(-90 18 229.0)">dobles asignaciones</text>
+<path d="M94.0,353.6 L130.0,340.3 L190.0,308.4 L310.0,256.0 L550.0,154.1" class="linea l1"/>
+<circle cx="94.0" cy="353.6" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 10 · dobles asignaciones: 6.3</title></circle>
+<circle cx="130.0" cy="340.3" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 25 · dobles asignaciones: 16.3</title></circle>
+<circle cx="190.0" cy="308.4" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 50 · dobles asignaciones: 40.3</title></circle>
+<circle cx="310.0" cy="256.0" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 100 · dobles asignaciones: 79.7</title></circle>
+<circle cx="550.0" cy="154.1" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 200 · dobles asignaciones: 156.3</title></circle>
+<path d="M94.0,362.0 L130.0,362.0 L190.0,362.0 L310.0,362.0 L550.0,362.0" class="linea l2"/>
+<circle cx="94.0" cy="362.0" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 10 · dobles asignaciones: 0.0</title></circle>
+<circle cx="130.0" cy="362.0" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 25 · dobles asignaciones: 0.0</title></circle>
+<circle cx="190.0" cy="362.0" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 50 · dobles asignaciones: 0.0</title></circle>
+<circle cx="310.0" cy="362.0" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 100 · dobles asignaciones: 0.0</title></circle>
+<circle cx="550.0" cy="362.0" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 200 · dobles asignaciones: 0.0</title></circle>
+<text x="560.0" y="158.1" class="valor" text-anchor="start" >Antes (inseguro): 156.3</text>
+<text x="560.0" y="366.0" class="valor" text-anchor="start" >Después (corregido): 0.0</text>
+</svg>

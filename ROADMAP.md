@@ -132,9 +132,10 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] `scripts/monitor_so.sh` (vista en vivo desde /proc) y `observar.sh` (captura completa).
 - [x] Hallazgo H6: `Value(lock=True)` no hace atómico `+= 1` (E4).
 
-### Fase 8 — Experimentos
-- [ ] `scripts/experimentos.sh`: N ∈ {10, 50, 100, 500}, modos inseguro/seguro, 5 repeticiones.
-- [ ] Tablas y gráficas (tiempo, throughput, dobles asignaciones, CPU, RSS).
+### Fase 8 — Experimentos ✅
+- [x] `experimentos/bateria.py`: 63 ejecuciones (antes/después con N ∈ {10..200}, 4 estrategias de interbloqueo, 3 formas de espera) → `resultados.csv`.
+- [x] `experimentos/informe_fase8.py`: media ± desviación, 8 gráficas SVG sin dependencias (paleta validada, revisadas renderizadas) + tablas gemelas.
+- [x] Comparación antes/después consolidada: síntoma → causa → corrección → evidencia (8.4) y hallazgos H1–H6 (8.5).
 
 ### Fase 9 — Cierre
 - [ ] README con instalación y ejecución.

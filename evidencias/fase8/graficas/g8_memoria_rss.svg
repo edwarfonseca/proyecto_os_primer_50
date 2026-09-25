@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="viz" viewBox="0 0 720 420" width="720" height="420" role="img" aria-label="Memoria residente (RSS) de trabajador-1">
+<style>
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .titulo { font-size: 16px; font-weight: 600; }
+  .subtitulo { font-size: 12px; }
+  .marca { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .etiqueta { font-size: 12px; }
+  .valor { font-size: 12px; font-weight: 600; }
+  .rejilla, .eje { stroke-width: 1; }
+  .linea { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .punto { stroke-width: 2; }
+  .fondo{fill:#fcfcfb} .titulo{fill:#0b0b0b} .subtitulo,.etiqueta{fill:#52514e} .marca{fill:#898781} .valor{fill:#0b0b0b} .rejilla{stroke:#e1e0d9} .eje{stroke:#c3c2b7} .punto{stroke:#fcfcfb} .l1{stroke:#2a78d6} .f1{fill:#2a78d6} .l2{stroke:#eb6834} .f2{fill:#eb6834} .l3{stroke:#1baf7a} .f3{fill:#1baf7a} .l4{stroke:#eda100} .f4{fill:#eda100}
+  @media (prefers-color-scheme: dark) { .fondo{fill:#1a1a19} .titulo{fill:#ffffff} .subtitulo,.etiqueta{fill:#c3c2b7} .marca{fill:#898781} .valor{fill:#ffffff} .rejilla{stroke:#2c2c2a} .eje{stroke:#383835} .punto{stroke:#1a1a19} .l1{stroke:#3987e5} .f1{fill:#3987e5} .l2{stroke:#d95926} .f2{fill:#d95926} .l3{stroke:#199e70} .f3{fill:#199e70} .l4{stroke:#c98500} .f4{fill:#c98500} }
+</style>
+<rect class="fondo" width="720" height="420" rx="8"/>
+<title>Memoria residente (RSS) de trabajador-1</title>
+<text x="24.0" y="30.0" class="titulo" text-anchor="start" >Memoria residente (RSS) de trabajador-1</text>
+<text x="24.0" y="49.0" class="subtitulo" text-anchor="start" >Traza GPS de 256 KB por entrega · muestreo de /proc cada 0.25 s · fuente: Fase 6, E4</text>
+<line x1="24" y1="68" x2="40" y2="68" class="linea l1"/>
+<text x="46.0" y="72.0" class="etiqueta" text-anchor="start" >historial sin límite</text>
+<line x1="198" y1="68" x2="214" y2="68" class="linea l2"/>
+<text x="220.0" y="72.0" class="etiqueta" text-anchor="start" >historial acotado a 20</text>
+<line x1="70" y1="362.0" x2="550" y2="362.0" class="eje"/>
+<text x="62.0" y="366.0" class="marca" text-anchor="end" >0</text>
+<line x1="70" y1="308.8" x2="550" y2="308.8" class="rejilla"/>
+<text x="62.0" y="312.8" class="marca" text-anchor="end" >10</text>
+<line x1="70" y1="255.6" x2="550" y2="255.6" class="rejilla"/>
+<text x="62.0" y="259.6" class="marca" text-anchor="end" >20</text>
+<line x1="70" y1="202.4" x2="550" y2="202.4" class="rejilla"/>
+<text x="62.0" y="206.4" class="marca" text-anchor="end" >30</text>
+<line x1="70" y1="149.2" x2="550" y2="149.2" class="rejilla"/>
+<text x="62.0" y="153.2" class="marca" text-anchor="end" >40</text>
+<line x1="70" y1="96.0" x2="550" y2="96.0" class="rejilla"/>
+<text x="62.0" y="100.0" class="marca" text-anchor="end" >50</text>
+<text x="70.0" y="382.0" class="marca" text-anchor="middle" >0.0</text>
+<text x="186.5" y="382.0" class="marca" text-anchor="middle" >0.5</text>
+<text x="303.0" y="382.0" class="marca" text-anchor="middle" >1.0</text>
+<text x="419.5" y="382.0" class="marca" text-anchor="middle" >1.5</text>
+<text x="536.0" y="382.0" class="marca" text-anchor="middle" >2.0</text>
+<text x="310.0" y="406.0" class="etiqueta" text-anchor="middle" >tiempo (s)</text>
+<text x="18.0" y="229.0" class="etiqueta" text-anchor="middle" transform="rotate(-90 18 229.0)">RSS (MB)</text>
+<path d="M70.0,261.7 L128.3,241.7 L188.8,223.9 L249.4,204.8 L310.0,185.9 L368.3,172.2 L428.8,153.4 L489.4,138.6 L550.0,119.7" class="linea l1"/>
+<circle cx="70.0" cy="261.7" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 0 · RSS (MB): 18.8</title></circle>
+<circle cx="128.3" cy="241.7" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 0.25 · RSS (MB): 22.6</title></circle>
+<circle cx="188.8" cy="223.9" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 0.51 · RSS (MB): 26.0</title></circle>
+<circle cx="249.4" cy="204.8" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 0.77 · RSS (MB): 29.5</title></circle>
+<circle cx="310.0" cy="185.9" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 1.03 · RSS (MB): 33.1</title></circle>
+<circle cx="368.3" cy="172.2" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 1.28 · RSS (MB): 35.7</title></circle>
+<circle cx="428.8" cy="153.4" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 1.54 · RSS (MB): 39.2</title></circle>
+<circle cx="489.4" cy="138.6" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 1.80 · RSS (MB): 42.0</title></circle>
+<circle cx="550.0" cy="119.7" r="4" class="punto f1"><title>historial sin límite · tiempo (s): 2.06 · RSS (MB): 45.5</title></circle>
+<path d="M70.0,260.0 L130.6,240.3 L188.8,222.6 L249.4,219.5 L310.0,219.2 L370.6,220.3 L431.2,219.9 L491.7,221.0 L550.0,219.4" class="linea l2"/>
+<circle cx="70.0" cy="260.0" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 0 · RSS (MB): 19.2</title></circle>
+<circle cx="130.6" cy="240.3" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 0.26 · RSS (MB): 22.9</title></circle>
+<circle cx="188.8" cy="222.6" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 0.51 · RSS (MB): 26.2</title></circle>
+<circle cx="249.4" cy="219.5" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 0.77 · RSS (MB): 26.8</title></circle>
+<circle cx="310.0" cy="219.2" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 1.03 · RSS (MB): 26.8</title></circle>
+<circle cx="370.6" cy="220.3" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 1.29 · RSS (MB): 26.6</title></circle>
+<circle cx="431.2" cy="219.9" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 1.55 · RSS (MB): 26.7</title></circle>
+<circle cx="491.7" cy="221.0" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 1.81 · RSS (MB): 26.5</title></circle>
+<circle cx="550.0" cy="219.4" r="4" class="punto f2"><title>historial acotado a 20 · tiempo (s): 2.06 · RSS (MB): 26.8</title></circle>
+<text x="560.0" y="123.7" class="valor" text-anchor="start" >historial sin límite: 45.5</text>
+<text x="560.0" y="223.4" class="valor" text-anchor="start" >historial acotado a 20: 26.8</text>
+</svg>
