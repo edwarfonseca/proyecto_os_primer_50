@@ -31,6 +31,9 @@ class Config:
     traza_kb: int            # KB de traza GPS que se guardan por entrega
     historial: int           # trazas conservadas por proceso; 0 = sin límite
     muestreo: float          # segundos entre muestras de CPU/memoria en /proc
+    intervalo_monitor: float # segundos entre líneas ESTADO del monitor
+    alerta_sin_progreso: float
+    vista: str               # completa | resumen (qué se muestra en consola)
     tipo_cola: str           # semaforos (ColaAcotada) | mp (multiprocessing.Queue)
     despacho: tuple[float, float]   # rango (s) del tiempo de preparación
     entrega: tuple[float, float]    # rango (s) del tiempo de ruta
@@ -139,6 +142,16 @@ def leer_argumentos(argv=None) -> Config:
     m.add_argument("--muestreo", type=float, default=0.5,
                    help="segundos entre muestras de CPU y memoria leídas de /proc (defecto: 0.5)")
 
+    o = p.add_argument_group("registro y monitoreo")
+    o.add_argument("--intervalo-monitor", type=float, default=1.0,
+                   help="segundos entre líneas ESTADO del monitor (defecto: 1)")
+    o.add_argument("--alerta-sin-progreso", type=float, default=5.0,
+                   help="segundos sin ninguna solicitud finalizada, con trabajo pendiente, para "
+                        "avisar SIN PROGRESO (defecto: 5)")
+    o.add_argument("--vista", choices=["completa", "resumen"], default="completa",
+                   help="consola: completa = todos los eventos; resumen = sólo ESTADO, avisos y "
+                        "el resumen final (el archivo de log siempre es completo) (defecto: completa)")
+
     e = p.add_argument_group("ejecución")
     e.add_argument("-d", "--duracion", type=float, default=0.0,
                    help="tiempo máximo en segundos; 0 = sin límite (defecto: 0)")
@@ -156,7 +169,7 @@ def leer_argumentos(argv=None) -> Config:
         p.error("--puntos > 10 no es razonable (10! = 3.6 millones de rutas por solicitud)")
     if min(a.solicitudes, a.tam_rafaga, a.ventana, a.reintento, a.inspectores,
            a.alistar_anden, a.puntos, a.traza_kb, a.historial) < 0 or a.timeout_recurso <= 0 \
-            or a.muestreo <= 0:
+            or a.muestreo <= 0 or a.intervalo_monitor <= 0 or a.alerta_sin_progreso <= 0:
         p.error("valores negativos no permitidos (--timeout-recurso y --muestreo deben ser > 0)")
     ruta_log = a.log or Path("logs") / f"despacho_{time.strftime('%Y%m%d_%H%M%S')}.log"
 
@@ -169,7 +182,8 @@ def leer_argumentos(argv=None) -> Config:
         inspectores=a.inspectores, intervalo_inspeccion=a.intervalo_inspeccion,
         alistar_anden=a.alistar_anden, interbloqueo=a.interbloqueo,
         timeout_recurso=a.timeout_recurso, puntos=a.puntos, traza_kb=a.traza_kb,
-        historial=a.historial, muestreo=a.muestreo, despacho=a.despacho, entrega=a.entrega,
+        historial=a.historial, muestreo=a.muestreo, intervalo_monitor=a.intervalo_monitor,
+        alerta_sin_progreso=a.alerta_sin_progreso, vista=a.vista, despacho=a.despacho, entrega=a.entrega,
         semilla=a.semilla, duracion=a.duracion, metodo_inicio=a.metodo_inicio,
         espera_fin=a.espera_fin, ruta_log=ruta_log,
     )
