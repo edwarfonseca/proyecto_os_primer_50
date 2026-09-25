@@ -1,0 +1,36 @@
+## scripts/monitor_so.sh (SO: procesos, hilos por estado, CPU, RSS)
+
+== 17:43:57 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB) 
+centro_despacho  131970   131847   S      6      0    6    0    0       23.2    
+trabajador-1     131973   131970   S      5      0    5    0    8       20.0    
+trabajador-2     131974   131970   S      5      0    5    0    5       20.0    
+taller           131978   131970   S      2      0    2    0    0       18.9    
+
+== 17:43:58 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB) 
+centro_despacho  131970   131847   S      6      0    6    0    4       23.2    
+trabajador-1     131973   131970   S      5      0    5    0    10      20.2    
+trabajador-2     131974   131970   S      5      0    5    0    14      20.2    
+taller           131978   131970   S      2      0    2    0    0       18.9    
+
+== 17:43:59 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB) 
+centro_despacho  131970   131847   S      6      0    6    0    1       23.2    
+trabajador-1     131973   131970   S      5      0    5    0    4       20.3    
+trabajador-2     131974   131970   S      5      0    5    0    13      20.4    
+taller           131978   131970   S      2      1    1    0    1       18.9    
+
+== 17:44:00 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB) 
+centro_despacho  131970   131847   S      6      0    6    0    2       23.2    
+trabajador-1     131973   131970   S      5      0    5    0    13      20.5    
+trabajador-2     131974   131970   S      5      0    5    0    14      20.6    
+taller           131978   131970   S      2      0    2    0    0       18.9    
+
+## Líneas ESTADO del monitor en los mismos instantes (negocio)
+17:43:55.601079 monitor          | ESTADO | recibidas=12 en_cola=3 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1000002 V2:2000002 V3:1000001] | finalizadas=3 (entregadas=3 canceladas=0) | 3.0/s
+17:43:56.601518 monitor          | ESTADO | recibidas=23 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1000004 V2:1000003 V3:2000003] | finalizadas=7 (entregadas=7 canceladas=0) | 4.0/s
+17:43:57.602024 monitor          | ESTADO | recibidas=26 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000006 V2:2000005 V3:2000004] | finalizadas=10 (entregadas=10 canceladas=0) | 3.0/s
+17:43:58.602977 monitor          | ESTADO | recibidas=30 en_cola=8 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1000009 V2:1000007 V3:1000008] | finalizadas=16 (entregadas=16 canceladas=0) | 6.0/s
+17:43:59.604223 monitor          | ESTADO | recibidas=35 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000009 V2:1000010 V3:1000011] | finalizadas=19 (entregadas=19 canceladas=0) | 3.0/s

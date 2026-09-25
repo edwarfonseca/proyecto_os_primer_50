@@ -1,0 +1,47 @@
+17:45:04.640075 | INICIO centro de despacho | método=fork | trabajadores=2 x 3 hilos | generadores=2 | solicitudes=40 | cola=semaforos(10) | vehículos=3 | modo=seguro | espera=bloqueante | sección=fina | ventana=0.0100 s | andenes=2 | inspectores=1 | interbloqueo=orden | puntos=7 | traza=64 KB | historial=50 | semilla=42 | log=evidencias/fase7/e1_ejecucion.log
+17:45:05.661453 | ESTADO | recibidas=19 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:25 V2:24 V3:26] | finalizadas=3 (entregadas=3 canceladas=0) | 3.0/s
+17:45:06.662522 | ESTADO | recibidas=24 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1 V2:2 V3:30] | finalizadas=8 (entregadas=8 canceladas=0) | 5.0/s
+17:45:07.663261 | ESTADO | recibidas=30 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:32 V2:4 V3:5] | finalizadas=14 (entregadas=14 canceladas=0) | 6.0/s
+17:45:08.664831 | ESTADO | recibidas=34 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:6 V2:35 V3:34] | finalizadas=18 (entregadas=18 canceladas=0) | 4.0/s
+17:45:09.666243 | ESTADO | recibidas=40 en_cola=9 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:11 V2:37 V3:10] | finalizadas=25 (entregadas=25 canceladas=0) | 7.0/s
+17:45:10.667495 | ESTADO | recibidas=40 en_cola=6 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:39 V2:12 V3:38] | finalizadas=28 (entregadas=28 canceladas=0) | 3.0/s
+17:45:11.668402 | ESTADO | recibidas=40 en_cola=2 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:13 V2:15 V3:14] | finalizadas=32 (entregadas=32 canceladas=0) | 4.0/s
+17:45:12.669055 | ESTADO | recibidas=40 en_cola=0 en_proceso=2 (esperando vehículo=0) | vehículos: asignados=2 disponibles=1 [V1:18 V2:- V3:20] | finalizadas=38 (entregadas=38 canceladas=0) | 6.0/s
+17:45:13.670160 | ESTADO | recibidas=40 en_cola=0 en_proceso=0 (esperando vehículo=0) | vehículos: asignados=0 disponibles=3 [V1:- V2:- V3:-] | finalizadas=40 (entregadas=40 canceladas=0) | 2.0/s
+17:45:13.739105 | RESUMEN de terminación:
+17:45:13.739829 |   trabajador-1   PID 132909  exit(0)
+17:45:13.740286 |   trabajador-2   PID 132910  exit(0)
+17:45:13.740763 |   taller         PID 132914  exit(0)
+17:45:13.745033 | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+17:45:13.747214 | ESTADÍSTICAS:
+17:45:13.747511 |   solicitudes: generadas=40 entregadas=40 canceladas=0 no atendidas=0
+17:45:13.747815 |   productores: bloqueos por cola llena=28, tiempo bloqueados=8.410 s
+17:45:13.748163 |   espera en cola (ms): mín=0 prom=1760 máx=2755
+17:45:13.752754 |   servicio con vehículo (s): prom=0.614 | trabajo total (suma)=24.55 s
+17:45:13.753459 |   tiempo total=8.67 s | rendimiento=4.61 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=2.83
+17:45:13.754287 |   hilos ocupados a la vez: máx=6 (capacidad = 2 trabajadores x 3 hilos = 6)
+17:45:13.755949 |   reparto por trabajador: trabajador-1=21, trabajador-2=19
+17:45:13.757505 |   reparto por hilo: despachador-1-1=8, despachador-1-2=6, despachador-1-3=7, despachador-2-1=6, despachador-2-2=7, despachador-2-3=6
+17:45:13.758301 |   CPU: principal=0.31 s, trabajadores=0.66 s | tiempo real=9.10 s | uso medio de CPU de los trabajadores=7.2 %
+17:45:13.758468 |   cambios de contexto trabajadores: voluntarios=973, involuntarios=173
+17:45:13.758685 |   FLOTA: 3 vehículos | modo=seguro | espera=bloqueante | sección=fina | asignaciones=40 | reparto: V1=13, V2=13, V3=14
+17:45:13.758930 |   entregas con vehículo a la vez: máx=3 con 3 vehículos
+17:45:13.759107 |   espera por vehículo (ms): prom=595 máx=1372 | reintentos de búsqueda (espera activa)=0
+17:45:13.759269 |   espera por el mutex de la flota (ms): prom=0.00 máx=0.01
+17:45:13.759553 |   DOBLES ASIGNACIONES: sonda en vivo=0 | auditoría: asignaciones sobre un vehículo ocupado=0, pares solapados=0 (entre procesos=0, entre hilos del mismo proceso=0)
+17:45:13.759737 |   REGISTROS INCONSISTENTES al liberar (actualizaciones perdidas)=0
+17:45:13.759916 |   estado final de la flota: libres=3/3
+17:45:13.760061 |   RECURSOS: 3 vehículos + 2 andenes | estrategia=orden | cargues=40 | inspecciones=21
+17:45:13.760194 |   INTERBLOQUEOS: detectados=0 | recuperaciones (víctimas)=0 | reintentos por tiempo límite=0
+17:45:13.764194 |   RUTAS: 40 planificadas (7 puntos) | CPU por ruta prom=11.0 ms | real por ruta prom=12.3 ms | real/CPU=1.12 | CPU total en rutas=0.44 s | suma de longitudes=11852.2
+17:45:13.765872 |   MEMORIA Y CPU por proceso (muestreo de /proc cada 0.5 s, serie en evidencias/fase7/e1_ejecucion.recursos.csv):
+17:45:13.766033 |     PROCESO          HILOS  RSS MB (inicial/pico/final) PSS pico   PRIVADA pico CPU s    CPU %  
+17:45:13.766275 |     centro_despacho  6      23.0 / 23.5 / 23.5         9.1        3.8          0.28     3.2    
+17:45:13.766420 |     trabajador-1     5      19.1 / 20.8 / 20.8         7.7        4.5          0.31     4.1    
+17:45:13.766558 |     trabajador-2     5      19.2 / 21.0 / 21.0         8.7        4.6          0.26     3.0    
+17:45:13.766692 |     taller           2      18.8 / 18.9 / 18.9         7.0        2.8          0.02     0.2    
+17:45:13.766813 |     PSS total (suma de picos)=32.5 MB | RSS total (suma de picos)=84.1 MB
+17:45:13.766963 |   REGISTRO: contadores compartidos tomadas=40 entregadas=40 canceladas=0 esperando_vehículo=0 | resultados recibidos: entregadas=40 canceladas=0 -> coinciden
+17:45:13.767106 |   MONITOR: 0 alertas SIN PROGRESO | serie en evidencias/fase7/e1_ejecucion.estado.csv
+17:45:13.770195 | FIN centro de despacho (correcto)
+exit code: 0

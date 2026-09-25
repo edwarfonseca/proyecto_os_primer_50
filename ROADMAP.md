@@ -125,9 +125,12 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] Carga mixta: 16 hilos en 1..16 procesos, tiempo y memoria (E3): justificación de la arquitectura híbrida.
 - [x] Historial de trazas GPS acotado vs sin límite (E4); hilo `muestreador` con series CSV de RSS/PSS/CPU desde `/proc`.
 
-### Fase 7 — Registro y observación
-- [ ] Hilo monitor: recibidas, pendientes, vehículos disponibles, asignados, finalizadas (cada segundo + CSV).
-- [ ] `scripts/observar.sh <PID>`: captura ps, pstree, ps -eLf, top -H -b, /proc a `evidencias/`.
+### Fase 7 — Registro y observación ✅
+- [x] Hilo `monitor`: recibidas, en cola, en proceso, esperando vehículo, vehículos asignados/disponibles (con su solicitud), finalizadas; `<log>.estado.csv`.
+- [x] Contadores compartidos con un lock por secuencia; ley de conservación verificada en cada muestra (E1).
+- [x] Alerta `SIN PROGRESO` (E3: procesos detenidos y la inanición de H3); `--vista resumen` para la demostración.
+- [x] `scripts/monitor_so.sh` (vista en vivo desde /proc) y `observar.sh` (captura completa).
+- [x] Hallazgo H6: `Value(lock=True)` no hace atómico `+= 1` (E4).
 
 ### Fase 8 — Experimentos
 - [ ] `scripts/experimentos.sh`: N ∈ {10, 50, 100, 500}, modos inseguro/seguro, 5 repeticiones.

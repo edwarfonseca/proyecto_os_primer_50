@@ -1,0 +1,7 @@
+17:46:04.902 kill -STOP trabajador-1 (133516)
+17:46:08.908 kill -STOP trabajador-2 (133517)
+## ps con ambos detenidos
+    PID STAT WCHAN              COMMAND
+ 133516 Tl   do_signal_stop     trabajador-1
+ 133517 Tl   do_signal_stop     trabajador-2
+17:46:14.925 kill -CONT a ambos

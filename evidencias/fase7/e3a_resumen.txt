@@ -1,0 +1,34 @@
+17:46:04.902 kill -STOP trabajador-1 (133516)
+17:46:08.908 kill -STOP trabajador-2 (133517)
+## ps con ambos detenidos
+    PID STAT WCHAN              COMMAND
+ 133516 Tl   do_signal_stop     trabajador-1
+ 133517 Tl   do_signal_stop     trabajador-2
+17:46:14.925 kill -CONT a ambos
+
+## Monitor
+17:46:01.961993 MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+17:46:02.962652 monitor          | ESTADO | recibidas=12 en_cola=3 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1000000 V2:2000001 V3:1000003] | finalizadas=3 (entregadas=3 canceladas=0) | 3.0/s
+17:46:03.963859 monitor          | ESTADO | recibidas=24 en_cola=9 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000005 V2:2000003 V3:2000004] | finalizadas=9 (entregadas=9 canceladas=0) | 6.0/s
+17:46:04.964790 monitor          | ESTADO | recibidas=30 en_cola=9 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1000008 V2:2000008 V3:1000007] | finalizadas=15 (entregadas=15 canceladas=0) | 6.0/s
+17:46:05.965534 monitor          | ESTADO | recibidas=32 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1000009 V2:2000008 V3:1000007] | finalizadas=16 (entregadas=16 canceladas=0) | 1.0/s
+17:46:06.966628 monitor          | ESTADO | recibidas=34 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000010 V2:2000008 V3:1000007] | finalizadas=18 (entregadas=18 canceladas=0) | 2.0/s
+17:46:07.971876 monitor          | ESTADO | recibidas=36 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000011 V2:2000008 V3:1000007] | finalizadas=20 (entregadas=20 canceladas=0) | 2.0/s
+17:46:08.972805 monitor          | ESTADO | recibidas=37 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000012 V2:2000008 V3:1000007] | finalizadas=21 (entregadas=21 canceladas=0) | 1.0/s
+17:46:09.973791 monitor          | ESTADO | recibidas=37 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000012 V2:2000008 V3:1000007] | finalizadas=21 (entregadas=21 canceladas=0) | 0.0/s
+17:46:10.974698 monitor          | ESTADO | recibidas=37 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000012 V2:2000008 V3:1000007] | finalizadas=21 (entregadas=21 canceladas=0) | 0.0/s
+17:46:11.976008 monitor          | ESTADO | recibidas=37 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000012 V2:2000008 V3:1000007] | finalizadas=21 (entregadas=21 canceladas=0) | 0.0/s
+17:46:11.976922 monitor          | SIN PROGRESO: 16 solicitudes pendientes (10 en cola, 6 en proceso) y ninguna finalizada en 3 s: posible interbloqueo, inanición o proceso caído
+17:46:12.977977 monitor          | ESTADO | recibidas=37 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000012 V2:2000008 V3:1000007] | finalizadas=21 (entregadas=21 canceladas=0) | 0.0/s
+17:46:13.979082 monitor          | ESTADO | recibidas=37 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000012 V2:2000008 V3:1000007] | finalizadas=21 (entregadas=21 canceladas=0) | 0.0/s
+17:46:14.979802 monitor          | ESTADO | recibidas=39 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1000011 V2:2000008 V3:2000013] | finalizadas=23 (entregadas=23 canceladas=0) | 2.0/s
+17:46:15.980387 monitor          | ESTADO | recibidas=42 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000014 V2:1000013 V3:1000012] | finalizadas=26 (entregadas=26 canceladas=0) | 3.0/s
+17:46:16.981173 monitor          | ESTADO | recibidas=47 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000015 V2:2000016 V3:1000016] | finalizadas=31 (entregadas=31 canceladas=0) | 5.0/s
+17:46:17.981659 monitor          | ESTADO | recibidas=52 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:2000018 V2:1000020 V3:1000017] | finalizadas=36 (entregadas=36 canceladas=0) | 5.0/s
+17:46:18.982166 monitor          | ESTADO | recibidas=56 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1000021 V2:2000020 V3:2000019] | finalizadas=40 (entregadas=40 canceladas=0) | 4.0/s
+17:46:19.982711 monitor          | ESTADO | recibidas=60 en_cola=0 en_proceso=1 (esperando vehículo=0) | vehículos: asignados=1 disponibles=2 [V1:2000021 V2:- V3:-] | finalizadas=59 (entregadas=44 canceladas=15) | 19.0/s
+17:46:20.699497 MainThread       |   INTERBLOQUEOS: detectados=0 | recuperaciones (víctimas)=0 | reintentos por tiempo límite=0
+17:46:20.701437 MainThread       |   MONITOR: 1 alertas SIN PROGRESO | serie en evidencias/fase7/e3a_detenidos.estado.csv
+
+17:46:20.699497 MainThread       |   INTERBLOQUEOS: detectados=0 | recuperaciones (víctimas)=0 | reintentos por tiempo límite=0
+17:46:20.701437 MainThread       |   MONITOR: 1 alertas SIN PROGRESO | serie en evidencias/fase7/e3a_detenidos.estado.csv
