@@ -2,11 +2,18 @@
 
 import multiprocessing as mp
 import os
+import queue
+import resource
 import signal
+import statistics
 import time
+from collections import Counter
 
 from . import registro, so_utils
+from .cola import ColaAcotada
 from .config import Config
+from .generador import crear_generadores
+from .modelo import CANCELADA, ENTREGADA, Resultado
 from .trabajador import proceso_trabajador
 
 
@@ -14,18 +21,26 @@ class CentroDespacho:
     def __init__(self, cfg: Config):
         self.cfg = cfg
         self.trabajadores: list[mp.Process] = []
+        self.generadores = []
+        self.resultados_recibidos: list[Resultado] = []
         self._senal: int | None = None
         self._caidos: set[int] = set()
+        self._plazo_cierre: float | None = None
+        self.detener_anticipado = False     # parada por señal, duración o error
 
     def ejecutar(self) -> int:
         so_utils.nombrar_proceso("centro_despacho")
         mp.current_process().name = "centro_despacho"
         self.log = registro.configurar(self.cfg.ruta_log)
-        self.log.info("INICIO centro de despacho | método=%s | trabajadores=%d | log=%s",
-                      self.cfg.metodo_inicio, self.cfg.trabajadores, self.cfg.ruta_log)
+        c = self.cfg
+        self.log.info("INICIO centro de despacho | método=%s | trabajadores=%d x %d hilos | "
+                      "generadores=%d | solicitudes=%s | cola=%s(%d) | semilla=%d | log=%s",
+                      c.metodo_inicio, c.trabajadores, c.hilos, c.generadores,
+                      c.solicitudes or "continuo", c.tipo_cola, c.capacidad_cola, c.semilla,
+                      c.ruta_log)
 
         so_utils.habilitar_volcado_hilos()
-        ctx = mp.get_context(self.cfg.metodo_inicio)
+        ctx = mp.get_context(c.metodo_inicio)
         # Indicador de parada: un byte en memoria compartida sin lock. Sólo el principal
         # escribe y la escritura de un byte es atómica. No se usa multiprocessing.Event
         # porque su set() espera la confirmación de cada proceso que duerme en wait():
@@ -36,6 +51,16 @@ class CentroDespacho:
         # operación es un único sem_post/sem_wait, así que la muerte de un trabajador
         # no deja el semáforo inconsistente.
         listos = ctx.Semaphore(0)
+        # Cola acotada productor-consumidor compartida por todos los despachadores.
+        # "semaforos": implementación propia (vacíos/llenos/mutex, ver cola.py).
+        # "mp": multiprocessing.Queue, que retiene su lock de lectores mientras espera
+        # (se conserva para reproducir el hallazgo H3).
+        if c.tipo_cola == "semaforos":
+            self.cola = ColaAcotada(ctx, c.capacidad_cola)
+        else:
+            self.cola = ctx.Queue(maxsize=c.capacidad_cola)
+        # Cola de resultados (sin límite): trabajadores -> principal.
+        self.resultados = ctx.Queue()
 
         # Los procesos se crean ANTES de lanzar cualquier hilo en el principal: hacer
         # fork() de un proceso con varios hilos sólo copia el hilo que llama y puede
@@ -43,8 +68,20 @@ class CentroDespacho:
         self._crear_trabajadores(ctx, listos)
         self._instalar_senales()
         self._esperar_arranque(listos)
-        self._registrar_jerarquia()
-        self._supervisar()
+
+        self.t_inicio = time.monotonic()
+        try:
+            self.generadores = crear_generadores(c, self.cola, self.detener, self.log)
+            for g in self.generadores:
+                g.start()
+            self._registrar_jerarquia()
+            self._operar()
+        except Exception:
+            # Un error inesperado en el principal no debe dejar trabajadores sin control:
+            # se registra y se ejecuta el mismo cierre ordenado.
+            self.log.exception("ERROR en el principal: se inicia el cierre")
+            self.detener.value = 1
+            self.detener_anticipado = True
         return self._finalizar()
 
     # -- creación -----------------------------------------------------------------
@@ -56,7 +93,8 @@ class CentroDespacho:
         try:
             for i in range(1, self.cfg.trabajadores + 1):
                 p = ctx.Process(target=proceso_trabajador, name=f"trabajador-{i}",
-                                args=(i, self.detener, listos, self.cfg))
+                                args=(i, self.detener, listos, self.cola, self.resultados,
+                                      self.cfg))
                 p.start()
                 self.trabajadores.append(p)
                 self.log.info("CREADO %s -> PID %d", p.name, p.pid)
@@ -67,7 +105,7 @@ class CentroDespacho:
         # El manejador sólo anota la señal. Coordinar el cierre (tomar locks, escribir
         # en el log) desde un manejador puede interbloquear al hilo principal consigo
         # mismo si la señal llega mientras ese hilo ya tiene el lock; el cierre se hace
-        # luego desde el flujo normal en _supervisar().
+        # luego desde el flujo normal en _operar().
         def manejador(signum, _frame):
             self._senal = signum
         signal.signal(signal.SIGINT, manejador)
@@ -85,30 +123,77 @@ class CentroDespacho:
     # -- observación y supervisión -----------------------------------------------
 
     def _registrar_jerarquia(self) -> None:
-        self.log.info("JERARQUÍA de procesos (leída de /proc):")
+        self.log.info("JERARQUÍA de procesos e hilos (leída de /proc):")
         self.log.info("  %-7s %-7s %-16s %-6s %-6s %-9s", "PID", "PPID", "NOMBRE",
                       "ESTADO", "HILOS", "RSS(kB)")
         for pid in [os.getpid()] + [p.pid for p in self.trabajadores]:
             i = so_utils.info_proceso(pid)
-            if i:
-                self.log.info("  %-7d %-7d %-16s %-6s %-6d %-9d", i["pid"], i["ppid"],
-                              i["nombre"], i["estado"][0], i["hilos"], i["rss_kb"])
+            if not i:
+                continue
+            self.log.info("  %-7d %-7d %-16s %-6s %-6d %-9d", i["pid"], i["ppid"],
+                          i["nombre"], i["estado"][0], i["hilos"], i["rss_kb"])
+            for h in so_utils.hilos_proceso(pid):
+                self.log.info("      └ TID %-7d %-16s %s", h["tid"], h["nombre"], h["estado"])
 
-    def _supervisar(self) -> None:
-        fin = time.monotonic() + self.cfg.duracion if self.cfg.duracion > 0 else None
+    def _operar(self) -> None:
+        """Bucle del principal: recoge resultados, envía centinelas y vigila procesos."""
+        c = self.cfg
+        fin = self.t_inicio + c.duracion if c.duracion > 0 else None
+        centinelas = None                       # None = aún no toca enviarlos
         while True:
-            if self._senal is not None:
-                self.log.info("SEÑAL %s recibida: se inicia el cierre ordenado",
-                              signal.Signals(self._senal).name)
-                break
-            if fin is not None and time.monotonic() >= fin:
-                self.log.info("DURACIÓN cumplida (%.1f s): se inicia el cierre ordenado",
-                              self.cfg.duracion)
-                break
+            self._recoger_resultados(timeout=0.2)
+
+            if self._senal is not None and not self.detener.value:
+                self._abortar(f"SEÑAL {signal.Signals(self._senal).name} recibida")
+            if fin is not None and time.monotonic() >= fin and not self.detener.value:
+                self._abortar(f"DURACIÓN máxima cumplida ({c.duracion:.1f} s)")
+
+            if centinelas is None and not any(g.is_alive() for g in self.generadores):
+                centinelas = 0 if self.detener.value else c.trabajadores * c.hilos
+                if centinelas:
+                    self.log.info("GENERACIÓN terminada: se envían %d centinelas "
+                                  "(uno por hilo despachador)", centinelas)
+            if centinelas:
+                centinelas = self._enviar_centinelas(centinelas)
+
             if not self._vigilar_trabajadores():
-                self.log.error("NINGÚN trabajador activo: se inicia el cierre")
                 break
-            time.sleep(0.2)
+            if self._plazo_cierre is not None and time.monotonic() >= self._plazo_cierre:
+                self.log.warning("PLAZO de cierre vencido con trabajadores activos")
+                break
+
+    def _abortar(self, motivo: str) -> None:
+        self.log.info("%s: se detiene la generación y se cancelan las solicitudes en cola",
+                      motivo)
+        self.detener.value = 1
+        self.detener_anticipado = True
+        self._plazo_cierre = time.monotonic() + self.cfg.espera_fin
+
+    def _enviar_centinelas(self, pendientes: int) -> int:
+        """Encola centinelas (None) sin bloquear al principal; devuelve los que faltan."""
+        while pendientes:
+            try:
+                self.cola.put_nowait(None)
+            except queue.Full:
+                break
+            pendientes -= 1
+        return pendientes
+
+    def _recoger_resultados(self, timeout: float) -> None:
+        # El principal es el único lector de `resultados`. Debe vaciarla continuamente:
+        # un proceso que escribió en una Queue no puede terminar hasta que su hilo
+        # alimentador (QueueFeederThread) entregue todo al pipe, y si el pipe se llena
+        # porque nadie lee, el trabajador quedaría bloqueado al salir.
+        try:
+            r = self.resultados.get(timeout=timeout)
+        except queue.Empty:
+            return
+        while True:
+            self.resultados_recibidos.append(r)
+            try:
+                r = self.resultados.get_nowait()
+            except queue.Empty:
+                return
 
     def _vigilar_trabajadores(self) -> bool:
         """Detecta trabajadores que terminaron inesperadamente. Devuelve si queda alguno."""
@@ -120,21 +205,28 @@ class CentroDespacho:
                 vivos += 1
             elif p.pid not in self._caidos:
                 self._caidos.add(p.pid)
-                self.log.warning("CAÍDO %s (PID %d): %s", p.name, p.pid,
-                                 so_utils.describir_salida(p.exitcode))
+                nivel = self.log.info if p.exitcode == 0 else self.log.warning
+                nivel("%s %s (PID %d): %s", "TERMINÓ" if p.exitcode == 0 else "CAÍDO",
+                      p.name, p.pid, so_utils.describir_salida(p.exitcode))
         return vivos > 0
 
     # -- cierre ---------------------------------------------------------------------
 
+    def _esperar_proceso(self, p, segundos: float) -> None:
+        """join() con plazo que sigue vaciando la cola de resultados mientras espera."""
+        limite = time.monotonic() + segundos
+        while p.is_alive() and time.monotonic() < limite:
+            self._recoger_resultados(timeout=0.05)
+
     def _finalizar(self) -> int:
         self.detener.value = 1
         for p in self.trabajadores:
-            p.join(timeout=self.cfg.espera_fin)
+            self._esperar_proceso(p, self.cfg.espera_fin)
             if p.is_alive():
                 self.log.warning("%s (PID %d) no terminó en %.1f s: se envía SIGTERM",
                                  p.name, p.pid, self.cfg.espera_fin)
                 p.terminate()
-                p.join(timeout=self.cfg.espera_fin)
+                self._esperar_proceso(p, self.cfg.espera_fin)
             if p.is_alive():
                 # Un proceso detenido (estado T) deja SIGTERM pendiente y no lo atiende;
                 # SIGKILL no se puede capturar ni ignorar y el kernel lo aplica siempre.
@@ -143,6 +235,9 @@ class CentroDespacho:
                                  (so_utils.info_proceso(p.pid) or {}).get("estado", "?"))
                 p.kill()
                 p.join()
+        for g in self.generadores:
+            g.join(timeout=self.cfg.espera_fin)
+        self._recoger_resultados(timeout=0.05)
 
         self.log.info("RESUMEN de terminación:")
         for p in self.trabajadores:
@@ -151,7 +246,77 @@ class CentroDespacho:
         huerfanos = [p.pid for p in self.trabajadores if so_utils.info_proceso(p.pid)]
         self.log.info("VERIFICACIÓN: procesos hijos que siguen en /proc: %s",
                       huerfanos or "ninguno (sin zombis ni huérfanos)")
+        cuadra = self._estadisticas()
 
-        exito = all(p.exitcode == 0 for p in self.trabajadores)
+        exito = all(p.exitcode == 0 for p in self.trabajadores) and cuadra
         self.log.info("FIN centro de despacho (%s)", "correcto" if exito else "con fallos")
         return 0 if exito else 1
+
+    def _estadisticas(self) -> bool:
+        """Registra las métricas de la ejecución. Devuelve si el balance cuadra."""
+        rs = self.resultados_recibidos
+        entregadas = [r for r in rs if r.estado == ENTREGADA]
+        canceladas = sum(1 for r in rs if r.estado == CANCELADA)
+        generadas = sum(g.generadas for g in self.generadores)
+        perdidas = generadas - len(entregadas) - canceladas
+        L = self.log
+
+        L.info("ESTADÍSTICAS:")
+        L.info("  solicitudes: generadas=%d entregadas=%d canceladas=%d no atendidas=%d",
+               generadas, len(entregadas), canceladas, perdidas)
+        L.info("  productores: bloqueos por cola llena=%d, tiempo bloqueados=%.3f s",
+               sum(g.bloqueos for g in self.generadores),
+               sum(g.t_bloqueado for g in self.generadores))
+        if entregadas:
+            esperas = [(r.t_inicio - r.t_llegada) * 1000 for r in entregadas]
+            servicios = [r.t_fin - r.t_inicio for r in entregadas]
+            inicio = min(r.t_llegada for r in entregadas)
+            makespan = max(r.t_fin for r in entregadas) - inicio
+            L.info("  espera en cola (ms): mín=%.0f prom=%.0f máx=%.0f",
+                   min(esperas), statistics.fmean(esperas), max(esperas))
+            L.info("  servicio (s): prom=%.3f | trabajo total (suma)=%.2f s",
+                   statistics.fmean(servicios), sum(servicios))
+            L.info("  tiempo total=%.2f s | rendimiento=%.2f solicitudes/s | "
+                   "concurrencia efectiva (trabajo/tiempo)=%.2f",
+                   makespan, len(entregadas) / makespan, sum(servicios) / makespan)
+            L.info("  concurrencia máxima observada=%d (capacidad = %d trabajadores x %d hilos"
+                   " = %d)", self._concurrencia_maxima(entregadas), self.cfg.trabajadores,
+                   self.cfg.hilos, self.cfg.trabajadores * self.cfg.hilos)
+            por_trab = Counter(r.trabajador for r in entregadas)
+            por_hilo = Counter(r.hilo for r in entregadas)
+            L.info("  reparto por trabajador: %s",
+                   ", ".join(f"trabajador-{k}={v}" for k, v in sorted(por_trab.items())))
+            L.info("  reparto por hilo: %s",
+                   ", ".join(f"{k}={v}" for k, v in sorted(por_hilo.items())))
+        # CPU consumida (usuario + sistema) según el kernel. RUSAGE_CHILDREN sólo incluye
+        # hijos ya recogidos con wait(), por eso se consulta al final.
+        yo = resource.getrusage(resource.RUSAGE_SELF)
+        hijos = resource.getrusage(resource.RUSAGE_CHILDREN)
+        pared = time.monotonic() - self.t_inicio
+        L.info("  CPU: principal=%.2f s, trabajadores=%.2f s | tiempo real=%.2f s | "
+               "uso medio de CPU de los trabajadores=%.1f %%",
+               yo.ru_utime + yo.ru_stime, hijos.ru_utime + hijos.ru_stime, pared,
+               100 * (hijos.ru_utime + hijos.ru_stime) / pared)
+        L.info("  cambios de contexto trabajadores: voluntarios=%d, involuntarios=%d",
+               hijos.ru_nvcsw, hijos.ru_nivcsw)
+        if perdidas:
+            L.warning("  BALANCE: %d solicitudes quedaron sin registrar (trabajador caído o "
+                      "cola bloqueada)", perdidas)
+        # Sin parada anticipada deben haberse generado exactamente las solicitudes pedidas.
+        incompletas = (self.cfg.solicitudes > 0 and not self.detener_anticipado
+                       and generadas != self.cfg.solicitudes)
+        if incompletas:
+            L.warning("  BALANCE: se pidieron %d solicitudes y se generaron %d",
+                      self.cfg.solicitudes, generadas)
+        return perdidas == 0 and not incompletas
+
+    @staticmethod
+    def _concurrencia_maxima(rs) -> int:
+        """Máximo de solicitudes en servicio al mismo tiempo (barrido de eventos)."""
+        eventos = sorted([(r.t_inicio, 1) for r in rs] + [(r.t_fin, -1) for r in rs],
+                         key=lambda e: (e[0], e[1]))
+        actual = maximo = 0
+        for _, delta in eventos:
+            actual += delta
+            maximo = max(maximo, actual)
+        return maximo
