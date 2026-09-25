@@ -42,6 +42,20 @@ def info_proceso(pid: int) -> dict | None:
     }
 
 
+def memoria_proceso(pid: int) -> dict:
+    """Resumen de memoria de /proc/<pid>/smaps_rollup en kB (Rss, Pss, Private_Dirty...).
+
+    PSS reparte cada página compartida entre los procesos que la comparten: la suma de los
+    PSS de varios procesos es la memoria física que realmente ocupan entre todos.
+    """
+    try:
+        with open(f"/proc/{pid}/smaps_rollup") as f:
+            return {k: int(v.split()[0]) for k, v in
+                    (linea.split(":", 1) for linea in f if linea.endswith("kB\n"))}
+    except (FileNotFoundError, ProcessLookupError, PermissionError):
+        return {}
+
+
 def hilos_proceso(pid: int) -> list[dict]:
     """Lista los hilos (tareas) de un proceso: /proc/<pid>/task/<tid>."""
     hilos = []

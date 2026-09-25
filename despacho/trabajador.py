@@ -5,6 +5,7 @@ solicitudes compartida con los hilos de los demás trabajadores. El hilo princip
 trabajador sólo los crea, vigila la orfandad y espera a que terminen.
 """
 
+import math
 import os
 import queue
 import random
@@ -13,6 +14,7 @@ import threading
 import time
 
 from . import registro, so_utils
+from .carga import Historial, ruta_optima
 from .modelo import CANCELADA, ENTREGADA, Resultado
 from .recursos import Abortado
 
@@ -40,8 +42,10 @@ def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, 
 
     ppid_original = os.getppid()
     parar = threading.Event()       # orden local (mismo proceso) para los despachadores
+    historial = Historial(cfg.historial, cfg.traza_kb)   # compartido por los hilos del proceso
     hilos = [
-        Despachador(id_trabajador, t, cola, resultados, flota, recursos, detener, parar, log)
+        Despachador(id_trabajador, t, cola, resultados, flota, recursos, historial, detener,
+                    parar, log)
         for t in range(1, cfg.hilos + 1)
     ]
     for h in hilos:
@@ -62,19 +66,26 @@ def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, 
         h.join()
     log.info("FIN trabajador %d | atendidas por hilo: %s", id_trabajador,
              ", ".join(f"{h.name}={h.entregadas}" for h in hilos))
+    entradas, tam = historial.resumen()
+    mem = so_utils.memoria_proceso(os.getpid())
+    log.info("MEMORIA trabajador %d | historial: %d trazas (%.1f MB), %d descartadas | "
+             "RSS=%.1f MB, PSS=%.1f MB, privada modificada=%.1f MB", id_trabajador, entradas,
+             tam / 2**20, historial.descartadas, mem.get("Rss", 0) / 1024,
+             mem.get("Pss", 0) / 1024, mem.get("Private_Dirty", 0) / 1024)
 
 
 class Despachador(threading.Thread):
     """Consumidor: toma una solicitud, le asigna un vehículo, la despacha y la entrega."""
 
-    def __init__(self, id_trabajador, idx, cola, resultados, flota, recursos, detener, parar,
-                 log):
+    def __init__(self, id_trabajador, idx, cola, resultados, flota, recursos, historial,
+                 detener, parar, log):
         super().__init__(name=f"despachador-{id_trabajador}-{idx}")
         self.id_trabajador = id_trabajador
         self.cola = cola
         self.resultados = resultados
         self.flota = flota
         self.recursos = recursos
+        self.historial = historial
         self.slot = recursos.slot_despachador(id_trabajador, idx)
         self.detener = detener
         self.parar = parar
@@ -103,6 +114,7 @@ class Despachador(threading.Thread):
                 break
 
             t_inicio = time.monotonic()
+            costo, t_cpu, t_real = self._planificar(s) if not self.detener.value else (0, 0, 0)
             v, reintentos, espera_mutex = (None, 0, 0.0) if self.detener.value else \
                 self.flota.asignar(s.id, self.detener, self.log)
             if v is None:
@@ -138,10 +150,29 @@ class Despachador(threading.Thread):
             time.sleep(s.t_entrega)         # trayecto hasta la entrega
             t_liberado = time.monotonic()
             self.flota.liberar(v, s.id, self.log)
+            self.historial.registrar(s.id)        # traza GPS del recorrido
             t_fin = time.monotonic()
             self.entregadas += 1
             self.log.info("ENTREGADA solicitud %d | V%d liberado | servicio %.0f ms", s.id,
                           v + 1, (t_fin - t_inicio) * 1000)
             self.resultados.put(Resultado(s.id, ENTREGADA, self.id_trabajador, self.name,
                                           tid, s.t_llegada, t_inicio, t_fin, v, t_asignado,
-                                          t_liberado, reintentos, espera_mutex))
+                                          t_liberado, reintentos, espera_mutex, costo, t_cpu,
+                                          t_real))
+
+    def _planificar(self, s) -> tuple[float, float, float]:
+        """Ruta óptima de la solicitud. Devuelve (costo, CPU del hilo, tiempo real).
+
+        time.thread_time() mide la CPU que consumió ESTE hilo (CLOCK_THREAD_CPUTIME_ID del
+        kernel). Si el tiempo real es mayor que la CPU, el hilo estuvo listo pero sin
+        ejecutarse: esperando el GIL (otros hilos del proceso) o un núcleo libre.
+        """
+        if not s.puntos:
+            return 0.0, 0.0, 0.0
+        t0, c0 = time.monotonic(), time.thread_time()
+        costo, _ = ruta_optima(s.puntos)
+        t_real, t_cpu = time.monotonic() - t0, time.thread_time() - c0
+        self.log.info("RUTA solicitud %d: %d puntos, %d recorridos, longitud %.1f | CPU %.0f ms, "
+                      "real %.0f ms", s.id, len(s.puntos), math.factorial(len(s.puntos)), costo,
+                      t_cpu * 1000, t_real * 1000)
+        return costo, t_cpu, t_real

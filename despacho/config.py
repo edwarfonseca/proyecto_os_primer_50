@@ -27,6 +27,10 @@ class Config:
     alistar_anden: float     # segundos que la inspección retiene el andén antes de pedir el vehículo
     interbloqueo: str        # sin_orden | orden | timeout | deteccion
     timeout_recurso: float   # tiempo límite del segundo recurso (estrategia timeout)
+    puntos: int              # puntos de entrega por solicitud (CPU: P! rutas)
+    traza_kb: int            # KB de traza GPS que se guardan por entrega
+    historial: int           # trazas conservadas por proceso; 0 = sin límite
+    muestreo: float          # segundos entre muestras de CPU/memoria en /proc
     tipo_cola: str           # semaforos (ColaAcotada) | mp (multiprocessing.Queue)
     despacho: tuple[float, float]   # rango (s) del tiempo de preparación
     entrega: tuple[float, float]    # rango (s) del tiempo de ruta
@@ -123,6 +127,18 @@ def leer_argumentos(argv=None) -> Config:
                    help="tiempo límite para el segundo recurso con --interbloqueo timeout "
                         "(defecto: 0.1)")
 
+    m = p.add_argument_group("CPU y memoria")
+    m.add_argument("-p", "--puntos", type=int, default=7,
+                   help="puntos de entrega por solicitud; la ruta óptima evalúa P! recorridos "
+                        "(7 ≈ 3 ms, 8 ≈ 25 ms, 9 ≈ 220 ms de CPU); 0 = sin planificación (defecto: 7)")
+    m.add_argument("--traza-kb", type=int, default=64,
+                   help="KB de traza GPS guardados por entrega; 0 = sin historial (defecto: 64)")
+    m.add_argument("--historial", type=int, default=50,
+                   help="trazas conservadas por proceso trabajador; 0 = sin límite, la memoria "
+                        "crece con cada entrega (defecto: 50)")
+    m.add_argument("--muestreo", type=float, default=0.5,
+                   help="segundos entre muestras de CPU y memoria leídas de /proc (defecto: 0.5)")
+
     e = p.add_argument_group("ejecución")
     e.add_argument("-d", "--duracion", type=float, default=0.0,
                    help="tiempo máximo en segundos; 0 = sin límite (defecto: 0)")
@@ -136,9 +152,12 @@ def leer_argumentos(argv=None) -> Config:
                    "andenes"):
         if getattr(a, nombre) < 1:
             p.error(f"--{nombre.replace('_', '-')} debe ser >= 1")
+    if a.puntos > 10:
+        p.error("--puntos > 10 no es razonable (10! = 3.6 millones de rutas por solicitud)")
     if min(a.solicitudes, a.tam_rafaga, a.ventana, a.reintento, a.inspectores,
-           a.alistar_anden) < 0 or a.timeout_recurso <= 0:
-        p.error("valores negativos no permitidos (y --timeout-recurso debe ser > 0)")
+           a.alistar_anden, a.puntos, a.traza_kb, a.historial) < 0 or a.timeout_recurso <= 0 \
+            or a.muestreo <= 0:
+        p.error("valores negativos no permitidos (--timeout-recurso y --muestreo deben ser > 0)")
     ruta_log = a.log or Path("logs") / f"despacho_{time.strftime('%Y%m%d_%H%M%S')}.log"
 
     return Config(
@@ -149,7 +168,8 @@ def leer_argumentos(argv=None) -> Config:
         seccion=a.seccion, reintento=a.reintento, andenes=a.andenes,
         inspectores=a.inspectores, intervalo_inspeccion=a.intervalo_inspeccion,
         alistar_anden=a.alistar_anden, interbloqueo=a.interbloqueo,
-        timeout_recurso=a.timeout_recurso, despacho=a.despacho, entrega=a.entrega,
+        timeout_recurso=a.timeout_recurso, puntos=a.puntos, traza_kb=a.traza_kb,
+        historial=a.historial, muestreo=a.muestreo, despacho=a.despacho, entrega=a.entrega,
         semilla=a.semilla, duracion=a.duracion, metodo_inicio=a.metodo_inicio,
         espera_fin=a.espera_fin, ruta_log=ruta_log,
     )

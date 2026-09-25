@@ -81,6 +81,10 @@ class Generador(threading.Thread):
             generador=self.idg, rafaga=rafaga,
             t_despacho=round(self.rng.uniform(*self.cfg.despacho), 3),
             t_entrega=round(self.rng.uniform(*self.cfg.entrega), 3),
+            # Los puntos se sortean al final para no alterar los demás campos de la carga
+            # (con --puntos 0 la secuencia aleatoria es la misma de las fases anteriores).
+            puntos=tuple((round(self.rng.uniform(0, 100), 1), round(self.rng.uniform(0, 100), 1))
+                         for _ in range(self.cfg.puntos)),
         )
 
     def _encolar(self, s: Solicitud) -> bool:
