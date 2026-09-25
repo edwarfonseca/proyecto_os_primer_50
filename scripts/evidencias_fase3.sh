@@ -18,7 +18,7 @@ mkdir -p "$DIR" logs/fase3
 rm -f "$DIR"/e[0-9]_*
 
 # Desde la Fase 4 el modo por defecto es el seguro: aquí se fuerza la versión con el problema.
-INSEGURO="--modo inseguro --espera activa"
+INSEGURO="--modo inseguro --espera activa -a 100 -i 0"   # sin taller ni andenes limitados (Fase 5+)
 
 sonda() { grep -oE "sonda en vivo=[0-9]+" "$1" | cut -d= -f2; }
 auditoria() { grep -oE "vehículo ocupado=[0-9]+" "$1" | cut -d= -f2; }
