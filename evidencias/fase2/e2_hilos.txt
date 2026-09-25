@@ -1,0 +1,28 @@
+## top -H -b -n 1: una fila por hilo
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  72899 edwar     20   0  176152  23080  11096 S   0.0   0.3   0:00.09 centro_despacho
+  72913 edwar     20   0  176152  23080  11096 S   0.0   0.3   0:00.00 generador-1
+  72914 edwar     20   0  176152  23080  11096 S   0.0   0.3   0:00.01 generador-2
+  72905 edwar     20   0  323516  19244   7240 S   0.0   0.2   0:00.00 trabajador-1
+  72907 edwar     20   0  323516  19244   7240 S   0.0   0.2   0:00.00 despachador-1-1
+  72908 edwar     20   0  323516  19244   7240 S   0.0   0.2   0:00.00 despachador-1-2
+  72909 edwar     20   0  323516  19244   7240 S   0.0   0.2   0:00.00 despachador-1-3
+  72915 edwar     20   0  323516  19244   7240 S   0.0   0.2   0:00.00 QueueFeederThre
+  72906 edwar     20   0  323516  19252   7240 S   0.0   0.2   0:00.00 trabajador-2
+  72910 edwar     20   0  323516  19252   7240 S   0.0   0.2   0:00.00 despachador-2-1
+  72911 edwar     20   0  323516  19252   7240 S   0.0   0.2   0:00.00 despachador-2-2
+  72912 edwar     20   0  323516  19252   7240 S   0.0   0.2   0:00.00 despachador-2-3
+  72916 edwar     20   0  323516  19252   7240 S   0.0   0.2   0:00.00 QueueFeederThre
+
+
+## /proc/<pid>/task: hilos del principal y de trabajador-1
+-- PID 72899 (centro_despacho): Threads=3
+   TID 72899    centro_despacho  S
+   TID 72913    generador-1      S
+   TID 72914    generador-2      S
+-- PID 72905 (trabajador-1): Threads=5
+   TID 72905    trabajador-1     S
+   TID 72907    despachador-1-1  S
+   TID 72908    despachador-1-2  S
+   TID 72909    despachador-1-3  S
+   TID 72915    QueueFeederThre  S

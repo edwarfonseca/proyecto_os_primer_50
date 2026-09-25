@@ -1,0 +1,4 @@
+Carga: -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 (3 ráfagas por generador), 30 repeticiones
+Commit: 68185eb + cambios sin commit
+
+ejecuciones con solicitudes sin generar: 0 de 30

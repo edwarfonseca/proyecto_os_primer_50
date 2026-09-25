@@ -19,8 +19,9 @@ sincronización, interbloqueos, CPU y memoria**, observados con herramientas del
 ## Ejecución
 ```bash
 python3 main.py --help
-python3 main.py -w 3 -d 5          # 3 procesos trabajadores durante 5 s
-python3 main.py -w 3 -d 0          # hasta Ctrl+C
+python3 main.py                    # 2 trabajadores x 3 hilos, 20 solicitudes
+python3 main.py -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 -k 5   # ráfagas simultáneas, cola de 5
+python3 main.py -n 0 --tam-rafaga 3 --intervalo 0.5        # generación continua hasta Ctrl+C
 ```
 
 ## Observación con herramientas del SO
@@ -33,7 +34,10 @@ kill -USR1 $(pgrep -xo centro_despacho)   # volcado de la pila de todos los hilo
 ## Reproducir evidencias
 ```bash
 scripts/evidencias_fase1.sh        # escenarios de procesos, señales, zombis y huérfanos
+scripts/evidencias_fase2.sh        # ráfagas, hilos en el SO, escalamiento, capacidad de cola
 python3 experimentos/h1_event_bloqueado.py [--corregido]
+experimentos/h3_trabajador_caido.sh 10
+experimentos/h4_barrera_abortada.sh despues 30
 ```
 
 ## Estructura

@@ -1,0 +1,28 @@
+## Llegadas por ráfaga: 4 generadores x 2 solicitudes, liberados por una Barrier
+16:01:21.089710 generador-1      | RÁFAGA 1: 4 generadores liberados simultáneamente
+16:01:21.090430 generador-1      | RECIBIDA solicitud 1 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~1
+16:01:21.090589 generador-1      | RECIBIDA solicitud 2 (ráfaga 1) Jumbo: Chiquinquirá -> Paipa | en cola ~1
+16:01:21.090206 generador-3      | RECIBIDA solicitud 13 (ráfaga 1) Jumbo: Tunja -> Duitama | en cola ~1
+16:01:21.090105 generador-4      | RECIBIDA solicitud 19 (ráfaga 1) Ara: Tunja -> Garagoa | en cola ~0
+16:01:21.091122 generador-4      | RECIBIDA solicitud 20 (ráfaga 1) D1: Villa de Leyva -> Duitama | en cola ~1
+16:01:21.090988 generador-3      | RECIBIDA solicitud 14 (ráfaga 1) Alkosto: Garagoa -> Paipa | en cola ~1
+16:01:21.090311 generador-2      | RECIBIDA solicitud 7 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~1
+16:01:21.092465 generador-2      | RECIBIDA solicitud 8 (ráfaga 1) Olímpica: Garagoa -> Villa de Leyva | en cola ~2
+16:01:21.893088 generador-2      | RECIBIDA solicitud 9 (ráfaga 2) D1: Duitama -> Villa de Leyva | en cola ~1
+16:01:21.894370 generador-2      | RECIBIDA solicitud 10 (ráfaga 2) Falabella: Villa de Leyva -> Moniquirá | en cola ~1
+16:01:21.895048 generador-1      | RÁFAGA 2: 4 generadores liberados simultáneamente
+16:01:21.895714 generador-1      | RECIBIDA solicitud 3 (ráfaga 2) Homecenter: Tunja -> Moniquirá | en cola ~1
+16:01:21.896722 generador-1      | RECIBIDA solicitud 4 (ráfaga 2) D1: Moniquirá -> Sogamoso | en cola ~2
+16:01:21.893818 generador-4      | RECIBIDA solicitud 21 (ráfaga 2) Olímpica: Paipa -> Sogamoso | en cola ~1
+16:01:21.897589 generador-4      | RECIBIDA solicitud 22 (ráfaga 2) Ara: Sogamoso -> Tunja | en cola ~3
+16:01:21.896215 generador-3      | RECIBIDA solicitud 15 (ráfaga 2) D1: Garagoa -> Tunja | en cola ~1
+16:01:21.898263 generador-3      | RECIBIDA solicitud 16 (ráfaga 2) Alkosto: Paipa -> Duitama | en cola ~4
+16:01:22.699106 generador-3      | RECIBIDA solicitud 17 (ráfaga 3) Homecenter: Duitama -> Garagoa | en cola ~1
+16:01:22.700963 generador-3      | RECIBIDA solicitud 18 (ráfaga 3) Olímpica: Tunja -> Moniquirá | en cola ~1
+16:01:22.700408 generador-4      | RECIBIDA solicitud 23 (ráfaga 3) Homecenter: Paipa -> Chiquinquirá | en cola ~1
+16:01:22.702744 generador-4      | RECIBIDA solicitud 24 (ráfaga 3) Homecenter: Garagoa -> Sogamoso | en cola ~1
+16:01:22.699800 generador-2      | RÁFAGA 3: 4 generadores liberados simultáneamente
+16:01:22.701687 generador-1      | RECIBIDA solicitud 5 (ráfaga 3) Éxito: Tunja -> Sogamoso | en cola ~1
+16:01:22.704821 generador-1      | RECIBIDA solicitud 6 (ráfaga 3) Homecenter: Duitama -> Villa de Leyva | en cola ~3
+16:01:22.704209 generador-2      | RECIBIDA solicitud 11 (ráfaga 3) D1: Paipa -> Moniquirá | en cola ~2
+16:01:22.706264 generador-2      | RECIBIDA solicitud 12 (ráfaga 3) Éxito: Tunja -> Paipa | en cola ~4

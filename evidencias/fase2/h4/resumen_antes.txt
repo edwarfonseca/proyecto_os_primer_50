@@ -1,0 +1,17 @@
+Carga: -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 (3 ráfagas por generador), 30 repeticiones
+Commit: 68185eb
+
+run 1: generadas=20 | generador 3: generadas=4;generador 2: generadas=4
+run 2: generadas=22 | generador 1: generadas=4
+run 4: generadas=18 | generador 4: generadas=4;generador 2: generadas=4;generador 3: generadas=4
+run 6: generadas=22 | generador 3: generadas=4
+run 10: generadas=22 | generador 1: generadas=4
+run 11: generadas=20 | generador 1: generadas=4;generador 2: generadas=4
+run 14: generadas=22 | generador 2: generadas=4
+run 16: generadas=22 | generador 4: generadas=4
+run 18: generadas=22 | generador 2: generadas=4
+run 22: generadas=20 | generador 3: generadas=4;generador 2: generadas=4
+run 23: generadas=20 | generador 4: generadas=4;generador 3: generadas=4
+run 26: generadas=22 | generador 3: generadas=4
+run 29: generadas=22 | generador 2: generadas=4
+ejecuciones con solicitudes sin generar: 13 de 30

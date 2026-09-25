@@ -8,7 +8,7 @@
 ## Índice
 - [0. Contexto, entorno y diseño](#fase-0--contexto-entorno-y-diseño)
 - [1. Procesos](#fase-1--procesos) ✅
-- [2. Hilos y productor-consumidor](#fase-2--hilos-y-productor-consumidor) *(pendiente)*
+- [2. Hilos y productor-consumidor](#fase-2--hilos-y-productor-consumidor) ✅
 - [3. Condición de carrera](#fase-3--condición-de-carrera) *(pendiente)*
 - [4. Corrección por sincronización](#fase-4--corrección-por-sincronización) *(pendiente)*
 - [5. Interbloqueo](#fase-5--interbloqueo) *(pendiente)*
@@ -69,10 +69,11 @@ que un proceso por solicitud).
 proceso servidor que serializa las operaciones y **ocultaría** la condición de carrera; con
 memoria compartida la carrera es real entre procesos e hilos.
 
-**D4. Cola productor-consumidor acotada.** `multiprocessing.Queue(maxsize=K)`: los productores
-(hilos generadores del proceso principal) se bloquean cuando la cola está llena y los consumidores
-(hilos despachadores de los trabajadores) cuando está vacía. Internamente usa un *pipe* y
-semáforos del SO. La cota K modela capacidad finita y aplica *backpressure*.
+**D4. Cola productor-consumidor acotada.** Los productores (hilos generadores del proceso
+principal) se bloquean cuando la cola está llena y los consumidores (hilos despachadores de los
+trabajadores) cuando está vacía. La cota K modela capacidad finita y aplica *backpressure*.
+Diseño inicial: `multiprocessing.Queue(maxsize=K)`. Implementación final: `ColaAcotada` propia
+con semáforos `vacios`/`llenos` + mutex sobre un pipe (Fase 2, D2.3 y hallazgo H3).
 
 **D5. Llegada simultánea.** Los productores se sincronizan con `threading.Barrier` para liberar
 una ráfaga de solicitudes en el mismo instante (requisito 6).
@@ -98,7 +99,7 @@ flowchart LR
         G2["hilo generador-k"]
         M["hilo monitor<br/>estadísticas + watchdog"]
     end
-    Q[["cola_solicitudes<br/>multiprocessing.Queue(maxsize=K)"]]
+    Q[["cola_solicitudes<br/>ColaAcotada(K): semáforos + pipe"]]
     subgraph SHM["Memoria compartida"]
         V[("vehiculos: Array[V]")]
         C[("contadores: Value")]
@@ -150,7 +151,8 @@ centro_despacho(P)            ← proceso principal
 ### 0.7 Recursos compartidos y secciones críticas
 | Recurso | Tipo | Compartido entre | Sección crítica | Mecanismo (versión corregida) |
 |---|---|---|---|---|
-| `cola_solicitudes` | Cola acotada | Proceso principal y trabajadores | `put`/`get` | Interna de `multiprocessing.Queue` (pipe + lock + semáforo) |
+| `cola_solicitudes` | Cola acotada | Proceso principal y trabajadores | `put`/`get` | `ColaAcotada`: `vacios`, `llenos`, `mutex_lectura`, `mutex_escritura` (Fase 2) |
+| `resultados` | Cola sin límite | Trabajadores → principal | `put`/`get` | Interna de `multiprocessing.Queue` (un solo lector: el principal) |
 | `vehiculos[V]` | Arreglo compartido | Todos los despachadores de todos los trabajadores | Buscar libre + marcar ocupado; liberar | `multiprocessing.Lock` + `Semaphore(V)` |
 | Contadores | `Value`/`Array` | Todos | Incrementos `x += 1` (leer-modificar-escribir) | Lock asociado al `Value` |
 | `andenes[A]` | Locks | Despachadores | Carga/descarga | Orden global de adquisición / timeout |
@@ -466,7 +468,370 @@ Prueba de fallo y corrección completa (formato 9.3 del enunciado):
   en sincronización, no ocupado calculando (H1).
 
 ## Fase 2 — Hilos y productor-consumidor
-*(pendiente)*
+
+> Rama `fase-2-hilos-cola` · etiqueta `fase-2` · evidencias en `evidencias/fase2/`
+
+### 2.1 Qué se hizo
+- **Productores:** G hilos `generador-i` en el proceso principal crean solicitudes (cliente, origen,
+  destino, tiempos) y las ponen en la cola. En cada ráfaga se sincronizan con una
+  `threading.Barrier` para llegar **simultáneamente** (requisito 6).
+- **Consumidores:** cada trabajador lanza T hilos `despachador-w-t`. Todos los hilos de todos los
+  trabajadores **compiten** por la misma cola. Cada solicitud pasa por
+  `RECIBIDA → DESPACHO (preparación) → EN RUTA → ENTREGADA`, con tiempos aleatorios
+  reproducibles (requisito 9).
+- **Cola acotada propia** (`despacho/cola.py`): búfer productor-consumidor clásico con semáforos
+  entre procesos. Se conserva `--cola mp` (`multiprocessing.Queue`) para reproducir el hallazgo H3.
+- **Cola de resultados** (trabajadores → principal) para contabilizar cada solicitud terminada.
+- **Cierre normal por centinelas** (*poison pill*): un `None` por hilo despachador cuando terminan
+  los generadores. **Cierre anticipado** (Ctrl+C, `SIGTERM`, `--duracion`): se detiene la
+  generación y las solicitudes que quedan en la cola se retiran como **canceladas**, así el balance
+  siempre cuadra.
+- **Estadísticas** al final: balance, bloqueos de productores, espera en cola, servicio,
+  rendimiento, concurrencia efectiva y máxima, reparto por trabajador e hilo, CPU consumida y
+  cambios de contexto (según el kernel, con `getrusage`).
+- La jerarquía registrada al inicio ahora incluye **los hilos de cada proceso** leídos de
+  `/proc/<pid>/task/<tid>/`.
+- Modo continuo (`-n 0`) para observar el sistema con herramientas del SO mientras corre.
+- Hallazgos: **H3** (inanición por muerte de un consumidor con `multiprocessing.Queue`) y
+  **H4** (carrera entre `Barrier.wait()` y `Barrier.abort()`), ambos reproducidos, corregidos y
+  medidos antes y después.
+
+**Cambios respecto a la Fase 1:** desaparece el "latido" de los trabajadores (ahora su actividad
+real son las solicitudes); `--duracion` pasa a ser un tiempo *máximo* (0 = sin límite); el
+sistema termina solo cuando se atienden todas las solicitudes.
+
+### 2.2 Estructura del código (nuevo o modificado)
+| Archivo | Responsabilidad |
+|---|---|
+| `despacho/modelo.py` | `Solicitud` y `Resultado`: los datos que viajan entre procesos (serializados con `pickle`) |
+| `despacho/generador.py` | Hilos productores, reparto determinista de ids, ráfagas con `Barrier`, bloqueo por cola llena |
+| `despacho/cola.py` | `ColaAcotada`: productor-consumidor con semáforos `vacios`/`llenos` + mutex sobre un pipe |
+| `despacho/trabajador.py` | Proceso trabajador: crea los hilos `Despachador` (consumidores) y vigila la orfandad |
+| `despacho/centro.py` | Crea colas y procesos, lanza generadores, recoge resultados, envía centinelas, estadísticas |
+| `scripts/evidencias_fase2.sh` | Reproduce E1–E4 |
+| `experimentos/h3_trabajador_caido.sh` | Reproduce y mide H3 con ambas colas |
+| `experimentos/h4_barrera_abortada.sh` | Reproduce y mide H4 |
+
+Parámetros nuevos (`python3 main.py --help`):
+
+| Parámetro | Defecto | Significado |
+|---|---|---|
+| `-t, --hilos` | 3 | Hilos despachadores por trabajador |
+| `-g, --generadores` | 2 | Hilos productores |
+| `-n, --solicitudes` | 20 | Total a generar; `0` = continuo hasta Ctrl+C |
+| `--tam-rafaga` | 0 | Solicitudes por generador en cada ráfaga (`0` = todas en una) |
+| `--intervalo` | 1 | Segundos entre ráfagas |
+| `-k, --capacidad-cola` | 10 | Capacidad K del búfer |
+| `--cola` | `semaforos` | `semaforos` (propia) o `mp` (`multiprocessing.Queue`) |
+| `--despacho`, `--entrega` | `0.1-0.3`, `0.2-0.6` | Rango (s) de los tiempos simulados |
+| `-s, --semilla` | 42 | Misma semilla = misma carga |
+| `-d, --duracion` | 0 | Tiempo máximo (0 = sin límite) |
+
+### 2.3 Arquitectura de la fase
+
+```mermaid
+flowchart LR
+    subgraph P["centro_despacho (PID P)"]
+        B{{"Barrier(G)"}}
+        G1["generador-1"] --- B
+        G2["generador-G"] --- B
+        MT["MainThread<br/>recoge resultados, centinelas,<br/>supervisa, estadísticas"]
+    end
+    subgraph C["ColaAcotada (K)"]
+        direction TB
+        SV["vacios = BoundedSemaphore(K)"]
+        PIPE[["pipe del kernel"]]
+        SL["llenos = Semaphore(0)"]
+        MX["mutex_lectura / mutex_escritura"]
+    end
+    subgraph W1["trabajador-1 (PPID P)"]
+        D11["despachador-1-1..T"]
+        F1["QueueFeederThread"]
+    end
+    subgraph W2["trabajador-W (PPID P)"]
+        D21["despachador-W-1..T"]
+        F2["QueueFeederThread"]
+    end
+    R[["resultados: multiprocessing.Queue"]]
+    G1 & G2 -- "put: P(vacios) ... V(llenos)" --> C
+    C -- "get: P(llenos) ... V(vacios)" --> D11 & D21
+    D11 --> F1 --> R
+    D21 --> F2 --> R
+    R --> MT
+```
+
+Cada solicitud cruza **dos fronteras de proceso**: de un hilo del principal a un hilo de un
+trabajador (por la cola de solicitudes) y de vuelta (por la cola de resultados). La pasan como
+bytes por pipes del kernel, porque los procesos no comparten el heap de Python.
+
+### 2.4 Decisiones de diseño de la fase
+
+**D2.1 Productores en el principal, consumidores en los trabajadores.** Los generadores sólo crean
+objetos pequeños y esperan (ráfagas, cola llena), así que como hilos cuestan poco. Los
+consumidores están repartidos entre procesos para que en la Fase 6 la parte de CPU se ejecute en
+paralelo real. Los generadores se lanzan **después** de crear los trabajadores (D1.2).
+
+**D2.2 Una única cola compartida por todos los consumidores.** Es el esquema productor-consumidor
+de libro. El reparto de carga es automático: el hilo que queda libre toma la siguiente solicitud.
+El reparto observado es equilibrado (E1: 13/11 entre trabajadores, 3–5 por hilo) sin ningún
+planificador explícito.
+
+**D2.3 Cola propia con semáforos (`ColaAcotada`) en lugar de `multiprocessing.Queue`.**
+```
+productor:  P(vacios); P(mutex_escritura); escribir en el pipe; V(mutex_escritura); V(llenos)
+consumidor: P(llenos); P(mutex_lectura);   leer del pipe;       V(mutex_lectura);   V(vacios)
+```
+- `vacios` (inicia en K) impide que haya más de K solicitudes en el búfer: el productor se bloquea
+  en `P(vacios)` cuando la cola está llena. `llenos` (inicia en 0) hace que el consumidor se
+  bloquee en `P(llenos)` cuando está vacía y garantiza que sólo lee cuando hay un mensaje completo.
+  Los mutex evitan que dos lectores lean mitades de mensajes distintos o que dos escritores
+  mezclen bytes en el pipe.
+- Todos son `multiprocessing.Semaphore`/`Lock`, es decir, **semáforos POSIX en memoria
+  compartida** (`sem_wait`/`sem_post` sobre un *futex* del kernel). Funcionan entre hilos y entre
+  procesos.
+- `qsize()` es el valor del semáforo `llenos` (`sem_getvalue`).
+- **Motivo del cambio: hallazgo H3.** `multiprocessing.Queue.get()` retiene su lock de lectores
+  durante toda la espera. En `ColaAcotada` el consumidor espera en `llenos` sin retener ningún
+  lock, y el mutex sólo se toma durante los microsegundos que dura leer un mensaje.
+- La serialización (`pickle.dumps`) se hace **fuera** de la sección crítica, para que sea lo más
+  corta posible.
+
+**D2.4 Tiempos reproducibles.** Cada generador usa `random.Random(semilla*1000 + id)`, y cada
+solicitud lleva sus tiempos de despacho y entrega desde que se crea. La **carga** (qué solicitudes,
+con qué tiempos) es idéntica para la misma semilla, sin importar qué hilo atienda cada una. El
+**intercalado** (quién atiende qué y en qué orden) sí varía entre ejecuciones: eso lo decide el
+planificador. Es la base para comparar antes y después con la misma entrada.
+
+**D2.5 Llegada simultánea con `Barrier`.** Todos los generadores hacen el mismo número de ráfagas,
+aunque alguno tenga lotes vacíos al final, para que ninguno quede esperando solo en la barrera.
+La `Barrier` es de `threading`: los generadores son hilos del mismo proceso.
+
+**D2.6 El productor bloqueado se registra.** Se intenta `put_nowait()`; si la cola está llena se
+registra `PRODUCTOR BLOQUEADO` y se espera con `put(timeout=0.2)` en un bucle que revisa la orden
+de parada. Así el bloqueo queda en el log con su duración y el productor puede abandonar si llega
+Ctrl+C.
+
+**D2.7 El principal vacía continuamente la cola de resultados.** Un proceso que escribió en una
+`multiprocessing.Queue` no termina hasta que su `QueueFeederThread` entrega todo al pipe. Si el
+pipe (64 KiB) se llena porque nadie lee, el trabajador se bloquea al salir y el `join()` del
+principal nunca retorna: un interbloqueo entre padre e hijo. Por eso el principal lee resultados
+también mientras espera el cierre de los trabajadores (`_esperar_proceso`).
+
+**D2.8 Cierre por centinelas y cancelación contabilizada.** El cierre normal envía W×T centinelas
+(`None`) sin bloquear al principal (`put_nowait`). Un centinela sólo puede llegar **detrás** de
+todas las solicitudes, porque la cola es FIFO, así que ninguna queda sin atender. En el cierre
+anticipado, cada solicitud que sale de la cola se informa como `CANCELADA` y el balance
+`generadas = entregadas + canceladas + no atendidas` se verifica siempre. Además se verifica
+`generadas = pedidas`; esa verificación fue la que detectó H4.
+
+**D2.9 Robustez del principal.** Cualquier excepción inesperada en el principal se registra y
+ejecuta el mismo cierre ordenado. Se añadió después de que una lectura de `/proc` fallara con
+`ESRCH`: un hilo terminó entre el listado de `/proc/<pid>/task` y la lectura de su `stat`.
+**`/proc` es una vista viva del kernel, no una foto consistente**, y quien la lee debe tolerar
+que las tareas desaparezcan.
+
+### 2.5 Cómo ejecutarlo
+```bash
+python3 main.py                                      # 2 trabajadores x 3 hilos, 20 solicitudes
+python3 main.py -w 2 -t 3 -g 4 -n 24 --tam-rafaga 2 --intervalo 0.8 -k 5   # E1: ráfagas
+python3 main.py -n 0 --tam-rafaga 3 --intervalo 0.5 --entrega 0.5-1.5       # continuo; Ctrl+C
+scripts/observar.sh                                  # en otra terminal
+scripts/evidencias_fase2.sh                          # E1–E4 (≈ 3 min)
+experimentos/h3_trabajador_caido.sh 10               # H3 (≈ 3 min)
+experimentos/h4_barrera_abortada.sh despues 30       # H4
+```
+
+### 2.6 Evidencias y cómo explicarlas
+
+**E1 — Llegada simultánea y productor-consumidor** (`e1_rafagas.txt`, `e1_ejecucion.log`)
+```
+16:01:21.089710 generador-1 | RÁFAGA 1: 4 generadores liberados simultáneamente
+16:01:21.090430 generador-1 | RECIBIDA solicitud 1 (ráfaga 1) ...
+16:01:21.090105 generador-4 | RECIBIDA solicitud 19 (ráfaga 1) ...
+16:01:21.090311 generador-2 | RECIBIDA solicitud 7 (ráfaga 1) ...
+16:01:21.092465 generador-2 | RECIBIDA solicitud 8 (ráfaga 1) ...
+```
+- *Qué decir:* las 8 solicitudes de la ráfaga (4 generadores × 2) llegan en **menos de 3 ms**. La
+  barrera liberó a los 4 hilos a la vez. Las líneas no están en orden de marca de tiempo: cada hilo
+  toma la hora y luego compite por el lock del registro, y el planificador decide quién escribe
+  primero (D1.9).
+- Resultado: `generadas=24 entregadas=24 canceladas=0 no atendidas=0`; concurrencia máxima **6** =
+  2 trabajadores × 3 hilos; **13.83 s de trabajo en 2.87 s** (concurrencia efectiva 4.82).
+- Consumidores: al inicio y entre ráfagas aparecen `CONSUMIDOR ESPERANDO: cola vacía` (bloqueados
+  en `P(llenos)`); al final, `CENTINELA recibido: el hilo termina`, uno por hilo.
+
+**E2 — Procesos e hilos vistos desde el SO** (`e2_observacion.txt`, `e2_hilos.txt`)
+```
+centro_despacho(72899)-+-trabajador-1(72905)-+-{QueueFeederThre}(72915)
+                       |                     |-{despachador-1-1}(72907)
+                       |                     |-{despachador-1-2}(72908)
+                       |                     `-{despachador-1-3}(72909)
+                       |-trabajador-2(72906)-+-{QueueFeederThre}(72916)
+                       |                     |-{despachador-2-1}(72910) ...
+                       |-{generador-1}(72913)
+                       `-{generador-2}(72914)
+```
+- *Qué decir:* en `pstree` los hilos van entre `{}` y **cuelgan del proceso que los contiene**; los
+  procesos hijos cuelgan del padre. Cada hilo tiene su propio TID (72907, 72908…) pero comparte el
+  PID del proceso. `NLWP`: principal = 3 (MainThread + 2 generadores), cada trabajador = 5
+  (MainThread + 3 despachadores + `QueueFeederThread`).
+- Los nombres (`despachador-1-1`) son los del programa: Python 3.14 los copia al kernel
+  (`/proc/<pid>/task/<tid>/comm`, máx. 15 caracteres; por eso `QueueFeederThre`).
+- `QueueFeederThread` no lo creó nuestro código: `multiprocessing.Queue` lo lanza en cada proceso
+  que hace `put` en la cola de resultados. Serializa y escribe en el pipe en segundo plano. El
+  principal **no** lo tiene, porque `ColaAcotada` escribe en el pipe de forma síncrona.
+- `ps -L` (estado y `wchan` de cada hilo) permite ver **en qué está cada hilo**:
+  ```
+  72899 72899 Ssl poll_schedule_timeout  centro_despacho   ← esperando datos en el pipe de resultados
+  72899 72913 Ssl futex_do_wait          generador-1       ← bloqueado en P(vacios): cola llena
+  72905 72907 Sl  hrtimer_nanosleep      despachador-1-1   ← "en ruta" (sleep de la entrega)
+  72905 72909 Rl  -                      despachador-1-3   ← ejecutándose en ese instante
+  72906 72916 Sl  futex_do_wait          QueueFeederThre   ← esperando nuevos resultados
+  ```
+  `S` = dormido, `R` = ejecutando o listo, `l` = proceso multihilo. `futex_do_wait` = bloqueado en
+  una primitiva de sincronización; `hrtimer_nanosleep` = durmiendo por tiempo.
+- **Memoria virtual vs residente:** con hilos, la `VSZ` del trabajador sube de ~27 MB (Fase 1) a
+  **323 MB** y la del principal a 176 MB, mientras que el `RSS` apenas cambia (19–23 MB). Medido:
+  cada hilo reserva **8 MB de pila** (`ulimit -s` = 8192 kB) y glibc reserva una **arena de
+  `malloc` de 64 MB** por hilo (regiones `---p` sin páginas físicas). Son ~72 MB **reservados** de
+  espacio de direcciones que no ocupan RAM hasta que se tocan. Por eso la memoria de un proceso se
+  analiza con RSS/PSS y no con VSZ.
+- Ctrl+C con cola llena: `generadas=24 entregadas=21 canceladas=3 no atendidas=0`. Las 3 que
+  estaban en la cola se cancelan y quedan contabilizadas; las que estaban "en ruta" se terminan.
+
+**E3 — Escalamiento con la misma carga** (`e3_escalamiento.txt`; 36 solicitudes, semilla 42)
+
+| Procesos | Hilos/proc | Total | Tiempo (s) | Solicitudes/s | Concurrencia efectiva | CPU trabajadores |
+|---|---|---|---|---|---|---|
+| 1 | 1 | 1 | 22.17 | 1.62 | 1.00 | 0.5 % |
+| 1 | 2 | 2 | 11.43 | 3.15 | 1.94 | 0.9 % |
+| 1 | 4 | 4 | 5.71 | 6.31 | 3.88 | 1.8 % |
+| 1 | 8 | 8 | 3.12 | 11.56 | 7.10 | 3.1 % |
+| 2 | 4 | 8 | 3.12 | 11.53 | 7.09 | 3.3 % |
+| 4 | 2 | 8 | 3.21 | 11.21 | 6.90 | 3.4 % |
+| 4 | 4 | 16 | 1.78 | 20.27 | 12.46 | 6.5 % |
+
+- *Qué decir:* con 1 hilo el sistema es secuencial (22.17 s ≈ suma de los tiempos de servicio).
+  Duplicar los hilos casi divide el tiempo a la mitad, hasta 8 hilos (7.1×). El trabajo es
+  **espera** (preparación y ruta simuladas con `sleep`): un hilo que duerme libera el GIL y la
+  CPU, y otro avanza. La CPU consumida no pasa de 6.5 %.
+- **Con la misma cantidad total de hilos (8), da igual repartirlos en 1, 2 o 4 procesos**
+  (3.12 / 3.12 / 3.21 s). Para trabajo de espera, los hilos son suficientes y más baratos que los
+  procesos. En la Fase 6, con trabajo de CPU, este resultado cambia por el GIL: es el argumento
+  central para justificar la arquitectura híbrida.
+- La concurrencia efectiva no llega al máximo teórico: al inicio y al final de la carga no todos
+  los hilos tienen trabajo.
+
+**E4 — Capacidad de la cola** (`e4_capacidad.txt`; 30 solicitudes en una ráfaga, 1 × 3 hilos)
+
+| K | Bloqueos productor | Tiempo bloqueados (s) | Espera prom. en cola (ms) | Espera máx. (ms) | Tiempo total (s) |
+|---|---|---|---|---|---|
+| 1 | 26 | 14.17 | 662 | 1474 | 6.35 |
+| 3 | 24 | 12.09 | 953 | 1556 | 6.39 |
+| 10 | 17 | 8.01 | 1820 | 2871 | 6.48 |
+| 30 | 0 | 0.00 | 2796 | 5685 | 6.34 |
+
+- *Qué decir:* el tiempo total no cambia, porque lo limitan los 3 consumidores. La capacidad del
+  búfer **decide dónde se espera**. Con K pequeño la espera ocurre **antes de entrar**: el productor
+  queda bloqueado en `P(vacios)` (contrapresión, *backpressure*). Con K grande no hay bloqueos,
+  pero las solicitudes se acumulan dentro y esperan más en la cola. Un búfer acotado limita la
+  memoria y la longitud de la cola a cambio de frenar a los productores.
+
+### 2.7 Hallazgo H3 — inanición de consumidores cuando muere un trabajador (`multiprocessing.Queue`)
+
+1. **Versión con el problema:** `--cola mp`. Los despachadores de todos los trabajadores consumen
+   de una `multiprocessing.Queue` con `get(timeout=0.5)`.
+2. **Ejecución controlada** (`experimentos/h3_trabajador_caido.sh`): 3 trabajadores × 2 hilos,
+   generación continua (2 solicitudes cada 1.5 s), `SIGKILL` a `trabajador-2` con el sistema ocioso
+   y 4 s más de observación. 10 repeticiones por tipo de cola.
+3. **Evidencia** (`h3/resumen.txt`, `h3/inanicion_mp.txt`):
+   ```
+   cola=mp:        inanición (0 despachos tras el SIGKILL) en 4 de 10 ejecuciones
+   cola=semaforos: inanición (0 despachos tras el SIGKILL) en 0 de 10 ejecuciones
+   ```
+   En una ejecución con inanición el log muestra la cola creciendo (`en cola ~1` … `~6`) sin
+   ningún `DESPACHO` después del `CAÍDO`, y el balance final `entregadas=4 ... no atendidas=6`.
+   Todos los despachadores sobrevivientes están en `futex_do_wait`, y `kill -USR1` a
+   `trabajador-1` (volcado de pilas con `faulthandler`) muestra a sus dos hilos en:
+   ```
+   File ".../multiprocessing/queues.py", line 106 in get     ← if not self._rlock.acquire(block, timeout)
+   ```
+4. **Causa:** `multiprocessing.Queue.get(timeout)` hace `self._rlock.acquire()` y luego, **con el
+   lock tomado**, espera datos en el pipe (`self._poll(timeout)`). Con la cola vacía, en todo
+   momento hay exactamente un consumidor esperando con el lock tomado. Si ese consumidor pertenece
+   al proceso que recibe `SIGKILL`, el lock (un semáforo POSIX sin dueño registrado) **nunca se
+   libera**: los demás consumidores esperan el lock, vencen el timeout, reciben `Empty` y vuelven a
+   intentar indefinidamente, mientras la cola crece. Es no determinista porque depende de a quién
+   pertenecía el lock en ese instante: 2 de los 6 hilos eran de `trabajador-2` (33 % esperado,
+   40 % observado).
+   - Relación con la teoría: es **inanición**, no interbloqueo. Nadie espera circularmente: todos
+     esperan un recurso retenido por un proceso que ya no existe y que el sistema no puede
+     **expropiar** (la condición de "no expropiación" de Coffman aplicada a un dueño muerto).
+   - Es el síntoma del enunciado *"algunos despachos quedan esperando"*, con una causa real de SO.
+5. **Modificación:** `ColaAcotada` (D2.3). El consumidor espera en `P(llenos)` sin retener nada; el
+   mutex se toma sólo después, cuando hay un mensaje garantizado, y durante microsegundos.
+6. **Nueva ejecución:** el mismo script con `--cola semaforos`.
+7. **Evidencia de la corrección:** 10 de 10 ejecuciones despachan las 6 solicitudes posteriores al
+   `SIGKILL`, con balance completo.
+8. **Comparación:** 4/10 → 0/10 ejecuciones con inanición.
+   - *Riesgo residual (honestidad técnica):* si un proceso muere **justo** mientras lee un mensaje
+     (con el mutex tomado), el problema reaparecería. La ventana pasa de "todo el tiempo de espera"
+     a unos microsegundos. Eliminarla del todo requiere mutex robustos (`PTHREAD_MUTEX_ROBUST`,
+     que avisa `EOWNERDEAD` al siguiente que lo toma), que Python no expone.
+   - La cola de resultados sigue siendo `multiprocessing.Queue`, pero ahí el único lector es el
+     principal, y el riesgo de los escritores (`_wlock`) se limita a la escritura de un mensaje.
+
+### 2.8 Hallazgo H4 — condición de carrera entre `Barrier.wait()` y `Barrier.abort()`
+
+1. **Versión con el problema** (etiqueta `fase2-h4-antes`): al terminar su última ráfaga, cada
+   generador llamaba a `barrera.abort()` "por si algún otro generador seguía esperando".
+2. **Ejecución controlada** (`experimentos/h4_barrera_abortada.sh`): 4 generadores × 3 ráfagas,
+   24 solicitudes, 30 repeticiones.
+3. **Evidencia** (`h4/resumen_antes.txt`): **13 de 30** ejecuciones generan 18, 20 o 22 solicitudes
+   en lugar de 24; siempre falta la última ráfaga completa de uno o más generadores
+   (`generador 3: generadas=4` de 6). Se detectó en E1 gracias a la verificación
+   `generadas = pedidas` (D2.8).
+4. **Causa:** cuando el último hilo llega a la barrera, `Barrier` cambia su estado a "liberando" y
+   despierta a los demás. Pero cada hilo despertado debe **volver a ejecutarse y re-comprobar el
+   estado** antes de salir de `wait()`. Si otro generador, que salió antes, termina su lote y llama
+   a `abort()` en ese intervalo, el estado pasa a "rota" y el hilo que aún no se había ejecutado
+   recibe `BrokenBarrierError` **aunque la barrera sí se completó**. Su ráfaga se pierde. Es un
+   *check-then-act*: el estado del objeto compartido cambia entre el aviso y la comprobación, y el
+   resultado depende del orden que elija el planificador.
+5. **Modificación:** `abort()` sólo se llama si el generador sale por una **parada** (`detener`,
+   barrera rota o cola que no acepta); es el único caso en que otro generador puede quedar
+   esperando. En una terminación normal todos ya pasaron la última barrera y no hay nadie que
+   liberar.
+6. **Nueva ejecución:** `experimentos/h4_barrera_abortada.sh despues 30`.
+7. **Evidencia** (`h4/resumen_despues.txt`): **0 de 30** ejecuciones con solicitudes faltantes.
+8. **Comparación:** 13/30 (43 %) → 0/30. Para reproducir el "antes":
+   `git checkout fase2-h4-antes -- despacho/generador.py`, correr el script y restaurar con
+   `git checkout HEAD -- despacho/generador.py`.
+
+> H4 es una condición de carrera **real e involuntaria**. Anticipa la de la Fase 3 (asignación de
+> vehículos): ambas son un *check-then-act* sobre estado compartido. Aquí el estado compartido es
+> el de un objeto de sincronización, no el de un dato del negocio.
+
+### 2.9 Preguntas probables en la sustentación
+- **¿Dónde está el productor-consumidor y cómo evita la espera activa?** Productores =
+  `generador-i`; consumidores = `despachador-w-t`; búfer = `ColaAcotada`. Ambos lados se
+  **bloquean en semáforos** (`futex_do_wait` en `ps -L`, 0 % de CPU), no preguntan en bucle.
+- **¿Qué pasa si la cola se llena? ¿Y si se vacía?** E4 y los mensajes `PRODUCTOR BLOQUEADO` /
+  `CONSUMIDOR ESPERANDO`.
+- **¿Por qué hilos para despachar y no un proceso por solicitud?** E3: el trabajo es espera; los
+  hilos comparten memoria, se crean más rápido y consumen menos. 8 hilos rinden lo mismo en 1 o en
+  4 procesos.
+- **¿Cómo sé que los hilos son hilos del SO?** TID propio en `ps -eLf` (columna LWP), `NLWP`,
+  `/proc/<pid>/task/`, `top -H`. Python usa el modelo 1:1 (un `pthread` por `threading.Thread`).
+- **¿Cómo terminan los hilos sin quedar colgados?** Centinelas (FIFO: llegan detrás de todas las
+  solicitudes) y, en parada anticipada, timeout + indicador compartido.
+- **¿Por qué la VSZ es tan grande?** E2: pila + arena de `malloc` por hilo, reservadas pero no
+  residentes.
+- **¿Qué es `QueueFeederThread`?** E2.
+- **¿Qué aprendieron de H3 y H4?** Una primitiva de sincronización puede fallar por el
+  **comportamiento de sus participantes** (uno que muere, uno que la rompe a destiempo), no sólo
+  por un error de lógica. Ambos fallos eran intermitentes, se midieron con repeticiones y se
+  compararon antes y después.
 
 ## Fase 3 — Condición de carrera
 *(pendiente)*
@@ -494,15 +859,15 @@ Prueba de fallo y corrección completa (formato 9.3 del enunciado):
 ## Anexo A. Matriz de trazabilidad
 | # | Requisito del enunciado | Fase | Implementación | Evidencia |
 |---|---|---|---|---|
-| 1 | Proceso principal administrador | 1 | `main.py` | `pstree -p` |
-| 2 | Procesos trabajadores | 1 | `trabajador.py` | `ps --ppid` |
-| 3 | Múltiples hilos | 2 | hilos `despachador-w-t` | `ps -eLf`, `top -H` |
+| 1 | Proceso principal administrador | 1 ✅ | `centro.py` | F1-E1: `pstree -p` |
+| 2 | Procesos trabajadores | 1 ✅ | `trabajador.py` | F1-E1..E5 |
+| 3 | Múltiples hilos | 2 ✅ | hilos `generador-i`, `despachador-w-t` | F2-E2: `pstree -t`, `ps -L`, `top -H`, `/proc/<pid>/task` |
 | 4 | Info compartida de vehículos | 3 | `multiprocessing.Array` | log de estados |
-| 5 | Cola productor-consumidor | 2 | `Queue(maxsize=K)` | log de bloqueos por cola llena/vacía |
-| 6 | Llegada simultánea | 2 | `Barrier` | marcas de tiempo idénticas |
+| 5 | Cola productor-consumidor | 2 ✅ | `ColaAcotada` (semáforos) | F2-E1, F2-E4, H3 |
+| 6 | Llegada simultánea | 2 ✅ | `threading.Barrier` por ráfaga | F2-E1: 8 llegadas en < 3 ms; H4 |
 | 7 | Carrera en asignación | 3 | `--modo inseguro` | contador de dobles asignaciones > 0 |
 | 8 | Corrección por sincronización | 4 | `--modo seguro` | contador = 0 |
-| 9 | Tiempos de despacho/entrega | 2 | distribuciones con semilla | log |
+| 9 | Tiempos de despacho/entrega | 2 ✅ | `--despacho`, `--entrega`, `--semilla` | log (servicio por solicitud), F2-E3 |
 | 10 | Recursos en orden distinto | 5 | vehículo↔andén | `wchan`, watchdog |
 | 11 | Estrategia anti-interbloqueo | 5 | `--interbloqueo orden/timeout` | ejecución completa |
 | 12 | Registro de estadísticas | 7 | hilo `monitor`, CSV | CSV + resumen |

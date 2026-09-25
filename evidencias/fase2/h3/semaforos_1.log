@@ -1,0 +1,108 @@
+15:49:39.883723 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=3 x 2 hilos | generadores=2 | solicitudes=continuo | cola=semaforos(10) | semilla=42 | log=evidencias/fase2/h3/semaforos_1.log
+15:49:39.895112 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 64515
+15:49:39.896391 | PID  64515 | PPID  64513 | TID  64515 | trabajador-1    | MainThread       | INICIO trabajador 1 con 2 hilos despachadores
+15:49:39.896308 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 64516
+15:49:39.897666 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | CREADO trabajador-3 -> PID 64519
+15:49:39.897774 | PID  64516 | PPID  64513 | TID  64516 | trabajador-2    | MainThread       | INICIO trabajador 2 con 2 hilos despachadores
+15:49:39.898957 | PID  64519 | PPID  64513 | TID  64519 | trabajador-3    | MainThread       | INICIO trabajador 3 con 2 hilos despachadores
+15:49:39.899151 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | SINCRONIZADO: 3 trabajadores listos
+15:49:39.900529 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+15:49:39.900646 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+15:49:39.900734 | PID  64513 | PPID  63617 | TID  64525 | centro_despacho | generador-2      | RECIBIDA solicitud 2000000 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~0
+15:49:39.900895 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000000 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms
+15:49:39.900853 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | RÁFAGA 1: 2 generadores liberados simultáneamente
+15:49:39.901238 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | RECIBIDA solicitud 1000000 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~1
+15:49:39.901279 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000000 (Homecenter: Sogamoso -> Tunja) | esperó en cola 0 ms
+15:49:39.901408 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   64513   63617   centro_despacho  R      3      23036    
+15:49:39.901653 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64513   centro_despacho  R
+15:49:39.901721 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64524   generador-1      S
+15:49:39.901769 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64525   generador-2      S
+15:49:39.901918 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   64515   64513   trabajador-1     S      3      19008    
+15:49:39.902105 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64515   trabajador-1     S
+15:49:39.902158 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64517   despachador-1-1  S
+15:49:39.902203 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64518   despachador-1-2  S
+15:49:39.902330 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   64516   64513   trabajador-2     S      3      18752    
+15:49:39.902511 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64516   trabajador-2     S
+15:49:39.902576 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64520   despachador-2-1  S
+15:49:39.902620 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64521   despachador-2-2  S
+15:49:39.902748 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   64519   64513   trabajador-3     S      3      18752    
+15:49:39.902936 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64519   trabajador-3     S
+15:49:39.902987 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64522   despachador-3-1  S
+15:49:39.903030 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |       └ TID 64523   despachador-3-2  S
+15:49:39.939456 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000000
+15:49:39.940452 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000000
+15:49:40.018765 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000000 | servicio 118 ms
+15:49:40.023760 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000000 | servicio 122 ms
+15:49:40.397926 | PID  64516 | PPID  64513 | TID  64520 | trabajador-2    | despachador-2-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:40.398755 | PID  64516 | PPID  64513 | TID  64521 | trabajador-2    | despachador-2-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:40.399042 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:40.401773 | PID  64519 | PPID  64513 | TID  64523 | trabajador-3    | despachador-3-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:40.520459 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:40.524677 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:41.401783 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | RECIBIDA solicitud 1000001 (ráfaga 2) Jumbo: Chiquinquirá -> Paipa | en cola ~1
+15:49:41.402289 | PID  64513 | PPID  63617 | TID  64525 | centro_despacho | generador-2      | RÁFAGA 2: 2 generadores liberados simultáneamente
+15:49:41.402443 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 1000001 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 1 ms
+15:49:41.403080 | PID  64513 | PPID  63617 | TID  64525 | centro_despacho | generador-2      | RECIBIDA solicitud 2000001 (ráfaga 2) Olímpica: Garagoa -> Villa de Leyva | en cola ~1
+15:49:41.403257 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000001 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 0 ms
+15:49:41.435261 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 1000001
+15:49:41.451950 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000001
+15:49:41.487520 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 1000001 | servicio 85 ms
+15:49:41.502700 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000001 | servicio 99 ms
+15:49:41.989251 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:42.003450 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:42.106384 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | CAÍDO trabajador-2 (PID 64516): terminado por señal SIGKILL
+15:49:42.904054 | PID  64513 | PPID  63617 | TID  64525 | centro_despacho | generador-2      | RECIBIDA solicitud 2000002 (ráfaga 3) D1: Duitama -> Villa de Leyva | en cola ~1
+15:49:42.904342 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 2000002 (D1: Duitama -> Villa de Leyva) | esperó en cola 0 ms
+15:49:42.904711 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | RÁFAGA 3: 2 generadores liberados simultáneamente
+15:49:42.905519 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | RECIBIDA solicitud 1000002 (ráfaga 3) Homecenter: Tunja -> Moniquirá | en cola ~1
+15:49:42.905751 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 1000002 (Homecenter: Tunja -> Moniquirá) | esperó en cola 0 ms
+15:49:42.927191 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 2000002
+15:49:42.944319 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 1000002
+15:49:42.980963 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 2000002 | servicio 77 ms
+15:49:43.041423 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 1000002 | servicio 136 ms
+15:49:43.481786 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:43.542398 | PID  64515 | PPID  64513 | TID  64517 | trabajador-1    | despachador-1-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:44.406436 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | RECIBIDA solicitud 1000003 (ráfaga 4) D1: Moniquirá -> Sogamoso | en cola ~1
+15:49:44.406694 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 1000003 (D1: Moniquirá -> Sogamoso) | esperó en cola 0 ms
+15:49:44.406972 | PID  64513 | PPID  63617 | TID  64525 | centro_despacho | generador-2      | RÁFAGA 4: 2 generadores liberados simultáneamente
+15:49:44.407891 | PID  64513 | PPID  63617 | TID  64525 | centro_despacho | generador-2      | RECIBIDA solicitud 2000003 (ráfaga 4) Falabella: Villa de Leyva -> Moniquirá | en cola ~1
+15:49:44.408125 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 2000003 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 0 ms
+15:49:44.430753 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 2000003
+15:49:44.435310 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 1000003
+15:49:44.497711 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 1000003 | servicio 91 ms
+15:49:44.506206 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 2000003 | servicio 98 ms
+15:49:44.998134 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:45.006687 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:45.908967 | PID  64513 | PPID  63617 | TID  64525 | centro_despacho | generador-2      | RECIBIDA solicitud 2000004 (ráfaga 5) D1: Paipa -> Moniquirá | en cola ~1
+15:49:45.909211 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 2000004 (D1: Paipa -> Moniquirá) | esperó en cola 0 ms
+15:49:45.909590 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | RÁFAGA 5: 2 generadores liberados simultáneamente
+15:49:45.910328 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | RECIBIDA solicitud 1000004 (ráfaga 5) Éxito: Tunja -> Sogamoso | en cola ~1
+15:49:45.910527 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000004 (Éxito: Tunja -> Sogamoso) | esperó en cola 0 ms
+15:49:45.948223 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000004
+15:49:45.955081 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 2000004
+15:49:46.015059 | PID  64515 | PPID  64513 | TID  64518 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000004 | servicio 105 ms
+15:49:46.030813 | PID  64519 | PPID  64513 | TID  64522 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 2000004 | servicio 122 ms
+15:49:46.233520 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | SEÑAL SIGINT recibida: se detiene la generación y se cancelan las solicitudes en cola
+15:49:46.310384 | PID  64513 | PPID  63617 | TID  64525 | centro_despacho | generador-2      | FIN generador 2: generadas=5, bloqueos por cola llena=0 (0.000 s)
+15:49:46.311303 | PID  64513 | PPID  63617 | TID  64524 | centro_despacho | generador-1      | FIN generador 1: generadas=5, bloqueos por cola llena=0 (0.000 s)
+15:49:46.610387 | PID  64515 | PPID  64513 | TID  64515 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=3, despachador-1-2=3
+15:49:46.614809 | PID  64519 | PPID  64513 | TID  64519 | trabajador-3    | MainThread       | FIN trabajador 3 | atendidas por hilo: despachador-3-1=4, despachador-3-2=0
+15:49:46.635379 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 64515): exit(0)
+15:49:46.635967 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | TERMINÓ trabajador-3 (PID 64519): exit(0)
+15:49:46.686792 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | RESUMEN de terminación:
+15:49:46.687341 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   trabajador-1   PID 64515   exit(0)
+15:49:46.687909 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   trabajador-2   PID 64516   terminado por señal SIGKILL
+15:49:46.688193 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   trabajador-3   PID 64519   exit(0)
+15:49:46.688644 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+15:49:46.688979 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | ESTADÍSTICAS:
+15:49:46.689290 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   solicitudes: generadas=10 entregadas=10 canceladas=0 no atendidas=0
+15:49:46.689689 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=0, tiempo bloqueados=0.000 s
+15:49:46.690034 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=0 máx=1
+15:49:46.690314 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   servicio (s): prom=0.105 | trabajo total (suma)=1.05 s
+15:49:46.690615 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   tiempo total=6.13 s | rendimiento=1.63 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=0.17
+15:49:46.690955 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   concurrencia máxima observada=2 (capacidad = 3 trabajadores x 2 hilos = 6)
+15:49:46.691447 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=6, trabajador-3=4
+15:49:46.691799 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=3, despachador-1-2=3, despachador-3-1=4
+15:49:46.692097 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   CPU: principal=0.15 s, trabajadores=0.06 s | tiempo real=6.79 s | uso medio de CPU de los trabajadores=0.9 %
+15:49:46.692366 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=293, involuntarios=4
+15:49:46.692672 | PID  64513 | PPID  63617 | TID  64513 | centro_despacho | MainThread       | FIN centro de despacho (con fallos)
