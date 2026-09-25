@@ -20,7 +20,9 @@ SECCIONES="${*:-e1 e2 e3 e4 e5}"
 DIR="${DIR:-evidencias/fase5}"
 mkdir -p "$DIR" logs/fase5
 
-BASE="-w 2 -t 3 -g 4 -n 24 -v 3 -a 2 -i 1 -s 42"
+# La carga de CPU y memoria (Fase 6) no existía en esta fase.
+SIN_CARGA="-p 0 --traza-kb 0"
+BASE="-w 2 -t 3 -g 4 -n 24 -v 3 -a 2 -i 1 -s 42 $SIN_CARGA"
 
 est() { sed -n '/ESTADÍSTICAS:/,$p' "$1"; }
 num() { est "$1" | grep -oE "$2=[0-9.]+" | head -1 | cut -d= -f2; }
@@ -154,7 +156,7 @@ e5() {
     echo "== E5: estrategia orden en ejecución =="
     rm -f "$DIR"/e5_*
     L="$DIR/e5_ejecucion.log"
-    setsid python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 \
+    setsid python3 main.py $SIN_CARGA -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -v 3 -a 1 -i 2 \
         --interbloqueo orden --log "$L" > /dev/null &
     PID=$!
     sleep 3

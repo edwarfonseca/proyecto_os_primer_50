@@ -22,7 +22,7 @@ DIR="${DIR:-evidencias/fase4}"
 mkdir -p "$DIR" logs/fase4
 
 # Los andenes y el taller (Fase 5) no existían en esta fase: sin taller y andenes de sobra.
-SIN_ANDENES="-a 100 -i 0"
+SIN_ANDENES="-a 100 -i 0 -p 0 --traza-kb 0"
 ANTES="--modo inseguro --espera activa"
 DESPUES="--modo seguro --espera bloqueante"
 BASE="-w 2 -t 3 -g 4 -n 24 -v 3 --ventana 0.01 -s 42"
