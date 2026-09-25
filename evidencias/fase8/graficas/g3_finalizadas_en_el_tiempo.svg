@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="viz" viewBox="0 0 720 420" width="720" height="420" role="img" aria-label="Solicitudes finalizadas a lo largo de la ejecución (100 solicitudes)">
+<style>
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .titulo { font-size: 16px; font-weight: 600; }
+  .subtitulo { font-size: 12px; }
+  .marca { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .etiqueta { font-size: 12px; }
+  .valor { font-size: 12px; font-weight: 600; }
+  .rejilla, .eje { stroke-width: 1; }
+  .linea { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .punto { stroke-width: 2; }
+  .fondo{fill:#fcfcfb} .titulo{fill:#0b0b0b} .subtitulo,.etiqueta{fill:#52514e} .marca{fill:#898781} .valor{fill:#0b0b0b} .rejilla{stroke:#e1e0d9} .eje{stroke:#c3c2b7} .punto{stroke:#fcfcfb} .l1{stroke:#2a78d6} .f1{fill:#2a78d6} .l2{stroke:#eb6834} .f2{fill:#eb6834} .l3{stroke:#1baf7a} .f3{fill:#1baf7a} .l4{stroke:#eda100} .f4{fill:#eda100}
+  @media (prefers-color-scheme: dark) { .fondo{fill:#1a1a19} .titulo{fill:#ffffff} .subtitulo,.etiqueta{fill:#c3c2b7} .marca{fill:#898781} .valor{fill:#ffffff} .rejilla{stroke:#2c2c2a} .eje{stroke:#383835} .punto{stroke:#1a1a19} .l1{stroke:#3987e5} .f1{fill:#3987e5} .l2{stroke:#d95926} .f2{fill:#d95926} .l3{stroke:#199e70} .f3{fill:#199e70} .l4{stroke:#c98500} .f4{fill:#c98500} }
+</style>
+<rect class="fondo" width="720" height="420" rx="8"/>
+<title>Solicitudes finalizadas a lo largo de la ejecución (100 solicitudes)</title>
+<text x="24.0" y="30.0" class="titulo" text-anchor="start" >Solicitudes finalizadas a lo largo de la ejecución (100 solicitudes)</text>
+<text x="24.0" y="49.0" class="subtitulo" text-anchor="start" >Registro del monitor, una muestra por segundo</text>
+<line x1="24" y1="68" x2="40" y2="68" class="linea l1"/>
+<text x="46.0" y="72.0" class="etiqueta" text-anchor="start" >Antes (inseguro)</text>
+<line x1="170" y1="68" x2="186" y2="68" class="linea l2"/>
+<text x="192.0" y="72.0" class="etiqueta" text-anchor="start" >Después (corregido)</text>
+<line x1="70" y1="362.0" x2="550" y2="362.0" class="eje"/>
+<text x="62.0" y="366.0" class="marca" text-anchor="end" >0</text>
+<line x1="70" y1="229.0" x2="550" y2="229.0" class="rejilla"/>
+<text x="62.0" y="233.0" class="marca" text-anchor="end" >50</text>
+<line x1="70" y1="96.0" x2="550" y2="96.0" class="rejilla"/>
+<text x="62.0" y="100.0" class="marca" text-anchor="end" >100</text>
+<text x="70.0" y="382.0" class="marca" text-anchor="middle" >0</text>
+<text x="184.2" y="382.0" class="marca" text-anchor="middle" >5</text>
+<text x="298.4" y="382.0" class="marca" text-anchor="middle" >10</text>
+<text x="412.5" y="382.0" class="marca" text-anchor="middle" >15</text>
+<text x="526.7" y="382.0" class="marca" text-anchor="middle" >20</text>
+<text x="310.0" y="406.0" class="etiqueta" text-anchor="middle" >tiempo (s)</text>
+<text x="18.0" y="229.0" class="etiqueta" text-anchor="middle" transform="rotate(-90 18 229.0)">finalizadas (acumulado)</text>
+<path d="M92.8,348.7 L115.7,322.1 L138.5,300.8 L161.6,274.2 L184.4,252.9 L207.2,229.0 L230.1,205.1 L252.9,175.8 L275.7,151.9 L298.6,130.6 L321.4,109.3" class="linea l1"/>
+<circle cx="321.4" cy="109.3" r="4" class="punto f1"><title>Antes (inseguro) · tiempo (s): 11.0 · finalizadas (acumulado): 95</title></circle>
+<path d="M92.8,354.0 L115.7,338.1 L138.5,324.8 L161.3,314.1 L184.2,300.8 L207.2,287.5 L230.1,276.9 L252.9,260.9 L275.7,252.9 L298.6,239.6 L321.4,226.3 L344.3,213.0 L367.1,202.4 L389.9,186.4 L412.8,170.5 L435.8,159.8 L458.7,149.2 L481.5,138.6 L504.3,122.6 L527.2,109.3 L550.0,98.7" class="linea l2"/>
+<circle cx="550.0" cy="98.7" r="4" class="punto f2"><title>Después (corregido) · tiempo (s): 21.0 · finalizadas (acumulado): 99</title></circle>
+</svg>

@@ -48,6 +48,7 @@ scripts/evidencias_fase4.sh        # corrección: antes/después, mecanismos, es
 scripts/evidencias_fase5.sh        # interbloqueo: observación, estrategias, tiempo límite
 scripts/evidencias_fase6.sh        # CPU (GIL, hilos vs procesos) y crecimiento de memoria
 scripts/evidencias_fase7.sh        # registro en vivo, alerta sin progreso, contadores (H6)
+scripts/evidencias_fase8.sh        # batería de experimentos + gráficas (≈ 25 min; --solo-informe)
 python3 experimentos/h1_event_bloqueado.py [--corregido]
 experimentos/h3_trabajador_caido.sh 10
 experimentos/h4_barrera_abortada.sh despues 30
@@ -67,5 +68,6 @@ despacho/                código del sistema (centro, trabajador, registro, util
 scripts/                 observación y reproducción de evidencias
 experimentos/            experimentos aislados de hallazgos
 evidencias/faseN/        salidas reales de cada fase
+evidencias/fase8/graficas/  gráficas SVG de la comparación antes/después
 docs/                    bitácora técnica
 ```

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="viz" viewBox="0 0 720 420" width="720" height="420" role="img" aria-label="Tiempo total para atender todas las solicitudes">
+<style>
+  text { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .titulo { font-size: 16px; font-weight: 600; }
+  .subtitulo { font-size: 12px; }
+  .marca { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .etiqueta { font-size: 12px; }
+  .valor { font-size: 12px; font-weight: 600; }
+  .rejilla, .eje { stroke-width: 1; }
+  .linea { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .punto { stroke-width: 2; }
+  .fondo{fill:#fcfcfb} .titulo{fill:#0b0b0b} .subtitulo,.etiqueta{fill:#52514e} .marca{fill:#898781} .valor{fill:#0b0b0b} .rejilla{stroke:#e1e0d9} .eje{stroke:#c3c2b7} .punto{stroke:#fcfcfb} .l1{stroke:#2a78d6} .f1{fill:#2a78d6} .l2{stroke:#eb6834} .f2{fill:#eb6834} .l3{stroke:#1baf7a} .f3{fill:#1baf7a} .l4{stroke:#eda100} .f4{fill:#eda100}
+  @media (prefers-color-scheme: dark) { .fondo{fill:#1a1a19} .titulo{fill:#ffffff} .subtitulo,.etiqueta{fill:#c3c2b7} .marca{fill:#898781} .valor{fill:#ffffff} .rejilla{stroke:#2c2c2a} .eje{stroke:#383835} .punto{stroke:#1a1a19} .l1{stroke:#3987e5} .f1{fill:#3987e5} .l2{stroke:#d95926} .f2{fill:#d95926} .l3{stroke:#199e70} .f3{fill:#199e70} .l4{stroke:#c98500} .f4{fill:#c98500} }
+</style>
+<rect class="fondo" width="720" height="420" rx="8"/>
+<title>Tiempo total para atender todas las solicitudes</title>
+<text x="24.0" y="30.0" class="titulo" text-anchor="start" >Tiempo total para atender todas las solicitudes</text>
+<text x="24.0" y="49.0" class="subtitulo" text-anchor="start" >La versión corregida tarda más porque respeta los 3 vehículos; la insegura usa vehículos ocupados</text>
+<line x1="24" y1="68" x2="40" y2="68" class="linea l1"/>
+<text x="46.0" y="72.0" class="etiqueta" text-anchor="start" >Antes (inseguro)</text>
+<line x1="170" y1="68" x2="186" y2="68" class="linea l2"/>
+<text x="192.0" y="72.0" class="etiqueta" text-anchor="start" >Después (corregido)</text>
+<line x1="70" y1="362.0" x2="550" y2="362.0" class="eje"/>
+<text x="62.0" y="366.0" class="marca" text-anchor="end" >0</text>
+<line x1="70" y1="308.8" x2="550" y2="308.8" class="rejilla"/>
+<text x="62.0" y="312.8" class="marca" text-anchor="end" >10</text>
+<line x1="70" y1="255.6" x2="550" y2="255.6" class="rejilla"/>
+<text x="62.0" y="259.6" class="marca" text-anchor="end" >20</text>
+<line x1="70" y1="202.4" x2="550" y2="202.4" class="rejilla"/>
+<text x="62.0" y="206.4" class="marca" text-anchor="end" >30</text>
+<line x1="70" y1="149.2" x2="550" y2="149.2" class="rejilla"/>
+<text x="62.0" y="153.2" class="marca" text-anchor="end" >40</text>
+<line x1="70" y1="96.0" x2="550" y2="96.0" class="rejilla"/>
+<text x="62.0" y="100.0" class="marca" text-anchor="end" >50</text>
+<text x="94.0" y="382.0" class="marca" text-anchor="middle" >10</text>
+<text x="130.0" y="382.0" class="marca" text-anchor="middle" >25</text>
+<text x="190.0" y="382.0" class="marca" text-anchor="middle" >50</text>
+<text x="310.0" y="382.0" class="marca" text-anchor="middle" >100</text>
+<text x="550.0" y="382.0" class="marca" text-anchor="middle" >200</text>
+<text x="310.0" y="406.0" class="etiqueta" text-anchor="middle" >solicitudes simultáneas</text>
+<text x="18.0" y="229.0" class="etiqueta" text-anchor="middle" transform="rotate(-90 18 229.0)">segundos</text>
+<path d="M94.0,353.9 L130.0,343.6 L190.0,329.5 L310.0,299.0 L550.0,237.6" class="linea l1"/>
+<circle cx="94.0" cy="353.9" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 10 · segundos: 1.5</title></circle>
+<circle cx="130.0" cy="343.6" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 25 · segundos: 3.5</title></circle>
+<circle cx="190.0" cy="329.5" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 50 · segundos: 6.1</title></circle>
+<circle cx="310.0" cy="299.0" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 100 · segundos: 11.8</title></circle>
+<circle cx="550.0" cy="237.6" r="4" class="punto f1"><title>Antes (inseguro) · solicitudes simultáneas: 200 · segundos: 23.4</title></circle>
+<path d="M94.0,351.0 L130.0,335.2 L190.0,306.0 L310.0,250.2 L550.0,141.1" class="linea l2"/>
+<circle cx="94.0" cy="351.0" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 10 · segundos: 2.1</title></circle>
+<circle cx="130.0" cy="335.2" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 25 · segundos: 5.0</title></circle>
+<circle cx="190.0" cy="306.0" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 50 · segundos: 10.5</title></circle>
+<circle cx="310.0" cy="250.2" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 100 · segundos: 21.0</title></circle>
+<circle cx="550.0" cy="141.1" r="4" class="punto f2"><title>Después (corregido) · solicitudes simultáneas: 200 · segundos: 41.5</title></circle>
+<text x="560.0" y="145.1" class="valor" text-anchor="start" >Después (corregido): 41.5</text>
+<text x="560.0" y="241.6" class="valor" text-anchor="start" >Antes (inseguro): 23.4</text>
+</svg>
