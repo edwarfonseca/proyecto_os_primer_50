@@ -13,7 +13,7 @@
 - [4. Corrección por sincronización](#fase-4--corrección-por-sincronización) ✅
 - [5. Interbloqueo](#fase-5--interbloqueo) ✅
 - [6. CPU y memoria](#fase-6--cpu-y-memoria) ✅
-- [7. Registro y observación](#fase-7--registro-y-observación) *(pendiente)*
+- [7. Registro y observación](#fase-7--registro-y-observación) ✅
 - [8. Experimentos y comparación antes/después](#fase-8--experimentos-y-comparación-antesdespués) *(pendiente)*
 - [9. Guion de demostración y sustentación](#fase-9--guion-de-demostración-y-sustentación) *(pendiente)*
 - [Anexo A. Matriz de trazabilidad](#anexo-a-matriz-de-trazabilidad)
@@ -1798,7 +1798,203 @@ de 8 puntos ≈ 25 ms de CPU + preparación 0.1–0.3 s + ruta 0.2–0.6 s)
   sólo suyo (donde se ve una fuga).
 
 ## Fase 7 — Registro y observación
-*(pendiente)*
+
+> Rama `fase-7-registro-monitor` · etiqueta `fase-7` · evidencias en `evidencias/fase7/`
+>
+> Requisitos 12 (registrar solicitudes recibidas, pendientes, vehículos disponibles,
+> vehículos asignados y solicitudes finalizadas) y 14 (observar con herramientas del SO los
+> procesos e hilos creados).
+
+### 7.1 Qué se hizo
+- **Contadores compartidos entre procesos** (`despacho/contadores.py`): tomadas, esperando
+  vehículo, entregadas, canceladas y centinelas. Todos con **un solo lock**, que envuelve cada
+  lectura-modificación-escritura y permite al monitor leer una **foto consistente** de todos a la vez.
+- **Hilo `monitor`** en el principal (`despacho/monitor.py`): cada segundo (`--intervalo-monitor`)
+  registra una línea `ESTADO` y una fila en `<log>.estado.csv` con los datos del requisito 12, más
+  el estado de cada vehículo:
+  ```
+  ESTADO | recibidas=19 en_cola=10 en_proceso=6 (esperando vehículo=3) |
+           vehículos: asignados=3 disponibles=0 [V1:26 V2:27 V3:23] |
+           finalizadas=3 (entregadas=3 canceladas=0) | 3.0/s
+  ```
+
+  | Dato | De dónde sale |
+  |---|---|
+  | recibidas | suma de lo generado por los hilos productores (mismo proceso) |
+  | en cola (pendientes) | valor del semáforo `llenos` de la cola menos los centinelas de cierre aún en ella |
+  | en proceso | tomadas − finalizadas (contadores compartidos) |
+  | esperando vehículo | despachadores bloqueados en el semáforo de vehículos |
+  | vehículos asignados / disponibles | foto de la flota leída **bajo su mutex** |
+  | finalizadas | entregadas + canceladas (contadores compartidos) |
+
+- **Alerta `SIN PROGRESO`:** si hay solicitudes pendientes y ninguna finaliza durante
+  `--alerta-sin-progreso` segundos (defecto 5), el monitor avisa. Detecta cualquier detención,
+  sin importar la causa.
+- **Tercera verificación del balance:** al final, los contadores compartidos se contrastan con los
+  resultados que llegaron por la cola, y se informa cuántas solicitudes quedaron a medio procesar.
+- **`--vista resumen`:** la consola muestra sólo `ESTADO`, los avisos y el resumen final, en formato
+  corto (hora | mensaje). El archivo de log siempre es completo. Pensado para la demostración.
+- **`scripts/monitor_so.sh`:** vista en vivo desde el SO, como un `top` del sistema. Por proceso
+  muestra PID, PPID, estado, hilos, **hilos por estado (R/S/D)**, %CPU del intervalo (calculado con
+  los ticks de `/proc/<pid>/stat`) y RSS.
+- **Hallazgo H6:** `multiprocessing.Value(lock=True)` no hace atómico `v.value += 1`
+  (`experimentos/h6_contador_compartido.py`).
+
+**Registros que deja cada ejecución** (E5):
+
+| Archivo | Contenido |
+|---|---|
+| `<log>.log` | Todos los eventos con `hora | PID | PPID | TID | proceso | hilo | evento` |
+| `<log>.estado.csv` | Serie del monitor: recibidas, en cola, en proceso, esperando vehículo, asignados, disponibles, entregadas, canceladas, finalizadas, rendimiento |
+| `<log>.recursos.csv` | Serie del muestreador (Fase 6): por proceso, estado, hilos, RSS, PSS, memoria privada, CPU |
+
+Parámetros nuevos: `--intervalo-monitor` (1 s), `--alerta-sin-progreso` (5 s),
+`--vista completa|resumen`.
+
+### 7.2 Cómo ejecutarlo
+```bash
+python3 main.py -n 40 --vista resumen          # consola: sólo ESTADO + avisos + resumen
+scripts/monitor_so.sh                          # otra terminal: procesos e hilos en vivo
+scripts/monitor_so.sh 1 5                      # 5 fotos, una por segundo
+column -s, -t logs/<archivo>.estado.csv        # serie del monitor
+python3 experimentos/h6_contador_compartido.py # hallazgo H6
+scripts/evidencias_fase7.sh                    # E1–E5 (≈ 3 min)
+```
+
+### 7.3 Evidencias y cómo explicarlas
+
+**E1 — Registro en vivo y ley de conservación** (`e1_consola.txt`, `e1_estado.csv`,
+`e1_conservacion.txt`; 40 solicitudes, 3 vehículos, vista resumen)
+
+| t (s) | recibidas | en cola | en proceso | finalizadas | asignados | disponibles | ¿recibidas = cola + proceso + finalizadas? |
+|---|---|---|---|---|---|---|---|
+| 1.0 | 18 | 10 | 6 | 2 | 3 | 0 | sí |
+| 2.0 | 25 | 10 | 6 | 9 | 3 | 0 | sí |
+| … | … | … | … | … | … | … | sí (todas las muestras) |
+
+- *Qué decir:*
+  - La consola muestra una línea por segundo con todos los datos del requisito 12, más **qué
+    solicitud lleva cada vehículo**.
+  - **Ley de conservación:** en cada muestra, recibidas = en cola + en proceso + finalizadas. No
+    es trivial, porque los términos vienen de **fuentes independientes**: el semáforo de la cola
+    (kernel), los contadores compartidos (memoria compartida con su lock) y los generadores
+    (hilos del principal). Que cuadre en todas las muestras indica que el registro es consistente.
+  - En la primera versión la conservación fallaba al final (44 ≠ 40): los **centinelas** de cierre
+    también ocupan la cola y el semáforo los contaba como pendientes. Se corrigió contando los
+    centinelas enviados y tomados.
+  - La columna "esperando vehículo = 3" con "asignados = 3, disponibles = 0" muestra en vivo lo que
+    la Fase 4 midió al final: 6 despachadores, 3 con vehículo y 3 bloqueados en el semáforo.
+
+**E2 — La misma ejecución vista desde el SO** (`e2_so_vs_monitor.txt`)
+```
+== 17:43:58 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB)
+centro_despacho  131970   131847   S      6      0    6    0    4       23.2
+trabajador-1     131973   131970   S      5      0    5    0    10      20.2
+trabajador-2     131974   131970   S      5      0    5    0    14      20.2
+taller           131978   131970   S      2      0    2    0    0       18.9
+```
+- *Qué decir:* `monitor_so.sh` reconstruye la jerarquía por PID/PPID y cuenta los hilos de cada
+  proceso por estado (`/proc/<pid>/task/*/stat`). El principal tiene 6 hilos: `MainThread`, 2
+  generadores, `vigilante`, `muestreador` y `monitor`. Cada trabajador tiene 5: `MainThread`, 3
+  despachadores y `QueueFeederThread`. Casi todos están en `S`: el sistema pasa la mayor parte del
+  tiempo **esperando** (vehículos, rutas simuladas, cola), no calculando. El %CPU de los
+  trabajadores (10–14 %) es la planificación de rutas de 8 puntos.
+- La vista del SO (procesos, hilos, CPU, memoria) y la vista del negocio (solicitudes, vehículos)
+  se complementan: el mismo instante visto desde el kernel y desde el programa.
+
+**E3 — Detección de falta de progreso** (`e3a_resumen.txt`, `e3b_inanicion_h3.txt`)
+
+(a) **Procesos que no responden:** `SIGSTOP` a `trabajador-1`, 4 s después a `trabajador-2`, y
+6 s después `SIGCONT` a ambos:
+```
+04.964 ESTADO | ... [V1:.. V2:2000008 V3:1000007] | finalizadas=15 | 6.0/s
+04.902 kill -STOP trabajador-1
+05.965 ESTADO | ... [V1:.. V2:2000008 V3:1000007] | finalizadas=16 | 1.0/s   ← degradado
+07.971 ESTADO | ... [V1:.. V2:2000008 V3:1000007] | finalizadas=20 | 2.0/s
+08.908 kill -STOP trabajador-2
+09.973 ESTADO | ... finalizadas=21 | 0.0/s
+11.976 SIN PROGRESO: 16 solicitudes pendientes (10 en cola, 6 en proceso) y ninguna
+       finalizada en 3 s: posible interbloqueo, inanición o proceso caído
+14.925 kill -CONT a ambos
+15.980 ESTADO | ... finalizadas=26 | 3.0/s                                   ← recuperado
+```
+- *Qué decir:* con un solo trabajador detenido, el sistema **se degrada**: el rendimiento cae de 6
+  a 1–2 por segundo porque V2 y V3 quedaron retenidos por hilos detenidos (sus asignaciones no
+  cambian). Pero **sigue avanzando** con V1, y no hay alerta. Con ambos detenidos, el rendimiento
+  llega a 0 y a los 3 s aparece la alerta. Con `SIGCONT` los procesos continúan donde estaban y el
+  sistema se recupera solo. El vigilante de interbloqueos no dice nada, porque no hay ciclos de
+  locks: la causa es otra.
+
+(b) **Inanición del hallazgo H3** (`--cola mp`, `SIGKILL` a `trabajador-2`; se reintenta hasta que
+el lock de la cola lo tenga el proceso eliminado, ~33 % de las veces):
+```
+SIN PROGRESO: 6 solicitudes pendientes (6 en cola, 0 en proceso) y ninguna finalizada en 3 s
+INTERBLOQUEOS: detectados=0
+```
+- *Qué decir:* "6 en cola, 0 en proceso" es la firma de H3: hay trabajo, hay consumidores vivos y
+  nadie saca nada de la cola. El grafo de espera no lo ve (el dueño del lock está muerto y no
+  figura en el registro); el monitor sí.
+- **Dos detectores complementarios:** el **vigilante** (Fase 5) sabe *por qué* se detuvo el
+  sistema (ciclo en el grafo de espera, con nombres y recursos), pero sólo ve interbloqueos. El
+  **monitor** detecta *que* se detuvo, por cualquier causa (interbloqueo, inanición, proceso
+  detenido o caído), pero no sabe por qué. En producción se usan los dos.
+
+**E4 — Contadores compartidos: hallazgo H6** (`e4_contadores_h6.txt`; 4 participantes × 100 000
+incrementos)
+
+| Participantes | Forma | Obtenido | Perdidos | Tiempo |
+|---|---|---|---|---|
+| procesos | `RawValue`: `v.value += 1` | 117 635 | **70.6 %** | 0.04 s |
+| procesos | `Value(lock=True)`: `v.value += 1` | 151 432 | **62.1 %** | 0.39 s |
+| procesos | `with v.get_lock(): v.value += 1` | 400 000 | 0 % | 0.80 s |
+| hilos | `RawValue`: `v.value += 1` | 400 000 | 0 % | 0.05 s |
+| hilos | `Value(lock=True)`: `v.value += 1` | 183 143 | **54.2 %** | 1.80 s |
+| hilos | `with v.get_lock(): v.value += 1` | 400 000 | 0 % | 1.08 s |
+
+- *Qué decir:*
+  - `v.value += 1` son **dos operaciones**: leer `v.value` y escribir `v.value`. `Value(lock=True)`
+    toma y suelta su lock **en cada una por separado**. Entre la lectura y la escritura otro
+    participante lee el mismo valor, los dos escriben valor + 1 y se pierde un incremento
+    (**actualización perdida**, la misma condición de carrera de la Fase 3, ahora en un contador).
+    Tener un lock no basta: **debe envolver la sección crítica completa** (`get_lock()`).
+  - **Con procesos** (paralelismo real) se pierde el 60–70 % con o sin ese lock "por operación".
+  - **Con hilos, el lock por operación empeoró las cosas** (0 % → 54 %). Sin lock, el GIL rara vez
+    cambia de hilo justo entre la lectura y la escritura. Pero **tomar el lock libera el GIL** (el
+    hilo se duerme en el semáforo), lo que crea un punto de cambio de hilo exactamente dentro de la
+    sección crítica. Es la misma lección de la Fase 3 (E4): el GIL no es sincronización, y cualquier
+    operación bloqueante dentro de una secuencia no protegida invita a la carrera.
+  - La corrección cuesta: `get_lock()` es ~20 veces más lento que `RawValue` con procesos. Por eso
+    `Contadores` usa un lock por actualización, no por cada lectura.
+
+### 7.4 Decisiones de la fase
+- **D7.1 Un solo lock para todos los contadores:** cada actualización es atómica, y la foto del
+  monitor es coherente entre campos (con un lock por contador, la foto mezclaría instantes
+  distintos). Las actualizaciones son pocas por solicitud, así que la contención es baja.
+- **D7.2 La flota se lee bajo su mutex** en modo seguro: la foto de vehículos es consistente. En modo
+  inseguro se lee sin protección, igual que se asigna.
+- **D7.3 Fuentes independientes para validar:** el monitor combina el semáforo de la cola, los
+  contadores y los generadores, y al final se contrastan con la cola de resultados. Si un
+  mecanismo fallara, las fuentes dejarían de cuadrar (E1).
+- **D7.4 El monitor no decide, sólo informa.** La alerta `SIN PROGRESO` no detiene el sistema: un
+  proceso detenido puede continuar (E3a). La decisión de abortar queda en el vigilante, que sí
+  conoce la causa, o en el operador.
+- **D7.5 Variables por hilo, no por objeto.** Durante el desarrollo se usó un atributo del objeto
+  `Flota` para recordar si un hilo estaba contado como "esperando vehículo". Como el objeto lo
+  comparten todos los hilos del proceso, ese atributo era en sí mismo una condición de carrera. Se
+  corrigió con una variable local (cada hilo tiene su propia pila). Regla: el estado de una
+  operación en curso va en variables locales; el estado compartido, protegido.
+
+### 7.5 Preguntas probables en la sustentación
+- **¿Dónde registran lo que pide el requisito 12?** Línea `ESTADO` y `<log>.estado.csv` (tabla de 7.1).
+- **¿Cómo saben que el registro es correcto?** Ley de conservación con fuentes independientes en
+  cada muestra (E1) y contraste final con los resultados.
+- **¿Qué pasa si se detiene un proceso?** E3a: degradación, alerta y recuperación con `SIGCONT`.
+- **¿El monitor y el vigilante no hacen lo mismo?** No (E3): uno detecta ciclos y su causa, el otro
+  detecta la falta de progreso de cualquier origen.
+- **¿`Value(lock=True)` no es seguro?** E4: protege cada acceso, no la secuencia.
+- **¿Con qué herramientas del SO observan procesos e hilos?** `ps`, `pstree`, `top -H`, `/proc`
+  (`observar.sh`) y la vista en vivo `monitor_so.sh` (E2). Anexo B.
 
 ## Fase 8 — Experimentos y comparación antes/después
 *(pendiente)*
@@ -1822,9 +2018,9 @@ de 8 puntos ≈ 25 ms de CPU + preparación 0.1–0.3 s + ruta 0.2–0.6 s)
 | 9 | Tiempos de despacho/entrega | 2 ✅ | `--despacho`, `--entrega`, `--semilla` | log (servicio por solicitud), F2-E3 |
 | 10 | Recursos en orden distinto | 5 ✅ | cargue vehículo→andén vs inspección andén→vehículo | F5-E1: ciclo, `futex_do_wait`, 0 CPU; E2: 8/10 |
 | 11 | Estrategia anti-interbloqueo | 5 ✅ | `--interbloqueo orden` (defecto), `timeout`, `deteccion` | F5-E3: 10/10 → 0/10 en las tres; E4 |
-| 12 | Registro de estadísticas | 7 | hilo `monitor`, CSV | CSV + resumen |
+| 12 | Registro de recibidas, pendientes, vehículos disponibles/asignados, finalizadas | 7 ✅ | hilo `monitor`, `Contadores`, `<log>.estado.csv` | F7-E1 (conservación), E3 (alerta), E5 |
 | 13 | Consumo elevado de CPU | 4, 6 ✅ | espera activa (F4-E4); ruta óptima por fuerza bruta `-p` (F6) | F4-E4: 175 % CPU; F6-E1: GIL vs procesos (334 %); F6-E2: `top -H` |
-| 14 | Observación de procesos e hilos | 1, 2, 7 | `scripts/observar.sh` | capturas + explicación |
+| 14 | Observación de procesos e hilos | 1, 2, 7 ✅ | `observar.sh`, `monitor_so.sh`, nombres de hilo en el kernel | F1-E1, F2-E2, F7-E2 |
 | 15 | Antes/después de sincronizar | 4 ✅, 8 | misma carga y semilla, modo por parámetro | F4-E1..E5 (tablas); gráficas en la Fase 8 |
 | 9.1 | Diseño | 0 | esta sección | diagramas |
 | 9.3 | Prueba de fallo y corrección (8 pasos) | 3, 4, 5, 8 | modos + semilla | antes/después |
@@ -1847,6 +2043,10 @@ de 8 puntos ≈ 25 ms de CPU + preparación 0.1–0.3 s + ruta 0.2–0.6 s)
 | `kill -INT -- -<PGID>` | Simular Ctrl+C (señal a todo el grupo) | — |
 | `kill -KILL / -STOP / -TERM <PID>` | Provocar escenarios de fallo | — |
 | `kill -USR1 <PID>` | Volcado de la pila de todos los hilos (faulthandler) en stderr | — |
+| `kill -STOP / -CONT <PID>` | Detener y reanudar un proceso (estado `T`) | F1-E3, F7-E3 |
+| `scripts/monitor_so.sh [s] [n]` | Vista en vivo: por proceso PID, PPID, estado, hilos por estado R/S/D, %CPU del intervalo, RSS | %CPU = Δticks(utime+stime) / CLK_TCK / intervalo |
+| `/proc/<pid>/task/<tid>/stat` | Estado y CPU de cada hilo | campo 3 = estado; 14 y 15 = utime, stime (ticks) |
+| `/proc/<pid>/maps` | Regiones de memoria mapeadas | segmentos de `/dev/shm` compartidos (mismo inodo) |
 
 **Estados de proceso (`STAT`)**: `R` ejecutando o listo · `S` dormido interrumpible (espera de
 un evento: temporizador, lock, E/S) · `D` dormido no interrumpible (E/S de disco) · `T` detenido

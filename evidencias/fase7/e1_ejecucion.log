@@ -1,0 +1,467 @@
+17:45:04.640075 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 x 3 hilos | generadores=2 | solicitudes=40 | cola=semaforos(10) | vehículos=3 | modo=seguro | espera=bloqueante | sección=fina | ventana=0.0100 s | andenes=2 | inspectores=1 | interbloqueo=orden | puntos=7 | traza=64 KB | historial=50 | semilla=42 | log=evidencias/fase7/e1_ejecucion.log
+17:45:04.653984 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 132909
+17:45:04.655137 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 132910
+17:45:04.655519 | PID 132909 | PPID 132902 | TID 132909 | trabajador-1    | MainThread       | INICIO trabajador 1 con 3 hilos despachadores
+17:45:04.656431 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | CREADO taller -> PID 132914
+17:45:04.657597 | PID 132914 | PPID 132902 | TID 132914 | taller          | MainThread       | INICIO taller con 1 hilos inspectores
+17:45:04.657684 | PID 132910 | PPID 132902 | TID 132910 | trabajador-2    | MainThread       | INICIO trabajador 2 con 3 hilos despachadores
+17:45:04.657972 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | SINCRONIZADO: 3 procesos hijos listos
+17:45:04.659901 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 21 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~1
+17:45:04.660098 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 22 (ráfaga 1) Olímpica: Tunja -> Paipa | en cola ~1
+17:45:04.660213 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 23 (ráfaga 1) Ara: Tunja -> Moniquirá | en cola ~2
+17:45:04.660424 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 24 (ráfaga 1) Falabella: Chiquinquirá -> Garagoa | en cola ~1
+17:45:04.660703 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 25 (ráfaga 1) Olímpica: Paipa -> Duitama | en cola ~1
+17:45:04.660900 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 26 (ráfaga 1) Olímpica: Chiquinquirá -> Tunja | en cola ~2
+17:45:04.660987 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 27 (ráfaga 1) Falabella: Garagoa -> Villa de Leyva | en cola ~3
+17:45:04.661066 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 28 (ráfaga 1) Jumbo: Tunja -> Villa de Leyva | en cola ~4
+17:45:04.660348 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RÁFAGA 1: 2 generadores liberados simultáneamente
+17:45:04.660781 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+17:45:04.661564 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+17:45:04.661288 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 29 (ráfaga 1) D1: Chiquinquirá -> Moniquirá | en cola ~4
+17:45:04.661765 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 1 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~5
+17:45:04.662610 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 2 (ráfaga 1) Falabella: Chiquinquirá -> Duitama | en cola ~7
+17:45:04.662702 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 3 espera
+17:45:04.661968 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 30 (ráfaga 1) D1: Chiquinquirá -> Villa de Leyva | en cola ~6
+17:45:04.662837 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 31 espera
+17:45:04.661931 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   132902  132898  centro_despacho  R      6      23680    
+17:45:04.664614 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132902  centro_despacho  R
+17:45:04.664685 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132919  vigilante        S
+17:45:04.664748 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132920  muestreador      R
+17:45:04.664819 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132921  generador-1      S
+17:45:04.664882 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132922  generador-2      S
+17:45:04.664942 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132923  monitor          S
+17:45:04.665511 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 3 ms
+17:45:04.665737 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 3 (ráfaga 1) Ara: Garagoa -> Paipa | en cola ~7
+17:45:04.665814 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 4 espera
+17:45:04.665698 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   132909  132902  trabajador-1     S      4      19592    
+17:45:04.666148 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132909  trabajador-1     S
+17:45:04.666223 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132911  despachador-1-1  R
+17:45:04.666163 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | RUTA solicitud 22: 7 puntos, 5040 recorridos, longitud 300.6 | CPU 5 ms, real 5 ms
+17:45:04.666337 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132912  despachador-1-2  S
+17:45:04.666386 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132913  despachador-1-3  R
+17:45:04.666512 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   132910  132902  trabajador-2     S      4      19672    
+17:45:04.666732 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132910  trabajador-2     S
+17:45:04.666774 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132915  despachador-2-1  R
+17:45:04.666808 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132916  despachador-2-2  S
+17:45:04.666839 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132917  despachador-2-3  R
+17:45:04.666947 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   132914  132902  taller           S      2      19224    
+17:45:04.667075 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132914  taller           S
+17:45:04.667112 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |       └ TID 132918  inspector-1      S
+17:45:04.667300 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 4 ms
+17:45:04.667353 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 31 (ráfaga 1) Ara: Moniquirá -> Sogamoso | en cola ~8
+17:45:04.667393 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 32 espera
+17:45:04.670935 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | RUTA solicitud 23: 7 puntos, 5040 recorridos, longitud 282.7 | CPU 5 ms, real 5 ms
+17:45:04.671139 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | RUTA solicitud 21: 7 puntos, 5040 recorridos, longitud 289.0 | CPU 5 ms, real 11 ms
+17:45:04.671545 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 6 ms
+17:45:04.671694 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 4 (ráfaga 1) Falabella: Villa de Leyva -> Tunja | en cola ~10
+17:45:04.671776 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 5 espera
+17:45:04.671652 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 4 ms
+17:45:04.671885 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 32 (ráfaga 1) Ara: Garagoa -> Sogamoso | en cola ~10
+17:45:04.671942 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 33 espera
+17:45:04.674561 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | RUTA solicitud 24: 7 puntos, 5040 recorridos, longitud 245.5 | CPU 5 ms, real 8 ms
+17:45:04.674557 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | RUTA solicitud 26: 7 puntos, 5040 recorridos, longitud 289.9 | CPU 3 ms, real 3 ms
+17:45:04.674655 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 26 bloqueada en el semáforo de vehículos libres
+17:45:04.674655 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 24 bloqueada en el semáforo de vehículos libres
+17:45:04.674338 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | RUTA solicitud 25: 7 puntos, 5040 recorridos, longitud 238.5 | CPU 3 ms, real 3 ms
+17:45:04.674937 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 25 bloqueada en el semáforo de vehículos libres
+17:45:04.681568 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 23 | libres ~0/3
+17:45:04.681666 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 23 en V1 (Ara: Tunja -> Moniquirá) | esperó en cola 5 ms, por vehículo 16 ms
+17:45:04.681813 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V3 a la solicitud 21 | libres ~0/3
+17:45:04.681881 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 21 en V3 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms, por vehículo 22 ms
+17:45:04.684647 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V2 a la solicitud 22 | libres ~0/3
+17:45:04.684839 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 22 en V2 (Olímpica: Tunja -> Paipa) | esperó en cola 1 ms, por vehículo 24 ms
+17:45:04.842652 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+17:45:04.909610 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 21 en V3 (cargada en A2)
+17:45:04.956740 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 22 en V2 (cargada en A1)
+17:45:05.045211 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 23 en V1 (cargada en A2)
+17:45:05.119305 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A2
+17:45:05.259044 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V1
+17:45:05.337798 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 21 | V3 liberado | servicio 678 ms
+17:45:05.341454 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 670 ms
+17:45:05.342046 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 5 (ráfaga 1) Ara: Moniquirá -> Tunja | en cola ~10
+17:45:05.342491 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 6 espera
+17:45:05.353805 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 26 | libres ~0/3
+17:45:05.358177 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 26 en V3 (Olímpica: Chiquinquirá -> Tunja) | esperó en cola 11 ms, por vehículo 687 ms
+17:45:05.357834 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | RUTA solicitud 27: 7 puntos, 5040 recorridos, longitud 321.6 | CPU 16 ms, real 17 ms
+17:45:05.359383 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 27 bloqueada en el semáforo de vehículos libres
+17:45:05.425218 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 23 | V1 liberado | servicio 760 ms
+17:45:05.428068 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 756 ms
+17:45:05.428599 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 33 (ráfaga 1) Éxito: Garagoa -> Chiquinquirá | en cola ~10
+17:45:05.429002 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 34 espera
+17:45:05.431281 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A2
+17:45:05.435355 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V1 a la solicitud 25 | libres ~0/3
+17:45:05.435982 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 25 en V1 (Olímpica: Paipa -> Duitama) | esperó en cola 11 ms, por vehículo 764 ms
+17:45:05.445111 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | RUTA solicitud 28: 7 puntos, 5040 recorridos, longitud 324.1 | CPU 16 ms, real 17 ms
+17:45:05.445578 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 28 bloqueada en el semáforo de vehículos libres
+17:45:05.459778 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 22 | V2 liberado | servicio 799 ms
+17:45:05.463677 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 121 ms
+17:45:05.464194 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 6 (ráfaga 1) Homecenter: Sogamoso -> Duitama | en cola ~10
+17:45:05.464615 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 7 espera
+17:45:05.475749 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V2 a la solicitud 24 | libres ~0/3
+17:45:05.479271 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 24 en V2 (Falabella: Chiquinquirá -> Garagoa) | esperó en cola 6 ms, por vehículo 813 ms
+17:45:05.479019 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | RUTA solicitud 29: 7 puntos, 5040 recorridos, longitud 295.5 | CPU 15 ms, real 16 ms
+17:45:05.480263 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 29 bloqueada en el semáforo de vehículos libres
+17:45:05.511182 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 26 en V3 (cargada en A1)
+17:45:05.583239 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 24 en V2 (cargada en A1)
+17:45:05.593800 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 25 en V1 (cargada en A2)
+17:45:05.628531 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+17:45:05.661453 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=19 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:25 V2:24 V3:26] | finalizadas=3 (entregadas=3 canceladas=0) | 3.0/s
+17:45:05.770625 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 26 | V3 liberado | servicio 1099 ms
+17:45:05.771599 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 342 ms
+17:45:05.772127 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 34 (ráfaga 1) Homecenter: Duitama -> Chiquinquirá | en cola ~10
+17:45:05.772567 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 35 espera
+17:45:05.785735 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | RUTA solicitud 1: 7 puntos, 5040 recorridos, longitud 282.0 | CPU 12 ms, real 14 ms
+17:45:05.786276 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 1 bloqueada en el semáforo de vehículos libres
+17:45:05.786046 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V3 a la solicitud 27 | libres ~0/3
+17:45:05.786894 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 27 en V3 (Falabella: Garagoa -> Villa de Leyva) | esperó en cola 680 ms, por vehículo 446 ms
+17:45:05.813567 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A2
+17:45:05.892610 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 27 en V3 (cargada en A1)
+17:45:05.916151 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 24 | V2 liberado | servicio 1250 ms
+17:45:05.917053 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 144 ms
+17:45:05.917414 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 35 (ráfaga 1) Ara: Chiquinquirá -> Tunja | en cola ~10
+17:45:05.917733 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 36 espera
+17:45:05.926247 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V2 a la solicitud 28 | libres ~0/3
+17:45:05.926621 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 28 en V2 (Jumbo: Tunja -> Villa de Leyva) | esperó en cola 767 ms, por vehículo 499 ms
+17:45:05.929252 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | RUTA solicitud 30: 7 puntos, 5040 recorridos, longitud 291.8 | CPU 12 ms, real 12 ms
+17:45:05.929602 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 30 bloqueada en el semáforo de vehículos libres
+17:45:06.125786 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 25 | V1 liberado | servicio 1454 ms
+17:45:06.126781 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 662 ms
+17:45:06.127170 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 7 (ráfaga 1) Jumbo: Sogamoso -> Chiquinquirá | en cola ~10
+17:45:06.127494 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 8 espera
+17:45:06.135825 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V1 a la solicitud 1 | libres ~0/3
+17:45:06.136224 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1 en V1 (Homecenter: Sogamoso -> Tunja) | esperó en cola 1110 ms, por vehículo 365 ms
+17:45:06.140865 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | RUTA solicitud 2: 7 puntos, 5040 recorridos, longitud 248.9 | CPU 14 ms, real 14 ms
+17:45:06.141284 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 2 bloqueada en el semáforo de vehículos libres
+17:45:06.148287 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+17:45:06.178733 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 27 | V3 liberado | servicio 838 ms
+17:45:06.179945 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 262 ms
+17:45:06.180334 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 36 (ráfaga 1) D1: Garagoa -> Villa de Leyva | en cola ~10
+17:45:06.180725 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 37 espera
+17:45:06.179228 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 28 en V2 (cargada en A1)
+17:45:06.188787 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V3 a la solicitud 30 | libres ~0/3
+17:45:06.189576 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 30 en V3 (D1: Chiquinquirá -> Villa de Leyva) | esperó en cola 1255 ms, por vehículo 273 ms
+17:45:06.200024 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | RUTA solicitud 3: 7 puntos, 5040 recorridos, longitud 292.6 | CPU 19 ms, real 20 ms
+17:45:06.200465 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 3 bloqueada en el semáforo de vehículos libres
+17:45:06.355209 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A2
+17:45:06.359020 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1 en V1 (cargada en A1)
+17:45:06.481286 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 30 en V3 (cargada en A2)
+17:45:06.511394 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 28 | V2 liberado | servicio 1084 ms
+17:45:06.511814 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 384 ms
+17:45:06.511940 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 8 (ráfaga 1) Homecenter: Tunja -> Moniquirá | en cola ~10
+17:45:06.512012 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 9 espera
+17:45:06.516712 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | RUTA solicitud 31: 7 puntos, 5040 recorridos, longitud 317.2 | CPU 5 ms, real 5 ms
+17:45:06.517287 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 31 bloqueada en el semáforo de vehículos libres
+17:45:06.521465 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V2 a la solicitud 2 | libres ~0/3
+17:45:06.521636 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 2 en V2 (Falabella: Chiquinquirá -> Duitama) | esperó en cola 1464 ms, por vehículo 395 ms
+17:45:06.626065 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 2 en V2 (cargada en A2)
+17:45:06.662522 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=24 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:1 V2:2 V3:30] | finalizadas=8 (entregadas=8 canceladas=0) | 5.0/s
+17:45:06.709209 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:45:06.824710 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1 | V1 liberado | servicio 1053 ms
+17:45:06.825202 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 313 ms
+17:45:06.825327 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 9 (ráfaga 1) Jumbo: Garagoa -> Moniquirá | en cola ~10
+17:45:06.825403 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 10 espera
+17:45:06.829985 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | RUTA solicitud 4: 7 puntos, 5040 recorridos, longitud 340.1 | CPU 5 ms, real 5 ms
+17:45:06.830253 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 4 bloqueada en el semáforo de vehículos libres
+17:45:06.834795 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V1 a la solicitud 29 | libres ~0/3
+17:45:06.835032 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 29 en V1 (D1: Chiquinquirá -> Moniquirá) | esperó en cola 802 ms, por vehículo 1372 ms
+17:45:06.843637 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 30 | V3 liberado | servicio 927 ms
+17:45:06.844183 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 663 ms
+17:45:06.844314 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 37 (ráfaga 1) Alkosto: Paipa -> Chiquinquirá | en cola ~10
+17:45:06.844441 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 38 espera
+17:45:06.849077 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | RUTA solicitud 32: 7 puntos, 5040 recorridos, longitud 305.8 | CPU 5 ms, real 5 ms
+17:45:06.849265 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 32 bloqueada en el semáforo de vehículos libres
+17:45:06.853716 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V3 a la solicitud 31 | libres ~0/3
+17:45:06.853888 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 31 en V3 (Ara: Moniquirá -> Sogamoso) | esperó en cola 1849 ms, por vehículo 342 ms
+17:45:06.862722 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:45:06.953520 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 2 | V2 liberado | servicio 827 ms
+17:45:06.954041 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 129 ms
+17:45:06.954176 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 10 (ráfaga 1) Ara: Tunja -> Garagoa | en cola ~10
+17:45:06.954254 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 11 espera
+17:45:06.958549 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | RUTA solicitud 5: 7 puntos, 5040 recorridos, longitud 269.7 | CPU 5 ms, real 5 ms
+17:45:06.958990 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 5 bloqueada en el semáforo de vehículos libres
+17:45:06.963603 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 3 | libres ~0/3
+17:45:06.963792 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 3 en V2 (Ara: Garagoa -> Paipa) | esperó en cola 1517 ms, por vehículo 784 ms
+17:45:07.033427 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+17:45:07.095444 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 29 en V1 (cargada en A1)
+17:45:07.144342 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 31 en V3 (cargada en A2)
+17:45:07.201979 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 3 en V2 (cargada en A2)
+17:45:07.340737 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A2
+17:45:07.359282 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 31 | V3 liberado | servicio 848 ms
+17:45:07.360262 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 516 ms
+17:45:07.360651 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 38 (ráfaga 1) Éxito: Moniquirá -> Villa de Leyva | en cola ~10
+17:45:07.360922 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 39 espera
+17:45:07.369369 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V3 a la solicitud 5 | libres ~0/3
+17:45:07.371499 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 5 en V3 (Ara: Moniquirá -> Tunja) | esperó en cola 2282 ms, por vehículo 418 ms
+17:45:07.389073 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | RUTA solicitud 33: 7 puntos, 5040 recorridos, longitud 333.9 | CPU 22 ms, real 29 ms
+17:45:07.389781 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 33 bloqueada en el semáforo de vehículos libres
+17:45:07.438694 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 3 | V2 liberado | servicio 1259 ms
+17:45:07.439444 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 485 ms
+17:45:07.439692 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 11 (ráfaga 1) Falabella: Garagoa -> Chiquinquirá | en cola ~10
+17:45:07.439904 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 12 espera
+17:45:07.453400 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | RUTA solicitud 6: 7 puntos, 5040 recorridos, longitud 308.4 | CPU 14 ms, real 14 ms
+17:45:07.453760 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 6 bloqueada en el semáforo de vehículos libres
+17:45:07.453627 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V2 a la solicitud 4 | libres ~0/3
+17:45:07.454038 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 4 en V2 (Falabella: Villa de Leyva -> Tunja) | esperó en cola 2159 ms, por vehículo 629 ms
+17:45:07.487402 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 5 en V3 (cargada en A2)
+17:45:07.543185 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 29 | V1 liberado | servicio 2080 ms
+17:45:07.543991 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 183 ms
+17:45:07.544322 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 39 (ráfaga 1) Éxito: Sogamoso -> Villa de Leyva | en cola ~10
+17:45:07.544589 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 40 espera
+17:45:07.556556 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | RUTA solicitud 34: 7 puntos, 5040 recorridos, longitud 352.5 | CPU 12 ms, real 13 ms
+17:45:07.557121 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 34 bloqueada en el semáforo de vehículos libres
+17:45:07.556885 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V1 a la solicitud 32 | libres ~0/3
+17:45:07.557661 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 32 en V1 (Ara: Garagoa -> Sogamoso) | esperó en cola 2177 ms, por vehículo 714 ms
+17:45:07.574807 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 4 en V2 (cargada en A2)
+17:45:07.648074 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+17:45:07.663261 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=30 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:32 V2:4 V3:5] | finalizadas=14 (entregadas=14 canceladas=0) | 6.0/s
+17:45:07.715397 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 32 en V1 (cargada en A2)
+17:45:07.749012 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 5 | V3 liberado | servicio 795 ms
+17:45:07.750193 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 310 ms
+17:45:07.750633 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 12 (ráfaga 1) Homecenter: Garagoa -> Duitama | en cola ~10
+17:45:07.750965 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 13 espera
+17:45:07.759102 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V3 a la solicitud 33 | libres ~0/3
+17:45:07.759511 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 33 en V3 (Éxito: Garagoa -> Chiquinquirá) | esperó en cola 2688 ms, por vehículo 399 ms
+17:45:07.763394 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | RUTA solicitud 35: 7 puntos, 5040 recorridos, longitud 286.4 | CPU 13 ms, real 14 ms
+17:45:07.763679 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 35 bloqueada en el semáforo de vehículos libres
+17:45:07.821988 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A2
+17:45:07.874334 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 33 en V3 (cargada en A2)
+17:45:08.031798 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V1
+17:45:08.171798 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 4 | V2 liberado | servicio 1347 ms
+17:45:08.172759 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 628 ms
+17:45:08.173149 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | RECIBIDA solicitud 40 (ráfaga 1) Olímpica: Villa de Leyva -> Moniquirá | en cola ~10
+17:45:08.173481 | PID 132902 | PPID 132898 | TID 132922 | centro_despacho | generador-2      | FIN generador 2: generadas=20, bloqueos por cola llena=10 (3.502 s)
+17:45:08.181823 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V2 a la solicitud 35 | libres ~0/3
+17:45:08.182248 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 35 en V2 (Ara: Chiquinquirá -> Tunja) | esperó en cola 1977 ms, por vehículo 432 ms
+17:45:08.186530 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | RUTA solicitud 7: 7 puntos, 5040 recorridos, longitud 306.3 | CPU 13 ms, real 14 ms
+17:45:08.186893 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 7 bloqueada en el semáforo de vehículos libres
+17:45:08.199324 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A2
+17:45:08.203244 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 32 | V1 liberado | servicio 1359 ms
+17:45:08.204150 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 453 ms
+17:45:08.204591 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 13 (ráfaga 1) Falabella: Chiquinquirá -> Garagoa | en cola ~10
+17:45:08.204908 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 14 espera
+17:45:08.213344 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V1 a la solicitud 6 | libres ~0/3
+17:45:08.213686 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 6 en V1 (Homecenter: Sogamoso -> Duitama) | esperó en cola 2097 ms, por vehículo 774 ms
+17:45:08.218708 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | RUTA solicitud 36: 7 puntos, 5040 recorridos, longitud 288.8 | CPU 14 ms, real 15 ms
+17:45:08.219074 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 36 bloqueada en el semáforo de vehículos libres
+17:45:08.323494 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:45:08.342283 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 35 en V2 (cargada en A2)
+17:45:08.404452 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 33 | V3 liberado | servicio 1044 ms
+17:45:08.405512 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 200 ms
+17:45:08.405981 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 14 (ráfaga 1) Alkosto: Moniquirá -> Sogamoso | en cola ~10
+17:45:08.406315 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 15 espera
+17:45:08.414497 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V3 a la solicitud 34 | libres ~0/3
+17:45:08.414954 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 34 en V3 (Homecenter: Duitama -> Chiquinquirá) | esperó en cola 2115 ms, por vehículo 871 ms
+17:45:08.419400 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | RUTA solicitud 8: 7 puntos, 5040 recorridos, longitud 304.6 | CPU 13 ms, real 14 ms
+17:45:08.419701 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 8 bloqueada en el semáforo de vehículos libres
+17:45:08.437512 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 6 en V1 (cargada en A1)
+17:45:08.568280 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:45:08.664831 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=34 en_cola=10 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:6 V2:35 V3:34] | finalizadas=18 (entregadas=18 canceladas=0) | 4.0/s
+17:45:08.676419 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 6 | V1 liberado | servicio 1237 ms
+17:45:08.677516 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 271 ms
+17:45:08.677943 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 15 (ráfaga 1) Éxito: Paipa -> Moniquirá | en cola ~10
+17:45:08.678279 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 16 espera
+17:45:08.684941 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 34 en V3 (cargada en A1)
+17:45:08.690515 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | RUTA solicitud 9: 7 puntos, 5040 recorridos, longitud 315.3 | CPU 13 ms, real 13 ms
+17:45:08.691079 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 9 bloqueada en el semáforo de vehículos libres
+17:45:08.690861 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V1 a la solicitud 7 | libres ~0/3
+17:45:08.691728 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 7 en V1 (Jumbo: Sogamoso -> Chiquinquirá) | esperó en cola 2708 ms, por vehículo 519 ms
+17:45:08.834010 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V1
+17:45:08.841498 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 7 en V1 (cargada en A1)
+17:45:08.859261 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 35 | V2 liberado | servicio 1109 ms
+17:45:08.860091 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 182 ms
+17:45:08.860514 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 16 (ráfaga 1) Homecenter: Villa de Leyva -> Tunja | en cola ~10
+17:45:08.860867 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 17 espera
+17:45:08.869394 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V2 a la solicitud 8 | libres ~0/3
+17:45:08.870027 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 8 en V2 (Homecenter: Tunja -> Moniquirá) | esperó en cola 2278 ms, por vehículo 464 ms
+17:45:08.874143 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | RUTA solicitud 37: 7 puntos, 5040 recorridos, longitud 254.0 | CPU 13 ms, real 14 ms
+17:45:08.874586 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 37 bloqueada en el semáforo de vehículos libres
+17:45:08.954353 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A2
+17:45:08.999035 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 34 | V3 liberado | servicio 1455 ms
+17:45:09.000809 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 140 ms
+17:45:09.001309 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 17 (ráfaga 1) Alkosto: Villa de Leyva -> Chiquinquirá | en cola ~10
+17:45:09.001893 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 18 espera
+17:45:09.009159 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V3 a la solicitud 9 | libres ~0/3
+17:45:09.009642 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 9 en V3 (Jumbo: Garagoa -> Moniquirá) | esperó en cola 2165 ms, por vehículo 332 ms
+17:45:09.013866 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | RUTA solicitud 10: 7 puntos, 5040 recorridos, longitud 300.0 | CPU 13 ms, real 14 ms
+17:45:09.014212 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 10 bloqueada en el semáforo de vehículos libres
+17:45:09.034034 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 8 en V2 (cargada en A2)
+17:45:09.056507 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 7 | V1 liberado | servicio 884 ms
+17:45:09.057523 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 55 ms
+17:45:09.057960 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 18 (ráfaga 1) Homecenter: Moniquirá -> Villa de Leyva | en cola ~10
+17:45:09.058290 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 19 espera
+17:45:09.066648 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V1 a la solicitud 36 | libres ~0/3
+17:45:09.067043 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 36 en V1 (D1: Garagoa -> Villa de Leyva) | esperó en cola 2286 ms, por vehículo 863 ms
+17:45:09.070670 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | RUTA solicitud 38: 7 puntos, 5040 recorridos, longitud 286.1 | CPU 13 ms, real 13 ms
+17:45:09.071055 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 38 bloqueada en el semáforo de vehículos libres
+17:45:09.105154 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V3
+17:45:09.157575 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 9 en V3 (cargada en A1)
+17:45:09.240881 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 36 en V1 (cargada en A2)
+17:45:09.276698 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V3 en A1
+17:45:09.451174 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 9 | V3 liberado | servicio 774 ms
+17:45:09.451794 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 393 ms
+17:45:09.451946 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 19 (ráfaga 1) Falabella: Sogamoso -> Moniquirá | en cola ~10
+17:45:09.452031 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 20 espera
+17:45:09.457728 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | RUTA solicitud 11: 7 puntos, 5040 recorridos, longitud 318.6 | CPU 5 ms, real 6 ms
+17:45:09.457889 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 11 bloqueada en el semáforo de vehículos libres
+17:45:09.461375 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V3 a la solicitud 10 | libres ~0/3
+17:45:09.461728 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 10 en V3 (Ara: Tunja -> Garagoa) | esperó en cola 2175 ms, por vehículo 461 ms
+17:45:09.583078 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 8 | V2 liberado | servicio 1178 ms
+17:45:09.584883 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 133 ms
+17:45:09.585514 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | RECIBIDA solicitud 20 (ráfaga 1) Olímpica: Chiquinquirá -> Sogamoso | en cola ~10
+17:45:09.585948 | PID 132902 | PPID 132898 | TID 132921 | centro_despacho | generador-1      | FIN generador 1: generadas=20, bloqueos por cola llena=18 (4.908 s)
+17:45:09.593260 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V2 a la solicitud 37 | libres ~0/3
+17:45:09.593720 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 37 en V2 (Alkosto: Paipa -> Chiquinquirá) | esperó en cola 2679 ms, por vehículo 734 ms
+17:45:09.598740 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | RUTA solicitud 39: 7 puntos, 5040 recorridos, longitud 334.4 | CPU 14 ms, real 14 ms
+17:45:09.599083 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 39 bloqueada en el semáforo de vehículos libres
+17:45:09.603858 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 36 | V1 liberado | servicio 1400 ms
+17:45:09.609685 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:45:09.610435 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | GENERACIÓN terminada: se envían 6 centinelas (uno por hilo despachador)
+17:45:09.613901 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V1 a la solicitud 11 | libres ~0/3
+17:45:09.614275 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 11 en V1 (Falabella: Garagoa -> Chiquinquirá) | esperó en cola 2497 ms, por vehículo 163 ms
+17:45:09.618344 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | RUTA solicitud 12: 7 puntos, 5040 recorridos, longitud 283.5 | CPU 13 ms, real 14 ms
+17:45:09.618678 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 12 bloqueada en el semáforo de vehículos libres
+17:45:09.666243 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=40 en_cola=9 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:11 V2:37 V3:10] | finalizadas=25 (entregadas=25 canceladas=0) | 7.0/s
+17:45:09.752832 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 10 en V3 (cargada en A1)
+17:45:09.823155 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:45:09.894397 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 37 en V2 (cargada en A1)
+17:45:09.926177 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+17:45:09.977747 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 11 en V1 (cargada en A2)
+17:45:10.066428 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A2
+17:45:10.212855 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V1
+17:45:10.235876 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 10 | V3 liberado | servicio 1236 ms
+17:45:10.241749 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 11 | V1 liberado | servicio 790 ms
+17:45:10.250999 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | RUTA solicitud 40: 7 puntos, 5040 recorridos, longitud 311.4 | CPU 14 ms, real 14 ms
+17:45:10.251392 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 40 bloqueada en el semáforo de vehículos libres
+17:45:10.257504 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 39 | libres ~0/3
+17:45:10.257943 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 39 en V1 (Éxito: Sogamoso -> Villa de Leyva) | esperó en cola 2223 ms, por vehículo 674 ms
+17:45:10.258458 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 38 | libres ~0/3
+17:45:10.262814 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 38 en V3 (Éxito: Moniquirá -> Villa de Leyva) | esperó en cola 2213 ms, por vehículo 1205 ms
+17:45:10.262621 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | RUTA solicitud 13: 7 puntos, 5040 recorridos, longitud 292.8 | CPU 18 ms, real 20 ms
+17:45:10.263420 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 13 bloqueada en el semáforo de vehículos libres
+17:45:10.307307 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 37 | V2 liberado | servicio 1447 ms
+17:45:10.323175 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V2 a la solicitud 12 | libres ~0/3
+17:45:10.325456 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 12 en V2 (Homecenter: Garagoa -> Duitama) | esperó en cola 2165 ms, por vehículo 721 ms
+17:45:10.325176 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | RUTA solicitud 14: 7 puntos, 5040 recorridos, longitud 317.8 | CPU 16 ms, real 17 ms
+17:45:10.326672 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 14 bloqueada en el semáforo de vehículos libres
+17:45:10.396126 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A2
+17:45:10.451520 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 38 en V3 (cargada en A1)
+17:45:10.531063 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 12 en V2 (cargada en A1)
+17:45:10.665857 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 39 en V1 (cargada en A1)
+17:45:10.667495 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=40 en_cola=6 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:39 V2:12 V3:38] | finalizadas=28 (entregadas=28 canceladas=0) | 3.0/s
+17:45:10.679624 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:45:10.814386 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:45:10.898031 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 12 | V2 liberado | servicio 1293 ms
+17:45:10.912568 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | RUTA solicitud 15: 7 puntos, 5040 recorridos, longitud 306.3 | CPU 13 ms, real 14 ms
+17:45:10.913138 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 15 bloqueada en el semáforo de vehículos libres
+17:45:10.912910 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V2 a la solicitud 40 | libres ~0/3
+17:45:10.913656 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 40 en V2 (Olímpica: Villa de Leyva -> Moniquirá) | esperó en cola 2692 ms, por vehículo 677 ms
+17:45:10.975384 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V3
+17:45:10.995774 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 39 | V1 liberado | servicio 1411 ms
+17:45:11.002407 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 38 | V3 liberado | servicio 1945 ms
+17:45:11.012292 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V3 a la solicitud 14 | libres ~0/3
+17:45:11.012858 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 14 en V3 (Alkosto: Moniquirá -> Sogamoso) | esperó en cola 2103 ms, por vehículo 705 ms
+17:45:11.014167 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V1 a la solicitud 13 | libres ~0/3
+17:45:11.018291 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | RUTA solicitud 16: 7 puntos, 5040 recorridos, longitud 212.7 | CPU 14 ms, real 22 ms
+17:45:11.024768 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 13 en V1 (Falabella: Chiquinquirá -> Garagoa) | esperó en cola 2491 ms, por vehículo 782 ms
+17:45:11.028152 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | RUTA solicitud 17: 7 puntos, 5040 recorridos, longitud 326.9 | CPU 13 ms, real 19 ms
+17:45:11.029047 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 17 bloqueada en el semáforo de vehículos libres
+17:45:11.028510 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 16 bloqueada en el semáforo de vehículos libres
+17:45:11.144713 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V3 en A1
+17:45:11.175109 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 40 en V2 (cargada en A2)
+17:45:11.317256 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 13 en V1 (cargada en A2)
+17:45:11.421052 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 14 en V3 (cargada en A2)
+17:45:11.455248 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V2
+17:45:11.533533 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 40 | V2 liberado | servicio 1297 ms
+17:45:11.538338 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | RUTA solicitud 18: 7 puntos, 5040 recorridos, longitud 311.9 | CPU 4 ms, real 5 ms
+17:45:11.538614 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 18 bloqueada en el semáforo de vehículos libres
+17:45:11.548632 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V2 a la solicitud 15 | libres ~0/3
+17:45:11.549004 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 15 en V2 (Éxito: Paipa -> Moniquirá) | esperó en cola 2493 ms, por vehículo 650 ms
+17:45:11.610761 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A1
+17:45:11.668402 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=40 en_cola=2 en_proceso=6 (esperando vehículo=3) | vehículos: asignados=3 disponibles=0 [V1:13 V2:15 V3:14] | finalizadas=32 (entregadas=32 canceladas=0) | 4.0/s
+17:45:11.811849 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 13 | V1 liberado | servicio 1569 ms
+17:45:11.820833 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | RUTA solicitud 19: 7 puntos, 5040 recorridos, longitud 219.4 | CPU 7 ms, real 8 ms
+17:45:11.821076 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 19 bloqueada en el semáforo de vehículos libres
+17:45:11.822361 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V1 a la solicitud 17 | libres ~0/3
+17:45:11.822522 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 17 en V1 (Alkosto: Villa de Leyva -> Chiquinquirá) | esperó en cola 2148 ms, por vehículo 814 ms
+17:45:11.836083 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 15 en V2 (cargada en A1)
+17:45:11.949694 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 14 | V3 liberado | servicio 1642 ms
+17:45:11.956858 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | RUTA solicitud 20: 7 puntos, 5040 recorridos, longitud 344.6 | CPU 5 ms, real 6 ms
+17:45:11.957065 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 20 bloqueada en el semáforo de vehículos libres
+17:45:11.959742 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V3 a la solicitud 16 | libres ~0/3
+17:45:11.959872 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 16 en V3 (Homecenter: Villa de Leyva -> Tunja) | esperó en cola 2318 ms, por vehículo 963 ms
+17:45:11.962084 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:45:12.052996 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 17 en V1 (cargada en A2)
+17:45:12.139390 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 16 en V3 (cargada en A1)
+17:45:12.187761 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 15 | V2 liberado | servicio 1289 ms
+17:45:12.188433 | PID 132910 | PPID 132902 | TID 132917 | trabajador-2    | despachador-2-3  | CENTINELA recibido: el hilo termina
+17:45:12.198252 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 19 | libres ~0/3
+17:45:12.198494 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 19 en V2 (Falabella: Sogamoso -> Moniquirá) | esperó en cola 2755 ms, por vehículo 386 ms
+17:45:12.263891 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:45:12.432029 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 19 en V2 (cargada en A2)
+17:45:12.487989 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V3
+17:45:12.557044 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 16 | V3 liberado | servicio 1561 ms
+17:45:12.557878 | PID 132909 | PPID 132902 | TID 132913 | trabajador-1    | despachador-1-3  | CENTINELA recibido: el hilo termina
+17:45:12.567373 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V3 a la solicitud 20 | libres ~0/3
+17:45:12.567803 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 20 en V3 (Olímpica: Chiquinquirá -> Sogamoso) | esperó en cola 2498 ms, por vehículo 617 ms
+17:45:12.571578 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 17 | V1 liberado | servicio 1563 ms
+17:45:12.572309 | PID 132909 | PPID 132902 | TID 132912 | trabajador-1    | despachador-1-2  | CENTINELA recibido: el hilo termina
+17:45:12.583180 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V1 a la solicitud 18 | libres ~0/3
+17:45:12.583591 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 18 en V1 (Homecenter: Moniquirá -> Villa de Leyva) | esperó en cola 2532 ms, por vehículo 1050 ms
+17:45:12.665903 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V3 en A1
+17:45:12.666732 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 19 | V2 liberado | servicio 854 ms
+17:45:12.667517 | PID 132909 | PPID 132902 | TID 132911 | trabajador-1    | despachador-1-1  | CENTINELA recibido: el hilo termina
+17:45:12.669055 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=40 en_cola=0 en_proceso=2 (esperando vehículo=0) | vehículos: asignados=2 disponibles=1 [V1:18 V2:- V3:20] | finalizadas=38 (entregadas=38 canceladas=0) | 6.0/s
+17:45:12.676431 | PID 132909 | PPID 132902 | TID 132909 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=8, despachador-1-2=6, despachador-1-3=7
+17:45:12.678984 | PID 132909 | PPID 132902 | TID 132909 | trabajador-1    | MainThread       | MEMORIA trabajador 1 | historial: 21 trazas (1.3 MB), 0 descartadas | RSS=21.1 MB, PSS=7.9 MB, privada modificada=4.7 MB
+17:45:12.767498 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 20 en V3 (cargada en A1)
+17:45:12.865371 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 18 en V1 (cargada en A2)
+17:45:12.868307 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 132909): exit(0)
+17:45:13.017034 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A1 y luego V1
+17:45:13.093380 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 20 | V3 liberado | servicio 1143 ms
+17:45:13.094034 | PID 132910 | PPID 132902 | TID 132916 | trabajador-2    | despachador-2-2  | CENTINELA recibido: el hilo termina
+17:45:13.123417 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A1
+17:45:13.332296 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 18 | V1 liberado | servicio 1798 ms
+17:45:13.332909 | PID 132910 | PPID 132902 | TID 132915 | trabajador-2    | despachador-2-1  | CENTINELA recibido: el hilo termina
+17:45:13.374481 | PID 132910 | PPID 132902 | TID 132910 | trabajador-2    | MainThread       | FIN trabajador 2 | atendidas por hilo: despachador-2-1=6, despachador-2-2=7, despachador-2-3=6
+17:45:13.377191 | PID 132910 | PPID 132902 | TID 132910 | trabajador-2    | MainThread       | MEMORIA trabajador 2 | historial: 19 trazas (1.2 MB), 0 descartadas | RSS=21.1 MB, PSS=8.8 MB, privada modificada=4.7 MB
+17:45:13.466573 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+17:45:13.534493 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | TERMINÓ trabajador-2 (PID 132910): exit(0)
+17:45:13.588081 | PID 132914 | PPID 132902 | TID 132918 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A2
+17:45:13.670160 | PID 132902 | PPID 132898 | TID 132923 | centro_despacho | monitor          | ESTADO | recibidas=40 en_cola=0 en_proceso=0 (esperando vehículo=0) | vehículos: asignados=0 disponibles=3 [V1:- V2:- V3:-] | finalizadas=40 (entregadas=40 canceladas=0) | 2.0/s
+17:45:13.674193 | PID 132914 | PPID 132902 | TID 132914 | taller          | MainThread       | FIN taller | inspecciones: inspector-1=21
+17:45:13.739105 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | RESUMEN de terminación:
+17:45:13.739829 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   trabajador-1   PID 132909  exit(0)
+17:45:13.740286 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   trabajador-2   PID 132910  exit(0)
+17:45:13.740763 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   taller         PID 132914  exit(0)
+17:45:13.745033 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+17:45:13.747214 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | ESTADÍSTICAS:
+17:45:13.747511 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   solicitudes: generadas=40 entregadas=40 canceladas=0 no atendidas=0
+17:45:13.747815 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=28, tiempo bloqueados=8.410 s
+17:45:13.748163 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=1760 máx=2755
+17:45:13.752754 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   servicio con vehículo (s): prom=0.614 | trabajo total (suma)=24.55 s
+17:45:13.753459 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   tiempo total=8.67 s | rendimiento=4.61 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=2.83
+17:45:13.754287 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   hilos ocupados a la vez: máx=6 (capacidad = 2 trabajadores x 3 hilos = 6)
+17:45:13.755949 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=21, trabajador-2=19
+17:45:13.757505 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=8, despachador-1-2=6, despachador-1-3=7, despachador-2-1=6, despachador-2-2=7, despachador-2-3=6
+17:45:13.758301 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   CPU: principal=0.31 s, trabajadores=0.66 s | tiempo real=9.10 s | uso medio de CPU de los trabajadores=7.2 %
+17:45:13.758468 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=973, involuntarios=173
+17:45:13.758685 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   FLOTA: 3 vehículos | modo=seguro | espera=bloqueante | sección=fina | asignaciones=40 | reparto: V1=13, V2=13, V3=14
+17:45:13.758930 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   entregas con vehículo a la vez: máx=3 con 3 vehículos
+17:45:13.759107 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   espera por vehículo (ms): prom=595 máx=1372 | reintentos de búsqueda (espera activa)=0
+17:45:13.759269 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   espera por el mutex de la flota (ms): prom=0.00 máx=0.01
+17:45:13.759553 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   DOBLES ASIGNACIONES: sonda en vivo=0 | auditoría: asignaciones sobre un vehículo ocupado=0, pares solapados=0 (entre procesos=0, entre hilos del mismo proceso=0)
+17:45:13.759737 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   REGISTROS INCONSISTENTES al liberar (actualizaciones perdidas)=0
+17:45:13.759916 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   estado final de la flota: libres=3/3
+17:45:13.760061 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   RECURSOS: 3 vehículos + 2 andenes | estrategia=orden | cargues=40 | inspecciones=21
+17:45:13.760194 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   INTERBLOQUEOS: detectados=0 | recuperaciones (víctimas)=0 | reintentos por tiempo límite=0
+17:45:13.764194 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   RUTAS: 40 planificadas (7 puntos) | CPU por ruta prom=11.0 ms | real por ruta prom=12.3 ms | real/CPU=1.12 | CPU total en rutas=0.44 s | suma de longitudes=11852.2
+17:45:13.765872 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   MEMORIA Y CPU por proceso (muestreo de /proc cada 0.5 s, serie en evidencias/fase7/e1_ejecucion.recursos.csv):
+17:45:13.766033 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |     PROCESO          HILOS  RSS MB (inicial/pico/final) PSS pico   PRIVADA pico CPU s    CPU %  
+17:45:13.766275 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |     centro_despacho  6      23.0 / 23.5 / 23.5         9.1        3.8          0.28     3.2    
+17:45:13.766420 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |     trabajador-1     5      19.1 / 20.8 / 20.8         7.7        4.5          0.31     4.1    
+17:45:13.766558 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |     trabajador-2     5      19.2 / 21.0 / 21.0         8.7        4.6          0.26     3.0    
+17:45:13.766692 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |     taller           2      18.8 / 18.9 / 18.9         7.0        2.8          0.02     0.2    
+17:45:13.766813 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |     PSS total (suma de picos)=32.5 MB | RSS total (suma de picos)=84.1 MB
+17:45:13.766963 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   REGISTRO: contadores compartidos tomadas=40 entregadas=40 canceladas=0 esperando_vehículo=0 | resultados recibidos: entregadas=40 canceladas=0 -> coinciden
+17:45:13.767106 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       |   MONITOR: 0 alertas SIN PROGRESO | serie en evidencias/fase7/e1_ejecucion.estado.csv
+17:45:13.770195 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | FIN centro de despacho (correcto)

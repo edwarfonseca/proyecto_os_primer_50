@@ -26,13 +26,28 @@ class _FiltroSO(logging.Filter):
         return True
 
 
+class _FiltroConsola(logging.Filter):
+    """Vista 'resumen': en consola sólo pasan avisos y líneas marcadas como resumen."""
+
+    completa = True
+
+    def filter(self, record):
+        return (_FiltroConsola.completa or record.levelno >= logging.WARNING
+                or getattr(record, "resumen", False))
+
+
+def consola_completa() -> None:
+    """Vuelve a mostrar todo en consola (para el resumen final)."""
+    _FiltroConsola.completa = True
+
+
 class _Formato(logging.Formatter):
     def formatTime(self, record, datefmt=None):
         # Microsegundos: necesarios para ordenar eventos concurrentes muy cercanos.
         return datetime.fromtimestamp(record.created).strftime("%H:%M:%S.%f")
 
 
-def configurar(ruta_log: Path) -> logging.Logger:
+def configurar(ruta_log: Path, vista: str = "completa") -> logging.Logger:
     """Configura el registro una sola vez por proceso.
 
     Con el método `fork` el hijo hereda los manejadores ya configurados; con
@@ -41,16 +56,23 @@ def configurar(ruta_log: Path) -> logging.Logger:
     log = logging.getLogger(NOMBRE)
     if log.handlers:
         return log
+    _FiltroConsola.completa = vista == "completa"
 
     ruta_log.parent.mkdir(parents=True, exist_ok=True)
     formato = _Formato(FORMATO)
     # El archivo se abre en modo 'a' (O_APPEND): cada escritura va al final aunque
     # varios procesos compartan el archivo, así las líneas no se sobrescriben.
-    for manejador in (logging.StreamHandler(sys.stdout),
-                      logging.FileHandler(ruta_log, mode="a", encoding="utf-8")):
+    consola = logging.StreamHandler(sys.stdout)
+    consola.addFilter(_FiltroConsola())
+    archivo = logging.FileHandler(ruta_log, mode="a", encoding="utf-8")
+    for manejador in (consola, archivo):
         manejador.setFormatter(formato)
         manejador.addFilter(_FiltroSO())
         log.addHandler(manejador)
+    if vista == "resumen":
+        # En la vista resumen la consola muestra sólo hora y mensaje; el archivo conserva
+        # siempre la identidad completa (PID, PPID, TID, proceso, hilo).
+        consola.setFormatter(_Formato("%(asctime)s | %(message)s"))
     log.setLevel(logging.INFO)
     log.propagate = False
     return log

@@ -1,0 +1,9 @@
+4 participantes x 100000 incrementos = 400000 esperados
+
+PARTICIPANTES  FORMA                               OBTENIDO  PERDIDOS      %   TIEMPO
+procesos       RawValue: v.value += 1                117635    282365  70.6%    0.04s
+procesos       Value(lock=True): v.value += 1        151432    248568  62.1%    0.39s
+procesos       with v.get_lock(): v.value += 1       400000         0   0.0%    0.80s
+hilos          RawValue: v.value += 1                400000         0   0.0%    0.05s
+hilos          Value(lock=True): v.value += 1        183143    216857  54.2%    1.80s
+hilos          with v.get_lock(): v.value += 1       400000         0   0.0%    1.08s

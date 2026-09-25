@@ -1,0 +1,18 @@
+## evidencias/fase7/e1_ejecucion.log (467 líneas)
+17:45:04.640075 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 x 3 hilos | generadores=2 | solicitudes=40 | col
+17:45:04.653984 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 132909
+17:45:04.655137 | PID 132902 | PPID 132898 | TID 132902 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 132910
+17:45:04.655519 | PID 132909 | PPID 132902 | TID 132909 | trabajador-1    | MainThread       | INICIO trabajador 1 con 3 hilos despachadores
+
+## evidencias/fase7/e1_ejecucion.estado.csv (10 líneas)
+t_s,recibidas,en_cola,en_proceso,esperando_veh,asignados,disponibles,entregadas,canceladas,finalizadas,rendimiento
+1.0,19,10,6,3,3,0,3,0,3,3.0
+2.0,24,10,6,3,3,0,8,0,8,5.0
+3.0,30,10,6,3,3,0,14,0,14,6.0
+
+## evidencias/fase7/e1_ejecucion.recursos.csv (71 líneas)
+t_s,pid,proceso,estado,hilos,rss_kb,pss_kb,privada_kb,cpu_s
+0.0,132902,centro_despacho,R,4,23516,8001,3356,0.09
+0.0,132909,trabajador-1,S,4,19592,5882,2516,0.00
+0.0,132910,trabajador-2,S,4,19660,5886,2484,0.00
+

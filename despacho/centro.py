@@ -12,9 +12,11 @@ from collections import Counter, defaultdict
 from . import registro, so_utils
 from .cola import ColaAcotada
 from .config import Config
+from .contadores import Contadores
 from .flota import Flota
 from .generador import crear_generadores
 from .modelo import CANCELADA, ENTREGADA, Resultado
+from .monitor import Monitor
 from .muestreador import Muestreador
 from .recursos import Recursos
 from .taller import proceso_taller
@@ -29,17 +31,19 @@ class CentroDespacho:
         self.taller: mp.Process | None = None
         self.vigilante: Vigilante | None = None
         self.muestreador: Muestreador | None = None
+        self.monitor: Monitor | None = None
         self.generadores = []
         self.resultados_recibidos: list[Resultado] = []
         self._senal: int | None = None
         self._caidos: set[int] = set()
         self._plazo_cierre: float | None = None
         self.detener_anticipado = False     # parada por señal, duración o error
+        self.centinelas_enviados = 0
 
     def ejecutar(self) -> int:
         so_utils.nombrar_proceso("centro_despacho")
         mp.current_process().name = "centro_despacho"
-        self.log = registro.configurar(self.cfg.ruta_log)
+        self.log = registro.configurar(self.cfg.ruta_log, self.cfg.vista)
         c = self.cfg
         self.log.info("INICIO centro de despacho | método=%s | trabajadores=%d x %d hilos | "
                       "generadores=%d | solicitudes=%s | cola=%s(%d) | vehículos=%d | "
@@ -50,7 +54,7 @@ class CentroDespacho:
                       c.solicitudes or "continuo", c.tipo_cola, c.capacidad_cola, c.vehiculos,
                       c.modo, c.espera, c.seccion, c.ventana, c.andenes, c.inspectores,
                       c.interbloqueo, c.puntos, c.traza_kb, c.historial or "sin límite",
-                      c.semilla, c.ruta_log)
+                      c.semilla, c.ruta_log, extra={"resumen": True})
 
         so_utils.habilitar_volcado_hilos()
         ctx = mp.get_context(c.metodo_inicio)
@@ -76,7 +80,9 @@ class CentroDespacho:
         self.resultados = ctx.Queue()
         # Flota compartida: se crea antes del fork para que todos los procesos hereden el
         # mismo segmento de memoria compartida (/dev/shm) mapeado en su espacio de direcciones.
-        self.flota = Flota(ctx, c)
+        # Contadores compartidos del registro en vivo (un lock para todos: fotos consistentes).
+        self.contadores = Contadores(ctx)
+        self.flota = Flota(ctx, c, self.contadores)
         # Locks de vehículos en el patio y de andenes, con el registro para el grafo de espera.
         self.recursos = Recursos(ctx, c)
 
@@ -97,9 +103,12 @@ class CentroDespacho:
             self.muestreador = Muestreador(lambda: pids,
                                            c.ruta_log.with_suffix(".recursos.csv"), c.muestreo)
             self.muestreador.start()
+            self.monitor = Monitor(self, c.ruta_log.with_suffix(".estado.csv"),
+                                   c.intervalo_monitor, c.alerta_sin_progreso, self.log)
             self.generadores = crear_generadores(c, self.cola, self.detener, self.log)
             for g in self.generadores:
                 g.start()
+            self.monitor.start()
             self._registrar_jerarquia()
             self._operar()
         except Exception:
@@ -120,7 +129,7 @@ class CentroDespacho:
             for i in range(1, self.cfg.trabajadores + 1):
                 p = ctx.Process(target=proceso_trabajador, name=f"trabajador-{i}",
                                 args=(i, self.detener, listos, self.cola, self.resultados,
-                                      self.flota, self.recursos, self.cfg))
+                                      self.flota, self.recursos, self.contadores, self.cfg))
                 p.start()
                 self.trabajadores.append(p)
                 self.log.info("CREADO %s -> PID %d", p.name, p.pid)
@@ -219,6 +228,7 @@ class CentroDespacho:
             except queue.Full:
                 break
             pendientes -= 1
+            self.centinelas_enviados += 1
         return pendientes
 
     def _recoger_resultados(self, timeout: float) -> None:
@@ -286,6 +296,10 @@ class CentroDespacho:
         if self.muestreador:
             self.muestreador.fin.set()
             self.muestreador.join(timeout=2)
+        if self.monitor:
+            self.monitor.fin.set()
+            self.monitor.join(timeout=2)
+        registro.consola_completa()
 
         self.log.info("RESUMEN de terminación:")
         for p in self._hijos():
@@ -353,6 +367,7 @@ class CentroDespacho:
         dobles = self._estadisticas_flota(entregadas)
         interbloqueos = self._estadisticas_recursos()
         self._estadisticas_cpu_memoria(entregadas)
+        registro_ok = self._verificar_registro(entregadas, canceladas)
         if perdidas:
             L.warning("  BALANCE: %d solicitudes quedaron sin registrar (trabajador caído o "
                       "cola bloqueada)", perdidas)
@@ -362,7 +377,8 @@ class CentroDespacho:
         if incompletas:
             L.warning("  BALANCE: se pidieron %d solicitudes y se generaron %d",
                       self.cfg.solicitudes, generadas)
-        return perdidas == 0 and not incompletas and dobles == 0 and interbloqueos == 0
+        return (perdidas == 0 and not incompletas and dobles == 0 and interbloqueos == 0
+                and registro_ok)
 
     def _estadisticas_flota(self, entregadas) -> int:
         """Métricas de la flota y auditoría de dobles asignaciones. Devuelve las detectadas."""
@@ -422,6 +438,24 @@ class CentroDespacho:
               "tiempo límite=%d", detectados, rc.recuperaciones.value, rc.reintentos.value)
         # Con detección y recuperación los ciclos se resuelven: no son un fallo del sistema.
         return 0 if rc.estrategia == "deteccion" else detectados
+
+    def _verificar_registro(self, entregadas, canceladas) -> bool:
+        """Contrasta los contadores compartidos con los resultados que llegaron por la cola."""
+        k = self.contadores.foto()
+        coinciden = k["entregadas"] == len(entregadas) and k["canceladas"] == canceladas
+        en_curso = k["tomadas"] - k["entregadas"] - k["canceladas"]
+        (self.log.info if coinciden else self.log.warning)(
+            "  REGISTRO: contadores compartidos entregadas=%d canceladas=%d | resultados recibidos "
+            "entregadas=%d canceladas=%d -> %s", k["entregadas"], k["canceladas"],
+            len(entregadas), canceladas, "coinciden" if coinciden else "NO COINCIDEN")
+        if en_curso or k["esperando_vehiculo"]:
+            self.log.warning("  REGISTRO: %d solicitudes tomadas de la cola quedaron sin finalizar "
+                             "(hilos bloqueados o procesos terminados a la fuerza)", en_curso)
+        ok = coinciden and en_curso == 0 and k["esperando_vehiculo"] == 0
+        if self.monitor:
+            self.log.info("  MONITOR: %d alertas SIN PROGRESO | serie en %s", self.monitor.alertas,
+                          self.cfg.ruta_log.with_suffix(".estado.csv"))
+        return ok
 
     def _estadisticas_cpu_memoria(self, entregadas) -> None:
         L = self.log

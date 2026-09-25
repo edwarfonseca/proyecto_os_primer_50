@@ -38,7 +38,8 @@ ESPERA_SEMAFORO = 0.5   # timeout de P(disponibles): permite revisar la orden de
 
 
 class Flota:
-    def __init__(self, ctx, cfg):
+    def __init__(self, ctx, cfg, contadores=None):
+        self.contadores = contadores
         self.n = cfg.vehiculos
         self.ventana = cfg.ventana
         self.modo = cfg.modo
@@ -66,30 +67,47 @@ class Flota:
         Devuelve (vehículo, reintentos, espera_mutex_s); vehículo es None si se ordena la
         parada mientras espera.
         """
-        reintentos, espera_mutex = 0, 0.0
         if self.espera == "bloqueante":
             if not self._disponibles.acquire(False):
                 log.info("SIN VEHÍCULOS: solicitud %d bloqueada en el semáforo de vehículos "
                          "libres", id_sol)
-                while not self._disponibles.acquire(timeout=ESPERA_SEMAFORO):
-                    if detener.value:
-                        return None, reintentos, espera_mutex
+                self._esperando(+1)
+                try:
+                    while not self._disponibles.acquire(timeout=ESPERA_SEMAFORO):
+                        if detener.value:
+                            return None, 0, 0.0
+                finally:
+                    self._esperando(-1)
+        return self._buscar_con_reintentos(id_sol, detener, log)
 
-        while True:
-            v, espera = self._buscar_y_marcar(id_sol)
-            espera_mutex += espera
-            if v is not None:
-                self._registrar_ocupante(v, id_sol, log)
-                return v, reintentos, espera_mutex
-            if detener.value:
-                if self.espera == "bloqueante":
-                    self._disponibles.release()
-                return None, reintentos, espera_mutex
-            if reintentos == 0:
-                log.info("SIN VEHÍCULOS: solicitud %d reintenta cada %.3f s (espera activa)",
-                         id_sol, self.reintento)
-            reintentos += 1
-            time.sleep(self.reintento)
+    def _esperando(self, n: int) -> None:
+        if self.contadores:
+            self.contadores.sumar("esperando_vehiculo", n)
+
+    def _buscar_con_reintentos(self, id_sol, detener, log):
+        # `reintentos` es local: cada hilo tiene la suya. Un atributo del objeto Flota lo
+        # compartirían todos los hilos del proceso y sería una condición de carrera.
+        reintentos, espera_mutex = 0, 0.0
+        try:
+            while True:
+                v, espera = self._buscar_y_marcar(id_sol)
+                espera_mutex += espera
+                if v is not None:
+                    self._registrar_ocupante(v, id_sol, log)
+                    return v, reintentos, espera_mutex
+                if detener.value:
+                    if self.espera == "bloqueante":
+                        self._disponibles.release()
+                    return None, reintentos, espera_mutex
+                if reintentos == 0:
+                    log.info("SIN VEHÍCULOS: solicitud %d reintenta cada %.3f s (espera activa)",
+                             id_sol, self.reintento)
+                    self._esperando(+1)
+                reintentos += 1
+                time.sleep(self.reintento)
+        finally:
+            if reintentos:
+                self._esperando(-1)
 
     def _buscar_y_marcar(self, id_sol: int) -> tuple[int | None, float]:
         """Devuelve (vehículo marcado o None, segundos esperando el mutex)."""
@@ -158,6 +176,17 @@ class Flota:
                         f"la solicitud {registrado}" if registrado else "'libre'", id_sol)
         if self.espera == "bloqueante":
             self._disponibles.release()              # V(disponibles)
+
+    def foto(self) -> list[int]:
+        """Copia del estado de la flota (id de solicitud por vehículo; 0 = libre).
+
+        En modo seguro se lee bajo el mutex: una foto consistente. En modo inseguro se lee
+        sin protección, igual que la asignación.
+        """
+        if self.modo == "seguro":
+            with self._mutex:
+                return list(self.estado)
+        return list(self.estado)
 
     def libres(self) -> int:
         """Vehículos con estado 0 (lectura sin lock: es una foto aproximada)."""

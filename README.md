@@ -28,12 +28,14 @@ python3 main.py --interbloqueo sin_orden                   # versión que se int
 python3 main.py --interbloqueo deteccion                   # detección y recuperación
 python3 main.py -p 9 -w 4 -t 1                             # CPU alta (rutas de 9 puntos) en 4 procesos
 python3 main.py --traza-kb 256 --historial 0 -n 200       # memoria sin límite (como una fuga)
+python3 main.py -n 40 --vista resumen                      # consola: sólo el estado cada segundo
 ```
 
 ## Observación con herramientas del SO
 Con el sistema en ejecución, en otra terminal:
 ```bash
 scripts/observar.sh                # pstree, ps, ps -eLf, /proc/<pid>/status, PSS
+scripts/monitor_so.sh              # vista en vivo: procesos, hilos por estado, CPU, RSS
 kill -USR1 $(pgrep -xo centro_despacho)   # volcado de la pila de todos los hilos
 ```
 
@@ -45,10 +47,18 @@ scripts/evidencias_fase3.sh        # condición de carrera en la asignación de 
 scripts/evidencias_fase4.sh        # corrección: antes/después, mecanismos, espera activa
 scripts/evidencias_fase5.sh        # interbloqueo: observación, estrategias, tiempo límite
 scripts/evidencias_fase6.sh        # CPU (GIL, hilos vs procesos) y crecimiento de memoria
+scripts/evidencias_fase7.sh        # registro en vivo, alerta sin progreso, contadores (H6)
 python3 experimentos/h1_event_bloqueado.py [--corregido]
 experimentos/h3_trabajador_caido.sh 10
 experimentos/h4_barrera_abortada.sh despues 30
 ```
+
+## Registros de cada ejecución
+| Archivo | Contenido |
+|---|---|
+| `logs/<nombre>.log` | eventos con hora, PID, PPID, TID, proceso e hilo |
+| `logs/<nombre>.estado.csv` | cada segundo: recibidas, en cola, en proceso, vehículos asignados/disponibles, finalizadas |
+| `logs/<nombre>.recursos.csv` | cada 0.5 s y por proceso: estado, hilos, RSS, PSS, memoria privada, CPU |
 
 ## Estructura
 ```

@@ -1,0 +1,28 @@
+
+== 17:43:57 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB) 
+centro_despacho  131970   131847   S      6      0    6    0    0       23.2    
+trabajador-1     131973   131970   S      5      0    5    0    8       20.0    
+trabajador-2     131974   131970   S      5      0    5    0    5       20.0    
+taller           131978   131970   S      2      0    2    0    0       18.9    
+
+== 17:43:58 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB) 
+centro_despacho  131970   131847   S      6      0    6    0    4       23.2    
+trabajador-1     131973   131970   S      5      0    5    0    10      20.2    
+trabajador-2     131974   131970   S      5      0    5    0    14      20.2    
+taller           131978   131970   S      2      0    2    0    0       18.9    
+
+== 17:43:59 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB) 
+centro_despacho  131970   131847   S      6      0    6    0    1       23.2    
+trabajador-1     131973   131970   S      5      0    5    0    4       20.3    
+trabajador-2     131974   131970   S      5      0    5    0    13      20.4    
+taller           131978   131970   S      2      1    1    0    1       18.9    
+
+== 17:44:00 | centro_despacho PID 131970 ==
+PROCESO          PID      PPID     ESTADO HILOS  R    S    D    CPU%    RSS(MB) 
+centro_despacho  131970   131847   S      6      0    6    0    2       23.2    
+trabajador-1     131973   131970   S      5      0    5    0    13      20.5    
+trabajador-2     131974   131970   S      5      0    5    0    14      20.6    
+taller           131978   131970   S      2      0    2    0    0       18.9    

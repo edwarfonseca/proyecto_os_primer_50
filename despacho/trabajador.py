@@ -23,7 +23,7 @@ ESPERA_COLA = 0.5   # timeout de get(): permite revisar las órdenes de parada
 
 
 def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, recursos,
-                       cfg) -> None:
+                       contadores, cfg) -> None:
     """Punto de entrada del proceso hijo.
 
     detener:    byte en memoria compartida (RawValue); el principal escribe 1 para abortar.
@@ -32,6 +32,7 @@ def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, 
     resultados: cola por la que se informa al principal cada solicitud terminada.
     flota:      estado compartido de los vehículos (memoria compartida).
     recursos:   locks de vehículos en el patio y de andenes, con su registro.
+    contadores: contadores compartidos del sistema para el monitor.
     """
     so_utils.nombrar_proceso(f"trabajador-{id_trabajador}")
     # Ctrl+C envía SIGINT a todo el grupo de procesos del terminal. Sólo el principal
@@ -44,8 +45,8 @@ def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, 
     parar = threading.Event()       # orden local (mismo proceso) para los despachadores
     historial = Historial(cfg.historial, cfg.traza_kb)   # compartido por los hilos del proceso
     hilos = [
-        Despachador(id_trabajador, t, cola, resultados, flota, recursos, historial, detener,
-                    parar, log)
+        Despachador(id_trabajador, t, cola, resultados, flota, recursos, historial, contadores,
+                    detener, parar, log)
         for t in range(1, cfg.hilos + 1)
     ]
     for h in hilos:
@@ -78,7 +79,7 @@ class Despachador(threading.Thread):
     """Consumidor: toma una solicitud, le asigna un vehículo, la despacha y la entrega."""
 
     def __init__(self, id_trabajador, idx, cola, resultados, flota, recursos, historial,
-                 detener, parar, log):
+                 contadores, detener, parar, log):
         super().__init__(name=f"despachador-{id_trabajador}-{idx}")
         self.id_trabajador = id_trabajador
         self.cola = cola
@@ -86,6 +87,7 @@ class Despachador(threading.Thread):
         self.flota = flota
         self.recursos = recursos
         self.historial = historial
+        self.contadores = contadores
         self.slot = recursos.slot_despachador(id_trabajador, idx)
         self.detener = detener
         self.parar = parar
@@ -110,10 +112,12 @@ class Despachador(threading.Thread):
             ocioso = False
 
             if s is None:                   # centinela: no habrá más solicitudes
+                self.contadores.sumar("centinelas")
                 self.log.info("CENTINELA recibido: el hilo termina")
                 break
 
             t_inicio = time.monotonic()
+            self.contadores.sumar("tomadas")
             costo, t_cpu, t_real = self._planificar(s) if not self.detener.value else (0, 0, 0)
             v, reintentos, espera_mutex = (None, 0, 0.0) if self.detener.value else \
                 self.flota.asignar(s.id, self.detener, self.log)
@@ -121,6 +125,7 @@ class Despachador(threading.Thread):
                 # Parada solicitada antes de conseguir vehículo: la solicitud se retira sin
                 # atenderla y se informa como cancelada para que el balance final cuadre.
                 self.canceladas += 1
+                self.contadores.sumar("canceladas")
                 self.resultados.put(Resultado(s.id, CANCELADA, self.id_trabajador, self.name,
                                               tid, s.t_llegada, t_inicio, time.monotonic(),
                                               reintentos=reintentos))
@@ -140,6 +145,7 @@ class Despachador(threading.Thread):
             except Abortado:
                 self.flota.liberar(v, s.id, self.log)
                 self.canceladas += 1
+                self.contadores.sumar("canceladas")
                 self.resultados.put(Resultado(s.id, CANCELADA, self.id_trabajador, self.name,
                                               tid, s.t_llegada, t_inicio, time.monotonic(),
                                               reintentos=reintentos))
@@ -153,6 +159,7 @@ class Despachador(threading.Thread):
             self.historial.registrar(s.id)        # traza GPS del recorrido
             t_fin = time.monotonic()
             self.entregadas += 1
+            self.contadores.sumar("entregadas")
             self.log.info("ENTREGADA solicitud %d | V%d liberado | servicio %.0f ms", s.id,
                           v + 1, (t_fin - t_inicio) * 1000)
             self.resultados.put(Resultado(s.id, ENTREGADA, self.id_trabajador, self.name,
