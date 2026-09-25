@@ -1,0 +1,26 @@
+## Ciclo informado por el vigilante (grafo de espera):
+ INTERBLOQUEO DETECTADO (ciclo en el grafo de espera): inspector-1 [tiene A2, espera V2] -> despachador-2-3 [tiene V2, espera A2] -> inspector-1
+
+## ps -L: estado y canal de espera de cada hilo (los del ciclo: inspector-1, despachador-2-3)
+    PID     LWP STAT %CPU WCHAN                  COMMAND
+ 108110  108110 Ssl   2.1 poll_schedule_timeout. centro_despacho
+ 108110  108124 Ssl   0.0 futex_do_wait          vigilante
+ 108114  108114 Sl    0.0 hrtimer_nanosleep      trabajador-1
+ 108114  108116 Sl    0.0 futex_do_wait          despachador-1-1
+ 108114  108117 Sl    0.0 futex_do_wait          despachador-1-2
+ 108114  108118 Sl    0.0 futex_do_wait          despachador-1-3
+ 108114  108157 Sl    0.0 futex_do_wait          QueueFeederThre
+ 108115  108115 Sl    0.0 hrtimer_nanosleep      trabajador-2
+ 108115  108120 Sl    0.0 futex_do_wait          despachador-2-1
+ 108115  108121 Sl    0.0 futex_do_wait          despachador-2-2
+ 108115  108122 Sl    0.0 futex_do_wait          despachador-2-3
+ 108115  108168 Sl    0.0 futex_do_wait          QueueFeederThre
+ 108119  108119 Sl    0.0 hrtimer_nanosleep      taller
+ 108119  108123 Sl    0.0 futex_do_wait          inspector-1
+
+## Hilos del ciclo en /proc: estado, CPU y cambios de contexto (dos lecturas a 2 s)
+   inspector-1      PID 108119  TID 108123  estado=S wchan=futex_do_wait | ctx voluntarios 14 -> 14 | ticks CPU 0 -> 0
+   despachador-2-3  PID 108115  TID 108122  estado=S wchan=futex_do_wait | ctx voluntarios 11 -> 11 | ticks CPU 0 -> 0
+
+## Progreso del sistema: resultados en el log durante 2 s
+   entregas registradas: 7 -> 7

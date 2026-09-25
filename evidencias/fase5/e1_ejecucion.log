@@ -1,0 +1,157 @@
+16:58:39.440735 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 x 3 hilos | generadores=4 | solicitudes=24 | cola=semaforos(10) | vehículos=3 | modo=seguro | espera=bloqueante | sección=fina | ventana=0.0100 s | andenes=2 | inspectores=1 | interbloqueo=sin_orden | semilla=42 | log=evidencias/fase5/e1_ejecucion.log
+16:58:39.453751 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 108114
+16:58:39.454885 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 108115
+16:58:39.455961 | PID 108114 | PPID 108110 | TID 108114 | trabajador-1    | MainThread       | INICIO trabajador 1 con 3 hilos despachadores
+16:58:39.456181 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | CREADO taller -> PID 108119
+16:58:39.456755 | PID 108115 | PPID 108110 | TID 108115 | trabajador-2    | MainThread       | INICIO trabajador 2 con 3 hilos despachadores
+16:58:39.457892 | PID 108119 | PPID 108110 | TID 108119 | taller          | MainThread       | INICIO taller con 1 hilos inspectores
+16:58:39.458350 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | SINCRONIZADO: 3 procesos hijos listos
+16:58:39.460091 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+16:58:39.460746 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+16:58:39.460468 | PID 108110 | PPID 108106 | TID 108126 | centro_despacho | generador-2      | RECIBIDA solicitud 7 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~1
+16:58:39.461147 | PID 108110 | PPID 108106 | TID 108126 | centro_despacho | generador-2      | RECIBIDA solicitud 8 (ráfaga 1) Olímpica: Garagoa -> Villa de Leyva | en cola ~1
+16:58:39.461302 | PID 108110 | PPID 108106 | TID 108126 | centro_despacho | generador-2      | RECIBIDA solicitud 9 (ráfaga 1) D1: Duitama -> Villa de Leyva | en cola ~0
+16:58:39.461309 | PID 108115 | PPID 108110 | TID 108120 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 8 bloqueada en el semáforo de vehículos libres
+16:58:39.461515 | PID 108110 | PPID 108106 | TID 108126 | centro_despacho | generador-2      | RECIBIDA solicitud 10 (ráfaga 1) Falabella: Villa de Leyva -> Moniquirá | en cola ~0
+16:58:39.461661 | PID 108110 | PPID 108106 | TID 108126 | centro_despacho | generador-2      | RECIBIDA solicitud 11 (ráfaga 1) D1: Paipa -> Moniquirá | en cola ~1
+16:58:39.460277 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | RECIBIDA solicitud 19 (ráfaga 1) Ara: Tunja -> Garagoa | en cola ~1
+16:58:39.461808 | PID 108115 | PPID 108110 | TID 108121 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 10 bloqueada en el semáforo de vehículos libres
+16:58:39.461660 | PID 108115 | PPID 108110 | TID 108122 | trabajador-2    | despachador-2-3  | SIN VEHÍCULOS: solicitud 9 bloqueada en el semáforo de vehículos libres
+16:58:39.461936 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | RECIBIDA solicitud 20 (ráfaga 1) D1: Villa de Leyva -> Duitama | en cola ~3
+16:58:39.460910 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | RÁFAGA 1: 4 generadores liberados simultáneamente
+16:58:39.460631 | PID 108110 | PPID 108106 | TID 108127 | centro_despacho | generador-3      | RECIBIDA solicitud 13 (ráfaga 1) Jumbo: Tunja -> Duitama | en cola ~1
+16:58:39.462410 | PID 108110 | PPID 108106 | TID 108127 | centro_despacho | generador-3      | RECIBIDA solicitud 14 (ráfaga 1) Alkosto: Garagoa -> Paipa | en cola ~6
+16:58:39.462511 | PID 108110 | PPID 108106 | TID 108127 | centro_despacho | generador-3      | RECIBIDA solicitud 15 (ráfaga 1) D1: Garagoa -> Tunja | en cola ~7
+16:58:39.462615 | PID 108110 | PPID 108106 | TID 108127 | centro_despacho | generador-3      | RECIBIDA solicitud 16 (ráfaga 1) Alkosto: Paipa -> Duitama | en cola ~8
+16:58:39.462718 | PID 108110 | PPID 108106 | TID 108127 | centro_despacho | generador-3      | RECIBIDA solicitud 17 (ráfaga 1) Homecenter: Duitama -> Garagoa | en cola ~9
+16:58:39.462819 | PID 108110 | PPID 108106 | TID 108127 | centro_despacho | generador-3      | RECIBIDA solicitud 18 (ráfaga 1) Olímpica: Tunja -> Moniquirá | en cola ~10
+16:58:39.462892 | PID 108110 | PPID 108106 | TID 108127 | centro_despacho | generador-3      | FIN generador 3: generadas=6, bloqueos por cola llena=0 (0.000 s)
+16:58:39.462195 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | RECIBIDA solicitud 1 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~5
+16:58:39.461791 | PID 108110 | PPID 108106 | TID 108126 | centro_despacho | generador-2      | RECIBIDA solicitud 12 (ráfaga 1) Éxito: Tunja -> Paipa | en cola ~2
+16:58:39.462063 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | RECIBIDA solicitud 21 (ráfaga 1) Olímpica: Paipa -> Sogamoso | en cola ~4
+16:58:39.463212 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 22 espera
+16:58:39.463040 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2 espera
+16:58:39.462324 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   108110  108106  centro_despacho  R      6      23348    
+16:58:39.463139 | PID 108110 | PPID 108106 | TID 108126 | centro_despacho | generador-2      | FIN generador 2: generadas=6, bloqueos por cola llena=0 (0.000 s)
+16:58:39.463684 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108110  centro_despacho  R
+16:58:39.463814 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108124  vigilante        S
+16:58:39.463899 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108125  generador-1      S
+16:58:39.463977 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108128  generador-4      S
+16:58:39.464162 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   108114  108110  trabajador-1     S      4      19212    
+16:58:39.464417 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108114  trabajador-1     S
+16:58:39.464502 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108116  despachador-1-1  S
+16:58:39.464588 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108117  despachador-1-2  S
+16:58:39.464664 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108118  despachador-1-3  S
+16:58:39.464832 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   108115  108110  trabajador-2     S      4      19300    
+16:58:39.465098 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108115  trabajador-2     S
+16:58:39.465235 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108120  despachador-2-1  S
+16:58:39.465324 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108121  despachador-2-2  S
+16:58:39.465401 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108122  despachador-2-3  S
+16:58:39.465580 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   108119  108110  taller           S      2      19016    
+16:58:39.465768 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108119  taller           S
+16:58:39.465852 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |       └ TID 108123  inspector-1      S
+16:58:39.470751 | PID 108114 | PPID 108110 | TID 108116 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V3 a la solicitud 19 | libres ~0/3
+16:58:39.471008 | PID 108114 | PPID 108110 | TID 108116 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 19 en V3 (Ara: Tunja -> Garagoa) | esperó en cola 1 ms, por vehículo 10 ms
+16:58:39.471162 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V2 a la solicitud 13 | libres ~0/3
+16:58:39.471262 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 13 en V2 (Jumbo: Tunja -> Duitama) | esperó en cola 0 ms, por vehículo 10 ms
+16:58:39.470890 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V1 a la solicitud 7 | libres ~0/3
+16:58:39.471430 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 7 en V1 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms, por vehículo 11 ms
+16:58:39.632344 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 13 en V2 (cargada en A1)
+16:58:39.643099 | PID 108119 | PPID 108110 | TID 108123 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+16:58:39.697655 | PID 108114 | PPID 108110 | TID 108116 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 19 en V3 (cargada en A2)
+16:58:39.746485 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 7 en V1 (cargada en A1)
+16:58:39.821761 | PID 108119 | PPID 108110 | TID 108123 | taller          | inspector-1      | INSPECCIÓN terminada: V2 en A2
+16:58:39.917269 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 13 | V2 liberado | servicio 456 ms
+16:58:39.919152 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 456 ms
+16:58:39.919041 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 11 bloqueada en el semáforo de vehículos libres
+16:58:39.919839 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | RECIBIDA solicitud 2 (ráfaga 1) Jumbo: Chiquinquirá -> Paipa | en cola ~10
+16:58:39.920283 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 3 espera
+16:58:39.927875 | PID 108115 | PPID 108110 | TID 108120 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V2 a la solicitud 8 | libres ~0/3
+16:58:39.928364 | PID 108115 | PPID 108110 | TID 108120 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 8 en V2 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 0 ms, por vehículo 467 ms
+16:58:39.960561 | PID 108114 | PPID 108110 | TID 108116 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 19 | V3 liberado | servicio 500 ms
+16:58:39.961621 | PID 108114 | PPID 108110 | TID 108116 | trabajador-1    | despachador-1-1  | SIN VEHÍCULOS: solicitud 12 bloqueada en el semáforo de vehículos libres
+16:58:39.961844 | PID 108119 | PPID 108110 | TID 108123 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V1
+16:58:39.962029 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | PRODUCTOR DESBLOQUEADO tras 499 ms
+16:58:39.962614 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | RECIBIDA solicitud 22 (ráfaga 1) Ara: Sogamoso -> Tunja | en cola ~10
+16:58:39.963670 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 23 espera
+16:58:39.970891 | PID 108115 | PPID 108110 | TID 108121 | trabajador-2    | despachador-2-2  | ASIGNADO vehículo V3 a la solicitud 10 | libres ~0/3
+16:58:39.971472 | PID 108115 | PPID 108110 | TID 108121 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 10 en V3 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 0 ms, por vehículo 510 ms
+16:58:40.089716 | PID 108115 | PPID 108110 | TID 108121 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 10 en V3 (cargada en A1)
+16:58:40.134012 | PID 108119 | PPID 108110 | TID 108123 | taller          | inspector-1      | INSPECCIÓN terminada: V1 en A2
+16:58:40.173922 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 7 | V1 liberado | servicio 713 ms
+16:58:40.174833 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 20 bloqueada en el semáforo de vehículos libres
+16:58:40.175090 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 254 ms
+16:58:40.175676 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | RECIBIDA solicitud 3 (ráfaga 1) Homecenter: Tunja -> Moniquirá | en cola ~10
+16:58:40.176688 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 4 espera
+16:58:40.184721 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 11 | libres ~0/3
+16:58:40.185322 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 11 en V1 (D1: Paipa -> Moniquirá) | esperó en cola 457 ms, por vehículo 266 ms
+16:58:40.233938 | PID 108115 | PPID 108110 | TID 108120 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 8 en V2 (cargada en A1)
+16:58:40.331309 | PID 108119 | PPID 108110 | TID 108123 | taller          | inspector-1      | INSPECCIÓN pide A2 y luego V2
+16:58:40.436778 | PID 108115 | PPID 108110 | TID 108120 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 8 | V2 liberado | servicio 975 ms
+16:58:40.438429 | PID 108115 | PPID 108110 | TID 108120 | trabajador-2    | despachador-2-1  | SIN VEHÍCULOS: solicitud 21 bloqueada en el semáforo de vehículos libres
+16:58:40.438576 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | PRODUCTOR DESBLOQUEADO tras 474 ms
+16:58:40.439058 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | RECIBIDA solicitud 23 (ráfaga 1) Homecenter: Paipa -> Chiquinquirá | en cola ~10
+16:58:40.439568 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 24 espera
+16:58:40.447523 | PID 108115 | PPID 108110 | TID 108122 | trabajador-2    | despachador-2-3  | ASIGNADO vehículo V2 a la solicitud 9 | libres ~0/3
+16:58:40.447993 | PID 108115 | PPID 108110 | TID 108122 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 9 en V2 (D1: Duitama -> Villa de Leyva) | esperó en cola 0 ms, por vehículo 986 ms
+16:58:40.454376 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 11 en V1 (cargada en A2)
+16:58:40.492683 | PID 108115 | PPID 108110 | TID 108121 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 10 | V3 liberado | servicio 1031 ms
+16:58:40.493537 | PID 108115 | PPID 108110 | TID 108121 | trabajador-2    | despachador-2-2  | SIN VEHÍCULOS: solicitud 1 bloqueada en el semáforo de vehículos libres
+16:58:40.493692 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 317 ms
+16:58:40.494198 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | RECIBIDA solicitud 4 (ráfaga 1) D1: Moniquirá -> Sogamoso | en cola ~10
+16:58:40.495081 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 5 espera
+16:58:40.502943 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | ASIGNADO vehículo V3 a la solicitud 20 | libres ~0/3
+16:58:40.503657 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 20 en V3 (D1: Villa de Leyva -> Duitama) | esperó en cola 713 ms, por vehículo 329 ms
+16:58:40.731231 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 20 en V3 (cargada en A1)
+16:58:40.853071 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 11 | V1 liberado | servicio 934 ms
+16:58:40.853876 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | SIN VEHÍCULOS: solicitud 14 bloqueada en el semáforo de vehículos libres
+16:58:40.854127 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 359 ms
+16:58:40.854795 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | RECIBIDA solicitud 5 (ráfaga 1) Éxito: Tunja -> Sogamoso | en cola ~10
+16:58:40.855259 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 6 espera
+16:58:40.863431 | PID 108115 | PPID 108110 | TID 108120 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V1 a la solicitud 21 | libres ~0/3
+16:58:40.864052 | PID 108115 | PPID 108110 | TID 108120 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 21 en V1 (Olímpica: Paipa -> Sogamoso) | esperó en cola 976 ms, por vehículo 426 ms
+16:58:41.109114 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 20 | V3 liberado | servicio 934 ms
+16:58:41.110678 | PID 108114 | PPID 108110 | TID 108117 | trabajador-1    | despachador-1-2  | SIN VEHÍCULOS: solicitud 15 bloqueada en el semáforo de vehículos libres
+16:58:41.110807 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | PRODUCTOR DESBLOQUEADO tras 670 ms
+16:58:41.111777 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | RECIBIDA solicitud 24 (ráfaga 1) Homecenter: Garagoa -> Sogamoso | en cola ~10
+16:58:41.112687 | PID 108110 | PPID 108106 | TID 108128 | centro_despacho | generador-4      | FIN generador 4: generadas=6, bloqueos por cola llena=3 (1.643 s)
+16:58:41.120394 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V3 a la solicitud 14 | libres ~0/3
+16:58:41.120923 | PID 108114 | PPID 108110 | TID 108118 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 14 en V3 (Alkosto: Garagoa -> Paipa) | esperó en cola 1391 ms, por vehículo 267 ms
+16:58:41.460430 | PID 108110 | PPID 108106 | TID 108124 | centro_despacho | vigilante        | INTERBLOQUEO DETECTADO (ciclo en el grafo de espera): inspector-1 [tiene A2, espera V2] -> despachador-2-3 [tiene V2, espera A2] -> inspector-1
+16:58:41.461326 | PID 108110 | PPID 108106 | TID 108124 | centro_despacho | vigilante        | DIAGNÓSTICO: volcado de pilas (SIGUSR1) de los procesos [108115, 108119]. Con la estrategia 'sin_orden' nadie puede romper el ciclo: se detiene el sistema
+16:58:42.517001 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | INTERBLOQUEO sin recuperación posible: se detiene la generación y se cancelan las solicitudes en cola
+16:58:42.612201 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 1756 ms
+16:58:42.612961 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | RECIBIDA solicitud 6 (ráfaga 1) Homecenter: Duitama -> Villa de Leyva | en cola ~0
+16:58:42.613981 | PID 108110 | PPID 108106 | TID 108125 | centro_despacho | generador-1      | FIN generador 1: generadas=6, bloqueos por cola llena=5 (3.141 s)
+16:58:50.618418 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | PLAZO de cierre vencido con trabajadores activos
+16:58:58.634718 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | trabajador-1 (PID 108114) no terminó en 8.0 s: se envía SIGTERM
+16:59:06.696692 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | trabajador-2 (PID 108115) no terminó en 8.0 s: se envía SIGTERM
+16:59:14.764335 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | taller (PID 108119) no terminó en 8.0 s: se envía SIGTERM
+16:59:14.866352 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | RESUMEN de terminación:
+16:59:14.867042 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   trabajador-1   PID 108114  terminado por señal SIGTERM
+16:59:14.867510 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   trabajador-2   PID 108115  terminado por señal SIGTERM
+16:59:14.867887 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   taller         PID 108119  terminado por señal SIGTERM
+16:59:14.868430 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+16:59:14.869022 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | ESTADÍSTICAS:
+16:59:14.869398 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   solicitudes: generadas=24 entregadas=7 canceladas=14 no atendidas=3
+16:59:14.869773 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=8, tiempo bloqueados=4.784 s
+16:59:14.870220 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=167 máx=713
+16:59:14.870656 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   servicio con vehículo (s): prom=0.563 | trabajo total (suma)=3.94 s
+16:59:14.870993 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   tiempo total=1.65 s | rendimiento=4.24 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=2.39
+16:59:14.871419 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   hilos ocupados a la vez: máx=5 (capacidad = 2 trabajadores x 3 hilos = 6)
+16:59:14.872102 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=5, trabajador-2=2
+16:59:14.872592 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=1, despachador-1-2=2, despachador-1-3=2, despachador-2-1=1, despachador-2-2=1
+16:59:14.873076 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   CPU: principal=0.26 s, trabajadores=0.13 s | tiempo real=35.41 s | uso medio de CPU de los trabajadores=0.4 %
+16:59:14.873416 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=997, involuntarios=24
+16:59:14.873895 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   FLOTA: 3 vehículos | modo=seguro | espera=bloqueante | sección=fina | asignaciones=7 | reparto: V1=2, V2=2, V3=3
+16:59:14.874387 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   entregas con vehículo a la vez: máx=3 con 3 vehículos
+16:59:14.874887 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   espera por vehículo (ms): prom=229 máx=510 | reintentos de búsqueda (espera activa)=0
+16:59:14.875370 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   espera por el mutex de la flota (ms): prom=0.01 máx=0.02
+16:59:14.876070 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   DOBLES ASIGNACIONES: sonda en vivo=0 | auditoría: asignaciones sobre un vehículo ocupado=0, pares solapados=0 (entre procesos=0, entre hilos del mismo proceso=0)
+16:59:14.876611 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   REGISTROS INCONSISTENTES al liberar (actualizaciones perdidas)=0
+16:59:14.877103 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   estado final de la flota: libres=0/3
+16:59:14.877582 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   RECURSOS: 3 vehículos + 2 andenes | estrategia=sin_orden | cargues=7 | inspecciones=2
+16:59:14.878058 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   INTERBLOQUEOS: detectados=1 | recuperaciones (víctimas)=0 | reintentos por tiempo límite=0
+16:59:14.878517 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       |   BALANCE: 3 solicitudes quedaron sin registrar (trabajador caído o cola bloqueada)
+16:59:14.879008 | PID 108110 | PPID 108106 | TID 108110 | centro_despacho | MainThread       | FIN centro de despacho (con fallos)
+exit code: 1

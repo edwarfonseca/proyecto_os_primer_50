@@ -7,18 +7,21 @@ trabajador sólo los crea, vigila la orfandad y espera a que terminen.
 
 import os
 import queue
+import random
 import signal
 import threading
 import time
 
 from . import registro, so_utils
 from .modelo import CANCELADA, ENTREGADA, Resultado
+from .recursos import Abortado
 
 SONDEO = 0.1        # segundos entre revisiones del hilo principal del trabajador
 ESPERA_COLA = 0.5   # timeout de get(): permite revisar las órdenes de parada
 
 
-def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, cfg) -> None:
+def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, recursos,
+                       cfg) -> None:
     """Punto de entrada del proceso hijo.
 
     detener:    byte en memoria compartida (RawValue); el principal escribe 1 para abortar.
@@ -26,6 +29,7 @@ def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, 
     cola:       cola de solicitudes (productor-consumidor) compartida por todos.
     resultados: cola por la que se informa al principal cada solicitud terminada.
     flota:      estado compartido de los vehículos (memoria compartida).
+    recursos:   locks de vehículos en el patio y de andenes, con su registro.
     """
     so_utils.nombrar_proceso(f"trabajador-{id_trabajador}")
     # Ctrl+C envía SIGINT a todo el grupo de procesos del terminal. Sólo el principal
@@ -37,7 +41,7 @@ def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, 
     ppid_original = os.getppid()
     parar = threading.Event()       # orden local (mismo proceso) para los despachadores
     hilos = [
-        Despachador(id_trabajador, t, cola, resultados, flota, detener, parar, log)
+        Despachador(id_trabajador, t, cola, resultados, flota, recursos, detener, parar, log)
         for t in range(1, cfg.hilos + 1)
     ]
     for h in hilos:
@@ -63,12 +67,15 @@ def proceso_trabajador(id_trabajador, detener, listos, cola, resultados, flota, 
 class Despachador(threading.Thread):
     """Consumidor: toma una solicitud, le asigna un vehículo, la despacha y la entrega."""
 
-    def __init__(self, id_trabajador, idx, cola, resultados, flota, detener, parar, log):
+    def __init__(self, id_trabajador, idx, cola, resultados, flota, recursos, detener, parar,
+                 log):
         super().__init__(name=f"despachador-{id_trabajador}-{idx}")
         self.id_trabajador = id_trabajador
         self.cola = cola
         self.resultados = resultados
         self.flota = flota
+        self.recursos = recursos
+        self.slot = recursos.slot_despachador(id_trabajador, idx)
         self.detener = detener
         self.parar = parar
         self.log = log
@@ -111,8 +118,23 @@ class Despachador(threading.Thread):
             self.log.info("DESPACHO solicitud %d en V%d (%s: %s -> %s) | esperó en cola %.0f ms"
                           ", por vehículo %.0f ms", s.id, v + 1, s.cliente, s.origen, s.destino,
                           (t_inicio - s.t_llegada) * 1000, (t_asignado - t_inicio) * 1000)
-            time.sleep(s.t_despacho)        # preparación y cargue en el centro de despacho
-            self.log.info("EN RUTA solicitud %d en V%d", s.id, v + 1)
+            # Cargue: el vehículo se prepara en el patio (retiene el vehículo) y luego se
+            # carga en un andén (retiene vehículo y andén). Orden natural: vehículo -> andén.
+            rc = self.recursos
+            d = random.randrange(rc.na)
+            try:
+                rc.con_dos(self.slot, v, rc.anden(d), antes=s.t_despacho / 2,
+                           durante=s.t_despacho / 2, detener=self.detener, log=self.log)
+            except Abortado:
+                self.flota.liberar(v, s.id, self.log)
+                self.canceladas += 1
+                self.resultados.put(Resultado(s.id, CANCELADA, self.id_trabajador, self.name,
+                                              tid, s.t_llegada, t_inicio, time.monotonic(),
+                                              reintentos=reintentos))
+                continue
+            rc.registrar_operacion(0)
+            self.log.info("EN RUTA solicitud %d en V%d (cargada en %s)", s.id, v + 1,
+                          rc.nombre_recurso(rc.anden(d)))
             time.sleep(s.t_entrega)         # trayecto hasta la entrega
             t_liberado = time.monotonic()
             self.flota.liberar(v, s.id, self.log)

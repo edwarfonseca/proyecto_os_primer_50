@@ -21,6 +21,8 @@ SECCIONES="${*:-e1 e2 e3 e4 e5 e6}"
 DIR="${DIR:-evidencias/fase4}"
 mkdir -p "$DIR" logs/fase4
 
+# Los andenes y el taller (Fase 5) no existían en esta fase: sin taller y andenes de sobra.
+SIN_ANDENES="-a 100 -i 0"
 ANTES="--modo inseguro --espera activa"
 DESPUES="--modo seguro --espera bloqueante"
 BASE="-w 2 -t 3 -g 4 -n 24 -v 3 --ventana 0.01 -s 42"
@@ -50,7 +52,7 @@ e1() {
             [[ $version == antes ]] && modo=$ANTES || modo=$DESPUES
             for i in $(seq "$REP"); do
                 L="logs/fase4/e1_${version}_$i.log"; rm -f "$L"
-                python3 main.py $BASE $modo --log "$L" > /dev/null; ex=$?
+                python3 main.py $SIN_ANDENES $BASE $modo --log "$L" > /dev/null; ex=$?
                 printf "%-9s %-4s %-7s %-8s %-9s %-10s %-12s %-10s %-8s %-10s %-5s\n" "$version" "$i" \
                     "$(sonda "$L")" "$(incons "$L")" "$(enruta "$L")/3" "$(num "$L" "tiempo total")" \
                     "$(num "$L" "rendimiento")" "$(espveh "$L")" "$(cpu "$L")" "$(vcsw "$L")" "$ex"
@@ -86,7 +88,7 @@ e2() {
     } > "$DIR/e2_cronologia_$V.txt"
     # Observación en vivo: 12 despachadores y 2 vehículos, con cada tipo de espera.
     for espera in bloqueante activa; do
-        setsid python3 main.py -w 2 -t 6 -g 2 -n 0 --tam-rafaga 6 --intervalo 0.5 -v 2 -k 20 \
+        setsid python3 main.py $SIN_ANDENES -w 2 -t 6 -g 2 -n 0 --tam-rafaga 6 --intervalo 0.5 -v 2 -k 20 \
             --entrega 1-2 --espera "$espera" --log "logs/fase4/e2_$espera.log" > /dev/null &
         PID=$!
         sleep 3
@@ -120,7 +122,7 @@ e3() {
                 con=0; d=""; inc=""; er=""; re=""; ti=""
                 for i in $(seq "$REP"); do
                     L="logs/fase4/e3_${modo}_${espera}_$i.log"; rm -f "$L"
-                    python3 main.py $BASE --modo "$modo" --espera "$espera" --log "$L" > /dev/null
+                    python3 main.py $SIN_ANDENES $BASE --modo "$modo" --espera "$espera" --log "$L" > /dev/null
                     s=$(sonda "$L"); [[ "$s" -gt 0 ]] && con=$((con + 1))
                     d+="$s\n"; inc+="$(incons "$L")\n"; er+="$(enruta "$L")\n"
                     re+="$(num "$L" "espera activa\)")\n"; ti+="$(num "$L" "tiempo total")\n"
@@ -145,7 +147,7 @@ e4() {
             set -- $conf
             L="logs/fase4/e4_$1_${2:-na}.log"; rm -f "$L"
             extra="--espera $1"; [[ -n "${2:-}" ]] && extra+=" --reintento $2"
-            python3 main.py $CARGA $extra --log "$L" > /dev/null &
+            python3 main.py $SIN_ANDENES $CARGA $extra --log "$L" > /dev/null &
             P=$!
             if [[ "$conf" == "activa 0" ]]; then
                 sleep 4
@@ -170,7 +172,7 @@ e5() {
             "ESPERA MUTEX MÁX(ms)" "DOBLES"
         for sec in fina gruesa; do
             L="logs/fase4/e5_$sec.log"; rm -f "$L"
-            python3 main.py -w 2 -t 3 -g 4 -n 24 -v 3 --ventana 0.05 --seccion "$sec" --log "$L" > /dev/null
+            python3 main.py $SIN_ANDENES -w 2 -t 3 -g 4 -n 24 -v 3 --ventana 0.05 --seccion "$sec" --log "$L" > /dev/null
             printf "%-10s %-10s %-22s %-22s %-14s\n" "$sec" "$(num "$L" "tiempo total")" \
                 "$(est "$L" | grep "mutex" | grep -oE "prom=[0-9.]+" | cut -d= -f2)" \
                 "$(est "$L" | grep "mutex" | grep -oE "máx=[0-9.]+" | cut -d= -f2)" "$(sonda "$L")"
@@ -190,7 +192,7 @@ e6() {
                 set -- $conf; con=0; tot=0
                 for i in $(seq "$R6"); do
                     L="logs/fase4/e6_$1_$2_${vent}_$i.log"; rm -f "$L"
-                    python3 main.py -w "$1" -t "$2" -g 6 -n 48 --tam-rafaga 2 --intervalo 0.3 -v 3 \
+                    python3 main.py $SIN_ANDENES -w "$1" -t "$2" -g 6 -n 48 --tam-rafaga 2 --intervalo 0.3 -v 3 \
                         --ventana "$vent" --log "$L" > /dev/null
                     s=$(sonda "$L"); tot=$((tot + s)); [[ "$s" -gt 0 ]] && con=$((con + 1))
                 done

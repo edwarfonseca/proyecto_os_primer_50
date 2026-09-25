@@ -1,0 +1,50 @@
+Thread 0x00007fcb215046c0 [QueueFeederThre] (most recent call first):
+  File "/usr/lib/python3.14/threading.py", line 369 in wait
+  File "/usr/lib/python3.14/multiprocessing/queues.py", line 249 in _feed
+  File "/usr/lib/python3.14/threading.py", line 1024 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00007fcb21d096c0 [despachador-2-3] (most recent call first):
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/recursos.py", line 121 in _tomar
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/recursos.py", line 98 in con_dos
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/trabajador.py", line 126 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00007fcb2250e6c0 [despachador-2-2] (most recent call first):
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/flota.py", line 74 in asignar
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/trabajador.py", line 107 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00007fcb22d136c0 [despachador-2-1] (most recent call first):
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/recursos.py", line 121 in _tomar
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/recursos.py", line 98 in con_dos
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/trabajador.py", line 126 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Current thread 0x00007fcb245a9bc0 [trabajador-2] (most recent call first):
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/trabajador.py", line 59 in proceso_trabajador
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108 in run
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320 in _bootstrap
+  File "/usr/lib/python3.14/multiprocessing/popen_fork.py", line 87 in _launch
+  File "/usr/lib/python3.14/multiprocessing/popen_fork.py", line 20 in __init__
+  File "__init__", line ??? in __init__
+  <invalid frame>
+Thread 0x00007fcb22d136c0 [inspector-1] (most recent call first):
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/recursos.py", line 121 in _tomar
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/recursos.py", line 98 in con_dos
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/taller.py", line 71 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Current thread 0x00007fcb245a9bc0 [taller] (most recent call first):
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/taller.py", line 40 in proceso_taller
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108 in run
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320 in _bootstrap
+  File "/usr/lib/python3.14/multiprocessing/popen_fork.py", line 87 in _launch
+  File "/usr/lib/python3.14/multiprocessing/popen_fork.py", line 20 in __init__
+  File "__init__", line ??? in __init__
+  <invalid frame>

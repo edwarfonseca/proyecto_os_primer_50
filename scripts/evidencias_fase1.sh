@@ -13,7 +13,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 # La flota (Fase 3+) no existía en esta fase: se usan vehículos de sobra y sin ventana
 # para que no sea un cuello de botella y los resultados sigan siendo comparables.
-SIN_FLOTA="-v 100 --ventana 0"
+SIN_FLOTA="-v 100 --ventana 0 -a 100 -i 0"   # sin taller ni andenes limitados (Fase 5+)
 DIR="${DIR:-evidencias/fase1}"
 mkdir -p "$DIR"
 rm -f "$DIR"/e[0-9]_*

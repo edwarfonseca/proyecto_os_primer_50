@@ -21,6 +21,12 @@ class Config:
     espera: str              # bloqueante | activa
     seccion: str             # fina | gruesa (sólo modo seguro)
     reintento: float         # segundos entre búsquedas con espera activa
+    andenes: int
+    inspectores: int         # hilos del proceso taller
+    intervalo_inspeccion: tuple[float, float]
+    alistar_anden: float     # segundos que la inspección retiene el andén antes de pedir el vehículo
+    interbloqueo: str        # sin_orden | orden | timeout | deteccion
+    timeout_recurso: float   # tiempo límite del segundo recurso (estrategia timeout)
     tipo_cola: str           # semaforos (ColaAcotada) | mp (multiprocessing.Queue)
     despacho: tuple[float, float]   # rango (s) del tiempo de preparación
     entrega: tuple[float, float]    # rango (s) del tiempo de ruta
@@ -98,6 +104,25 @@ def leer_argumentos(argv=None) -> Config:
                    help="segundos entre búsquedas con --espera activa; 0 = sin pausa "
                         "(defecto: 0.005)")
 
+    r = p.add_argument_group("andenes, taller e interbloqueo")
+    r.add_argument("-a", "--andenes", type=int, default=2,
+                   help="andenes de cargue (defecto: 2)")
+    r.add_argument("-i", "--inspectores", type=int, default=1,
+                   help="hilos inspectores del proceso taller; 0 = sin taller (defecto: 1)")
+    r.add_argument("--intervalo-inspeccion", type=_rango, default=(0.1, 0.4), metavar="MIN-MAX",
+                   help="segundos entre inspecciones de cada inspector (defecto: 0.1-0.4)")
+    r.add_argument("--alistar-anden", type=float, default=0.05,
+                   help="segundos que la inspección retiene el andén antes de pedir el "
+                        "vehículo (defecto: 0.05)")
+    r.add_argument("--interbloqueo", choices=["sin_orden", "orden", "timeout", "deteccion"],
+                   default="orden",
+                   help="sin_orden = cada operación en su orden natural (puede interbloquearse); "
+                        "orden = orden global de recursos; timeout = tiempo límite y reintento; "
+                        "deteccion = detectar el ciclo y expropiar a una víctima (defecto: orden)")
+    r.add_argument("--timeout-recurso", type=float, default=0.1,
+                   help="tiempo límite para el segundo recurso con --interbloqueo timeout "
+                        "(defecto: 0.1)")
+
     e = p.add_argument_group("ejecución")
     e.add_argument("-d", "--duracion", type=float, default=0.0,
                    help="tiempo máximo en segundos; 0 = sin límite (defecto: 0)")
@@ -107,11 +132,13 @@ def leer_argumentos(argv=None) -> Config:
                    help="archivo de registro (defecto: logs/despacho_<fecha>.log)")
     a = p.parse_args(argv)
 
-    for nombre in ("trabajadores", "hilos", "generadores", "capacidad_cola", "vehiculos"):
+    for nombre in ("trabajadores", "hilos", "generadores", "capacidad_cola", "vehiculos",
+                   "andenes"):
         if getattr(a, nombre) < 1:
             p.error(f"--{nombre.replace('_', '-')} debe ser >= 1")
-    if min(a.solicitudes, a.tam_rafaga, a.ventana, a.reintento) < 0:
-        p.error("--solicitudes, --tam-rafaga, --ventana y --reintento no pueden ser negativos")
+    if min(a.solicitudes, a.tam_rafaga, a.ventana, a.reintento, a.inspectores,
+           a.alistar_anden) < 0 or a.timeout_recurso <= 0:
+        p.error("valores negativos no permitidos (y --timeout-recurso debe ser > 0)")
     ruta_log = a.log or Path("logs") / f"despacho_{time.strftime('%Y%m%d_%H%M%S')}.log"
 
     return Config(
@@ -119,7 +146,10 @@ def leer_argumentos(argv=None) -> Config:
         solicitudes=a.solicitudes, tam_rafaga=a.tam_rafaga, intervalo=a.intervalo,
         capacidad_cola=a.capacidad_cola, tipo_cola=a.tipo_cola,
         vehiculos=a.vehiculos, ventana=a.ventana, modo=a.modo, espera=a.espera,
-        seccion=a.seccion, reintento=a.reintento, despacho=a.despacho, entrega=a.entrega,
+        seccion=a.seccion, reintento=a.reintento, andenes=a.andenes,
+        inspectores=a.inspectores, intervalo_inspeccion=a.intervalo_inspeccion,
+        alistar_anden=a.alistar_anden, interbloqueo=a.interbloqueo,
+        timeout_recurso=a.timeout_recurso, despacho=a.despacho, entrega=a.entrega,
         semilla=a.semilla, duracion=a.duracion, metodo_inicio=a.metodo_inicio,
         espera_fin=a.espera_fin, ruta_log=ruta_log,
     )

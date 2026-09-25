@@ -112,12 +112,12 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] Verificación al liberar (actualizaciones perdidas) como tercer detector.
 - [x] Antes/después con la misma semilla: 10/10 → 0/10 (E1); qué corrige cada mecanismo (E3); costo de la espera activa en CPU (E4); sección fina vs gruesa (E5); hilos/procesos (E6).
 
-### Fase 5 — Interbloqueo
-- [ ] Recurso 2: andenes de carga. Operación *despacho*: vehículo → andén. Operación *retorno/mantenimiento*: andén → vehículo.
-- [ ] Modo `sin_orden`: interbloqueo real; watchdog lo detecta (sin progreso durante X s) e imprime qué hilo tiene qué recurso.
-- [ ] Evidencia: estado `S`, CPU 0 %, `wchan` = `futex_wait_queue`, `py-spy dump` (opcional).
-- [ ] Análisis de las 4 condiciones de Coffman.
-- [ ] Modo `orden`: orden global de adquisición (rompe espera circular). Modo `timeout`: `acquire(timeout)` + liberar y reintentar con *backoff* (rompe retención y espera). Comparación de ambos.
+### Fase 5 — Interbloqueo ✅
+- [x] Recurso 2: andenes. Cargue (despachador): vehículo → andén. Inspección (nuevo proceso `taller`): andén → vehículo.
+- [x] Modo `sin_orden`: interbloqueo real (8/10); el hilo `vigilante` construye el grafo de espera, detecta el ciclo, pide volcado de pilas y detiene el sistema.
+- [x] Evidencia: `futex_do_wait`, 0 CPU y 0 cambios de contexto en los hilos del ciclo; propagación del bloqueo.
+- [x] Análisis de las 4 condiciones de Coffman y qué estrategia rompe cada una.
+- [x] Estrategias: `orden` (espera circular, defecto), `timeout` con espera aleatoria creciente (retención y espera), `deteccion` con víctima (no expropiación). Comparación E3 y ajuste del tiempo límite E4.
 
 ### Fase 6 — CPU y memoria
 - [ ] Cálculo de ruta óptima (fuerza bruta sobre puntos de entrega) como tarea CPU-bound.

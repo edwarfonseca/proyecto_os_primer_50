@@ -1,0 +1,34 @@
+## Foto 1: hilos que esperan un lock (futex) o trabajan
+    PID     LWP STAT WCHAN                  COMMAND
+ 115060  115062 Sl   hrtimer_nanosleep      despachador-1-1
+ 115060  115063 Sl   hrtimer_nanosleep      despachador-1-2
+ 115060  115064 Sl   hrtimer_nanosleep      despachador-1-3
+ 115061  115066 Sl   futex_do_wait          despachador-2-1
+ 115061  115067 Sl   futex_do_wait          despachador-2-2
+ 115061  115068 Sl   futex_do_wait          despachador-2-3
+ 115065  115069 Sl   futex_do_wait          inspector-1
+ 115065  115070 Sl   hrtimer_nanosleep      inspector-2
+## Foto 2: hilos que esperan un lock (futex) o trabajan
+    PID     LWP STAT WCHAN                  COMMAND
+ 115060  115062 Sl   futex_do_wait          despachador-1-1
+ 115060  115063 Sl   hrtimer_nanosleep      despachador-1-2
+ 115060  115064 Sl   hrtimer_nanosleep      despachador-1-3
+ 115061  115066 Sl   futex_do_wait          despachador-2-1
+ 115061  115067 Sl   futex_do_wait          despachador-2-2
+ 115061  115068 Sl   hrtimer_nanosleep      despachador-2-3
+ 115065  115069 Sl   hrtimer_nanosleep      inspector-1
+ 115065  115070 Sl   hrtimer_nanosleep      inspector-2
+## Foto 3: hilos que esperan un lock (futex) o trabajan
+    PID     LWP STAT WCHAN                  COMMAND
+ 115060  115062 Sl   futex_do_wait          despachador-1-1
+ 115060  115063 Sl   futex_do_wait          despachador-1-2
+ 115060  115064 Sl   hrtimer_nanosleep      despachador-1-3
+ 115061  115066 Sl   hrtimer_nanosleep      despachador-2-1
+ 115061  115067 Sl   futex_do_wait          despachador-2-2
+ 115061  115068 Sl   hrtimer_nanosleep      despachador-2-3
+ 115065  115069 Sl   hrtimer_nanosleep      inspector-1
+ 115065  115070 Sl   hrtimer_nanosleep      inspector-2
+17:07:06.942245 MainThread       |   solicitudes: generadas=42 entregadas=32 canceladas=10 no atendidas=0
+17:07:06.952422 MainThread       |   RECURSOS: 3 vehículos + 1 andenes | estrategia=orden | cargues=32 | inspecciones=25
+17:07:06.952754 MainThread       |   INTERBLOQUEOS: detectados=0 | recuperaciones (víctimas)=0 | reintentos por tiempo límite=0
+17:07:06.953082 MainThread       | FIN centro de despacho (correcto)
