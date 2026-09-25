@@ -1,0 +1,95 @@
+Captura: 2026-09-25 16:01:27 | kernel 7.1.8-arch1-3 | PID principal: 72899
+
+===== 1. Jerarquía de procesos e hilos (pstree -p -t: {..} = hilos) =====
+centro_despacho(72899)-+-trabajador-1(72905)-+-{QueueFeederThre}(72915)
+                       |                     |-{despachador-1-1}(72907)
+                       |                     |-{despachador-1-2}(72908)
+                       |                     `-{despachador-1-3}(72909)
+                       |-trabajador-2(72906)-+-{QueueFeederThre}(72916)
+                       |                     |-{despachador-2-1}(72910)
+                       |                     |-{despachador-2-2}(72911)
+                       |                     `-{despachador-2-3}(72912)
+                       |-{generador-1}(72913)
+                       `-{generador-2}(72914)
+
+===== 2. Procesos: identidad, estado y recursos (ps -o) =====
+    PID    PPID    PGID STAT NLWP %CPU %MEM   RSS    VSZ     ELAPSED COMMAND         COMMAND
+  72899   72848   72899 Ssl     3  3.8  0.2 23080 176152       00:03 centro_despacho python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+  72905   72899   72899 Sl      5  0.3  0.2 19244 323516       00:03 trabajador-1    python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+  72906   72899   72899 Sl      5  0.3  0.2 19252 323516       00:03 trabajador-2    python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+
+===== 3. Hilos de cada proceso (ps -eLf filtrado; LWP = TID del kernel) =====
+UID          PID    PPID     LWP  C NLWP STIME TTY          TIME CMD
+edwar      72899   72848   72899  2    3 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72899   72848   72913  0    3 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72899   72848   72914  0    3 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72905   72899   72905  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72905   72899   72907  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72905   72899   72908  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72905   72899   72909  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72905   72899   72915  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72906   72899   72906  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72906   72899   72910  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72906   72899   72911  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72906   72899   72912  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+edwar      72906   72899   72916  0    5 16:01 ?        00:00:00 python3 main.py -w 2 -t 3 -g 2 -n 0 --tam-rafaga 3 --intervalo 0.5 -k 5 --entrega 0.5-1.5 --log evidencias/fase2/e2_ejecucion.log
+
+===== 4. Hilos con nombre, estado y CPU (ps -L) =====
+    PID     LWP STAT %CPU WCHAN                    COMMAND
+  72899   72899 Ssl   2.8 poll_schedule_timeout.co centro_despacho
+  72899   72913 Ssl   0.0 futex_do_wait            generador-1
+  72899   72914 Ssl   0.3 futex_do_wait            generador-2
+  72905   72905 Sl    0.0 hrtimer_nanosleep        trabajador-1
+  72905   72907 Sl    0.0 hrtimer_nanosleep        despachador-1-1
+  72905   72908 Sl    0.0 hrtimer_nanosleep        despachador-1-2
+  72905   72909 Rl    0.0 -                        despachador-1-3
+  72905   72915 Sl    0.0 -                        QueueFeederThre
+  72906   72906 Sl    0.0 hrtimer_nanosleep        trabajador-2
+  72906   72910 Sl    0.0 hrtimer_nanosleep        despachador-2-1
+  72906   72911 Sl    0.0 hrtimer_nanosleep        despachador-2-2
+  72906   72912 Sl    0.0 hrtimer_nanosleep        despachador-2-3
+  72906   72916 Sl    0.0 futex_do_wait            QueueFeederThre
+
+===== 5. /proc/<pid>/status (campos relevantes) =====
+-- PID 72899
+   Name:	centro_despacho
+   State:	S (sleeping)
+   Pid:	72899
+   PPid:	72848
+   VmSize:	  176152 kB
+   VmRSS:	   23080 kB
+   Threads:	3
+   voluntary_ctxt_switches:	65
+   nonvoluntary_ctxt_switches:	9
+   Rss:               23080 kB
+   Pss:                8768 kB
+   Shared_Clean:      10620 kB
+   Private_Dirty:      3604 kB
+-- PID 72905
+   Name:	trabajador-1
+   State:	S (sleeping)
+   Pid:	72905
+   PPid:	72899
+   VmSize:	  323516 kB
+   VmRSS:	   19244 kB
+   Threads:	5
+   voluntary_ctxt_switches:	37
+   nonvoluntary_ctxt_switches:	0
+   Rss:               19244 kB
+   Pss:                7242 kB
+   Shared_Clean:       7212 kB
+   Private_Dirty:      3236 kB
+-- PID 72906
+   Name:	trabajador-2
+   State:	S (sleeping)
+   Pid:	72906
+   PPid:	72899
+   VmSize:	  323516 kB
+   VmRSS:	   19252 kB
+   Threads:	5
+   voluntary_ctxt_switches:	37
+   nonvoluntary_ctxt_switches:	1
+   Rss:               19252 kB
+   Pss:                7230 kB
+   Shared_Clean:       7212 kB
+   Private_Dirty:      3204 kB

@@ -1,0 +1,108 @@
+15:50:14.794600 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=3 x 2 hilos | generadores=2 | solicitudes=continuo | cola=semaforos(10) | semilla=42 | log=evidencias/fase2/h3/semaforos_6.log
+15:50:14.806345 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 64970
+15:50:14.807607 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 64971
+15:50:14.807776 | PID  64970 | PPID  64967 | TID  64970 | trabajador-1    | MainThread       | INICIO trabajador 1 con 2 hilos despachadores
+15:50:14.808710 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | CREADO trabajador-3 -> PID 64974
+15:50:14.809161 | PID  64971 | PPID  64967 | TID  64971 | trabajador-2    | MainThread       | INICIO trabajador 2 con 2 hilos despachadores
+15:50:14.810001 | PID  64974 | PPID  64967 | TID  64974 | trabajador-3    | MainThread       | INICIO trabajador 3 con 2 hilos despachadores
+15:50:14.810216 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | SINCRONIZADO: 3 trabajadores listos
+15:50:14.811563 | PID  64967 | PPID  63617 | TID  64980 | centro_despacho | generador-2      | RECIBIDA solicitud 2000000 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~0
+15:50:14.811729 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000000 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms
+15:50:14.811796 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | RÁFAGA 1: 2 generadores liberados simultáneamente
+15:50:14.812027 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | RECIBIDA solicitud 1000000 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~1
+15:50:14.812084 | PID  64970 | PPID  64967 | TID  64973 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000000 (Homecenter: Sogamoso -> Tunja) | esperó en cola 0 ms
+15:50:14.811917 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+15:50:14.812212 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+15:50:14.812479 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   64967   63617   centro_despacho  R      3      23028    
+15:50:14.812733 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64967   centro_despacho  R
+15:50:14.812806 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64979   generador-1      S
+15:50:14.812869 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64980   generador-2      S
+15:50:14.813053 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   64970   64967   trabajador-1     S      3      18992    
+15:50:14.813260 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64970   trabajador-1     S
+15:50:14.813322 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64972   despachador-1-1  S
+15:50:14.813383 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64973   despachador-1-2  S
+15:50:14.813549 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   64971   64967   trabajador-2     S      3      18752    
+15:50:14.813755 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64971   trabajador-2     S
+15:50:14.813813 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64975   despachador-2-1  S
+15:50:14.813875 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64976   despachador-2-2  S
+15:50:14.814029 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   64974   64967   trabajador-3     S      3      18752    
+15:50:14.814245 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64974   trabajador-3     S
+15:50:14.814310 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64977   despachador-3-1  S
+15:50:14.814369 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |       └ TID 64978   despachador-3-2  S
+15:50:14.850320 | PID  64970 | PPID  64967 | TID  64973 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000000
+15:50:14.851270 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000000
+15:50:14.929537 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000000 | servicio 118 ms
+15:50:14.934477 | PID  64970 | PPID  64967 | TID  64973 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000000 | servicio 122 ms
+15:50:15.309634 | PID  64971 | PPID  64967 | TID  64975 | trabajador-2    | despachador-2-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:15.310164 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:15.310477 | PID  64971 | PPID  64967 | TID  64976 | trabajador-2    | despachador-2-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:15.313185 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:15.430199 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:15.434824 | PID  64970 | PPID  64967 | TID  64973 | trabajador-1    | despachador-1-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:16.312658 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | RECIBIDA solicitud 1000001 (ráfaga 2) Jumbo: Chiquinquirá -> Paipa | en cola ~1
+15:50:16.313285 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 1000001 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 1 ms
+15:50:16.313215 | PID  64967 | PPID  63617 | TID  64980 | centro_despacho | generador-2      | RÁFAGA 2: 2 generadores liberados simultáneamente
+15:50:16.314024 | PID  64967 | PPID  63617 | TID  64980 | centro_despacho | generador-2      | RECIBIDA solicitud 2000001 (ráfaga 2) Olímpica: Garagoa -> Villa de Leyva | en cola ~1
+15:50:16.314258 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | DESPACHO solicitud 2000001 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 0 ms
+15:50:16.346198 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 1000001
+15:50:16.362849 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | EN RUTA solicitud 2000001
+15:50:16.398624 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 1000001 | servicio 85 ms
+15:50:16.413713 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | ENTREGADA solicitud 2000001 | servicio 99 ms
+15:50:16.900509 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:16.914645 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:17.016749 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | CAÍDO trabajador-2 (PID 64971): terminado por señal SIGKILL
+15:50:17.815000 | PID  64967 | PPID  63617 | TID  64980 | centro_despacho | generador-2      | RECIBIDA solicitud 2000002 (ráfaga 3) D1: Duitama -> Villa de Leyva | en cola ~1
+15:50:17.815250 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 2000002 (D1: Duitama -> Villa de Leyva) | esperó en cola 0 ms
+15:50:17.815694 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | RÁFAGA 3: 2 generadores liberados simultáneamente
+15:50:17.816512 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | RECIBIDA solicitud 1000002 (ráfaga 3) Homecenter: Tunja -> Moniquirá | en cola ~1
+15:50:17.816741 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | DESPACHO solicitud 1000002 (Homecenter: Tunja -> Moniquirá) | esperó en cola 0 ms
+15:50:17.838158 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 2000002
+15:50:17.855385 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | EN RUTA solicitud 1000002
+15:50:17.891853 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 2000002 | servicio 77 ms
+15:50:17.952299 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | ENTREGADA solicitud 1000002 | servicio 136 ms
+15:50:18.392660 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:18.453200 | PID  64974 | PPID  64967 | TID  64978 | trabajador-3    | despachador-3-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:19.317333 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | RECIBIDA solicitud 1000003 (ráfaga 4) D1: Moniquirá -> Sogamoso | en cola ~1
+15:50:19.317584 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 1000003 (D1: Moniquirá -> Sogamoso) | esperó en cola 0 ms
+15:50:19.317874 | PID  64967 | PPID  63617 | TID  64980 | centro_despacho | generador-2      | RÁFAGA 4: 2 generadores liberados simultáneamente
+15:50:19.318588 | PID  64967 | PPID  63617 | TID  64980 | centro_despacho | generador-2      | RECIBIDA solicitud 2000003 (ráfaga 4) Falabella: Villa de Leyva -> Moniquirá | en cola ~1
+15:50:19.318773 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000003 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 0 ms
+15:50:19.341408 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000003
+15:50:19.346396 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 1000003
+15:50:19.409179 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 1000003 | servicio 92 ms
+15:50:19.417199 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000003 | servicio 98 ms
+15:50:19.910384 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:19.918006 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:50:20.819618 | PID  64967 | PPID  63617 | TID  64980 | centro_despacho | generador-2      | RECIBIDA solicitud 2000004 (ráfaga 5) D1: Paipa -> Moniquirá | en cola ~1
+15:50:20.819793 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 2000004 (D1: Paipa -> Moniquirá) | esperó en cola 0 ms
+15:50:20.820359 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | RÁFAGA 5: 2 generadores liberados simultáneamente
+15:50:20.821356 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | RECIBIDA solicitud 1000004 (ráfaga 5) Éxito: Tunja -> Sogamoso | en cola ~1
+15:50:20.821594 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 1000004 (Éxito: Tunja -> Sogamoso) | esperó en cola 0 ms
+15:50:20.859347 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 1000004
+15:50:20.865653 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 2000004
+15:50:20.926209 | PID  64970 | PPID  64967 | TID  64972 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 1000004 | servicio 105 ms
+15:50:20.941507 | PID  64974 | PPID  64967 | TID  64977 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 2000004 | servicio 122 ms
+15:50:21.143858 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | SEÑAL SIGINT recibida: se detiene la generación y se cancelan las solicitudes en cola
+15:50:21.221223 | PID  64967 | PPID  63617 | TID  64980 | centro_despacho | generador-2      | FIN generador 2: generadas=5, bloqueos por cola llena=0 (0.000 s)
+15:50:21.222479 | PID  64967 | PPID  63617 | TID  64979 | centro_despacho | generador-1      | FIN generador 1: generadas=5, bloqueos por cola llena=0 (0.000 s)
+15:50:21.522139 | PID  64970 | PPID  64967 | TID  64970 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=3, despachador-1-2=1
+15:50:21.523817 | PID  64974 | PPID  64967 | TID  64974 | trabajador-3    | MainThread       | FIN trabajador 3 | atendidas por hilo: despachador-3-1=4, despachador-3-2=2
+15:50:21.545657 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 64970): exit(0)
+15:50:21.546334 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | TERMINÓ trabajador-3 (PID 64974): exit(0)
+15:50:21.597106 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | RESUMEN de terminación:
+15:50:21.597625 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   trabajador-1   PID 64970   exit(0)
+15:50:21.598209 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   trabajador-2   PID 64971   terminado por señal SIGKILL
+15:50:21.598638 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   trabajador-3   PID 64974   exit(0)
+15:50:21.599246 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+15:50:21.599688 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | ESTADÍSTICAS:
+15:50:21.599980 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   solicitudes: generadas=10 entregadas=10 canceladas=0 no atendidas=0
+15:50:21.600215 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=0, tiempo bloqueados=0.000 s
+15:50:21.600500 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=0 máx=1
+15:50:21.600804 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   servicio (s): prom=0.105 | trabajo total (suma)=1.05 s
+15:50:21.601062 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   tiempo total=6.13 s | rendimiento=1.63 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=0.17
+15:50:21.601479 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   concurrencia máxima observada=2 (capacidad = 3 trabajadores x 2 hilos = 6)
+15:50:21.602026 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=4, trabajador-3=6
+15:50:21.602315 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=3, despachador-1-2=1, despachador-3-1=4, despachador-3-2=2
+15:50:21.602646 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   CPU: principal=0.13 s, trabajadores=0.07 s | tiempo real=6.79 s | uso medio de CPU de los trabajadores=1.0 %
+15:50:21.602935 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=293, involuntarios=6
+15:50:21.603207 | PID  64967 | PPID  63617 | TID  64967 | centro_despacho | MainThread       | FIN centro de despacho (con fallos)

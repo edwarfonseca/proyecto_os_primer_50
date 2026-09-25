@@ -1,0 +1,46 @@
+## ps -L (cola=mp, run 1): estado y canal de espera de cada hilo
+    PID     LWP STAT %CPU WCHAN                  COMMAND
+  63626   63626 Ssl   1.5 poll_schedule_timeout. centro_despacho
+  63626   63647 Ssl   0.0 hrtimer_nanosleep      generador-1
+  63626   63648 Ssl   0.0 hrtimer_nanosleep      generador-2
+  63626   63649 Ssl   0.0 futex_do_wait          QueueFeederThre
+  63638   63638 Sl    0.0 hrtimer_nanosleep      trabajador-1
+  63638   63639 Sl    0.0 futex_do_wait          despachador-1-1
+  63638   63644 Sl    0.0 futex_do_wait          despachador-1-2
+  63638   63650 Sl    0.0 futex_do_wait          QueueFeederThre
+  63641   63641 Sl    0.0 hrtimer_nanosleep      trabajador-3
+  63641   63645 Sl    0.0 futex_do_wait          despachador-3-1
+  63641   63646 Sl    0.0 futex_do_wait          despachador-3-2
+  63641   63690 Sl    0.0 futex_do_wait          QueueFeederThre
+
+## kill -USR1 a trabajador-1: pila de sus hilos (faulthandler)
+Thread 0x00007f213daca6c0 [QueueFeederThre] (most recent call first):
+  File "/usr/lib/python3.14/threading.py", line 369 in wait
+  File "/usr/lib/python3.14/multiprocessing/queues.py", line 249 in _feed
+  File "/usr/lib/python3.14/threading.py", line 1024 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00007f213e2cf6c0 [despachador-1-2] (most recent call first):
+  File "/usr/lib/python3.14/multiprocessing/queues.py", line 106 in get
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/trabajador.py", line 81 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00007f213ead46c0 [despachador-1-1] (most recent call first):
+  File "/usr/lib/python3.14/multiprocessing/queues.py", line 106 in get
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/trabajador.py", line 81 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Current thread 0x00007f2140129bc0 [trabajador-1] (most recent call first):
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/trabajador.py", line 54 in proceso_trabajador
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 108 in run
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 320 in _bootstrap
+  File "/usr/lib/python3.14/multiprocessing/popen_fork.py", line 87 in _launch
+  File "/usr/lib/python3.14/multiprocessing/popen_fork.py", line 20 in __init__
+  File "/usr/lib/python3.14/multiprocessing/context.py", line 287 in _Popen
+  File "/usr/lib/python3.14/multiprocessing/process.py", line 121 in start
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/centro.py", line 90 in _crear_trabajadores
+  File "/home/edwar/Desktop/OS/proyecto_os/despacho/centro.py", line 67 in ejecutar
+  File "/home/edwar/Desktop/OS/proyecto_os/main.py", line 12 in <module>

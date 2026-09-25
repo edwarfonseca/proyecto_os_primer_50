@@ -1,0 +1,109 @@
+15:49:11.674025 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=3 x 2 hilos | generadores=2 | solicitudes=continuo | cola=mp(10) | semilla=42 | log=evidencias/fase2/h3/mp_7.log
+15:49:11.685408 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 64174
+15:49:11.686630 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 64175
+15:49:11.686853 | PID  64174 | PPID  64172 | TID  64174 | trabajador-1    | MainThread       | INICIO trabajador 1 con 2 hilos despachadores
+15:49:11.688128 | PID  64175 | PPID  64172 | TID  64175 | trabajador-2    | MainThread       | INICIO trabajador 2 con 2 hilos despachadores
+15:49:11.688160 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | CREADO trabajador-3 -> PID 64179
+15:49:11.689394 | PID  64179 | PPID  64172 | TID  64179 | trabajador-3    | MainThread       | INICIO trabajador 3 con 2 hilos despachadores
+15:49:11.689572 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | SINCRONIZADO: 3 trabajadores listos
+15:49:11.690938 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | RÁFAGA 1: 2 generadores liberados simultáneamente
+15:49:11.691161 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+15:49:11.691559 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+15:49:11.691741 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000000 (Jumbo: Paipa -> Duitama) | esperó en cola 1 ms
+15:49:11.691340 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | RECIBIDA solicitud 1000000 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~2
+15:49:11.691271 | PID  64172 | PPID  63617 | TID  64184 | centro_despacho | generador-2      | RECIBIDA solicitud 2000000 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~2
+15:49:11.691979 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000000 (Homecenter: Sogamoso -> Tunja) | esperó en cola 1 ms
+15:49:11.692134 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   64172   63617   centro_despacho  R      4      23136    
+15:49:11.692430 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64172   centro_despacho  R
+15:49:11.692500 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64183   generador-1      S
+15:49:11.692562 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64184   generador-2      S
+15:49:11.692627 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64185   QueueFeederThre  S
+15:49:11.692779 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   64174   64172   trabajador-1     S      3      19080    
+15:49:11.692984 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64174   trabajador-1     S
+15:49:11.693046 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64176   despachador-1-1  S
+15:49:11.693100 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64177   despachador-1-2  S
+15:49:11.693256 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   64175   64172   trabajador-2     S      3      18800    
+15:49:11.693446 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64175   trabajador-2     S
+15:49:11.693503 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64178   despachador-2-1  S
+15:49:11.693567 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64180   despachador-2-2  S
+15:49:11.693715 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   64179   64172   trabajador-3     S      3      18744    
+15:49:11.693911 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64179   trabajador-3     S
+15:49:11.693966 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64181   despachador-3-1  S
+15:49:11.694019 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |       └ TID 64182   despachador-3-2  S
+15:49:11.730330 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000000
+15:49:11.731507 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000000
+15:49:11.809924 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000000 | servicio 118 ms
+15:49:11.814759 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000000 | servicio 123 ms
+15:49:12.188392 | PID  64175 | PPID  64172 | TID  64180 | trabajador-2    | despachador-2-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:12.189455 | PID  64179 | PPID  64172 | TID  64181 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:12.189794 | PID  64175 | PPID  64172 | TID  64178 | trabajador-2    | despachador-2-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:12.192277 | PID  64179 | PPID  64172 | TID  64182 | trabajador-3    | despachador-3-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:12.312286 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:12.316280 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:13.192538 | PID  64172 | PPID  63617 | TID  64184 | centro_despacho | generador-2      | RECIBIDA solicitud 2000001 (ráfaga 2) Olímpica: Garagoa -> Villa de Leyva | en cola ~1
+15:49:13.193502 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | RÁFAGA 2: 2 generadores liberados simultáneamente
+15:49:13.193980 | PID  64175 | PPID  64172 | TID  64180 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 2000001 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 1 ms
+15:49:13.194061 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | RECIBIDA solicitud 1000001 (ráfaga 2) Jumbo: Chiquinquirá -> Paipa | en cola ~1
+15:49:13.194817 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 1000001 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 1 ms
+15:49:13.227605 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 1000001
+15:49:13.242635 | PID  64175 | PPID  64172 | TID  64180 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 2000001
+15:49:13.279512 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 1000001 | servicio 85 ms
+15:49:13.295603 | PID  64175 | PPID  64172 | TID  64180 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 2000001 | servicio 102 ms
+15:49:13.780352 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:13.797407 | PID  64175 | PPID  64172 | TID  64180 | trabajador-2    | despachador-2-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:13.900015 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | CAÍDO trabajador-2 (PID 64175): terminado por señal SIGKILL
+15:49:14.695173 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | RECIBIDA solicitud 1000002 (ráfaga 3) Homecenter: Tunja -> Moniquirá | en cola ~1
+15:49:14.696466 | PID  64172 | PPID  63617 | TID  64184 | centro_despacho | generador-2      | RÁFAGA 3: 2 generadores liberados simultáneamente
+15:49:14.696517 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000002 (Homecenter: Tunja -> Moniquirá) | esperó en cola 1 ms
+15:49:14.697143 | PID  64172 | PPID  63617 | TID  64184 | centro_despacho | generador-2      | RECIBIDA solicitud 2000002 (ráfaga 3) D1: Duitama -> Villa de Leyva | en cola ~1
+15:49:14.698084 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2000002 (D1: Duitama -> Villa de Leyva) | esperó en cola 1 ms
+15:49:14.720740 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2000002
+15:49:14.735365 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000002
+15:49:14.774480 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2000002 | servicio 76 ms
+15:49:14.832641 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000002 | servicio 136 ms
+15:49:15.275394 | PID  64174 | PPID  64172 | TID  64176 | trabajador-1    | despachador-1-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:15.333473 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:16.198248 | PID  64172 | PPID  63617 | TID  64184 | centro_despacho | generador-2      | RECIBIDA solicitud 2000003 (ráfaga 4) Falabella: Villa de Leyva -> Moniquirá | en cola ~1
+15:49:16.198929 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | RÁFAGA 4: 2 generadores liberados simultáneamente
+15:49:16.199654 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | RECIBIDA solicitud 1000003 (ráfaga 4) D1: Moniquirá -> Sogamoso | en cola ~2
+15:49:16.200090 | PID  64179 | PPID  64172 | TID  64181 | trabajador-3    | despachador-3-1  | DESPACHO solicitud 2000003 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 2 ms
+15:49:16.200604 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 1000003 (D1: Moniquirá -> Sogamoso) | esperó en cola 1 ms
+15:49:16.222848 | PID  64179 | PPID  64172 | TID  64181 | trabajador-3    | despachador-3-1  | EN RUTA solicitud 2000003
+15:49:16.229141 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 1000003
+15:49:16.291833 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 1000003 | servicio 91 ms
+15:49:16.298968 | PID  64179 | PPID  64172 | TID  64181 | trabajador-3    | despachador-3-1  | ENTREGADA solicitud 2000003 | servicio 99 ms
+15:49:16.792627 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:16.800499 | PID  64179 | PPID  64172 | TID  64181 | trabajador-3    | despachador-3-1  | CONSUMIDOR ESPERANDO: cola vacía
+15:49:17.700856 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | RECIBIDA solicitud 1000004 (ráfaga 5) Éxito: Tunja -> Sogamoso | en cola ~1
+15:49:17.701945 | PID  64172 | PPID  63617 | TID  64184 | centro_despacho | generador-2      | RÁFAGA 5: 2 generadores liberados simultáneamente
+15:49:17.702022 | PID  64179 | PPID  64172 | TID  64182 | trabajador-3    | despachador-3-2  | DESPACHO solicitud 1000004 (Éxito: Tunja -> Sogamoso) | esperó en cola 1 ms
+15:49:17.702593 | PID  64172 | PPID  63617 | TID  64184 | centro_despacho | generador-2      | RECIBIDA solicitud 2000004 (ráfaga 5) D1: Paipa -> Moniquirá | en cola ~1
+15:49:17.703401 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 2000004 (D1: Paipa -> Moniquirá) | esperó en cola 1 ms
+15:49:17.739732 | PID  64179 | PPID  64172 | TID  64182 | trabajador-3    | despachador-3-2  | EN RUTA solicitud 1000004
+15:49:17.748993 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 2000004
+15:49:17.806478 | PID  64179 | PPID  64172 | TID  64182 | trabajador-3    | despachador-3-2  | ENTREGADA solicitud 1000004 | servicio 104 ms
+15:49:17.825095 | PID  64174 | PPID  64172 | TID  64177 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 2000004 | servicio 122 ms
+15:49:18.027499 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | SEÑAL SIGINT recibida: se detiene la generación y se cancelan las solicitudes en cola
+15:49:18.102224 | PID  64172 | PPID  63617 | TID  64183 | centro_despacho | generador-1      | FIN generador 1: generadas=5, bloqueos por cola llena=0 (0.000 s)
+15:49:18.103581 | PID  64172 | PPID  63617 | TID  64184 | centro_despacho | generador-2      | FIN generador 2: generadas=5, bloqueos por cola llena=0 (0.000 s)
+15:49:18.401947 | PID  64174 | PPID  64172 | TID  64174 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=3, despachador-1-2=4
+15:49:18.403729 | PID  64179 | PPID  64172 | TID  64179 | trabajador-3    | MainThread       | FIN trabajador 3 | atendidas por hilo: despachador-3-1=1, despachador-3-2=1
+15:49:18.429432 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 64174): exit(0)
+15:49:18.429850 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | TERMINÓ trabajador-3 (PID 64179): exit(0)
+15:49:18.480523 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | RESUMEN de terminación:
+15:49:18.481105 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   trabajador-1   PID 64174   exit(0)
+15:49:18.481503 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   trabajador-2   PID 64175   terminado por señal SIGKILL
+15:49:18.481867 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   trabajador-3   PID 64179   exit(0)
+15:49:18.482295 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+15:49:18.482970 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | ESTADÍSTICAS:
+15:49:18.483330 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   solicitudes: generadas=10 entregadas=10 canceladas=0 no atendidas=0
+15:49:18.483704 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=0, tiempo bloqueados=0.000 s
+15:49:18.484046 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   espera en cola (ms): mín=1 prom=1 máx=2
+15:49:18.484353 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   servicio (s): prom=0.106 | trabajo total (suma)=1.06 s
+15:49:18.484692 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   tiempo total=6.13 s | rendimiento=1.63 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=0.17
+15:49:18.485061 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   concurrencia máxima observada=2 (capacidad = 3 trabajadores x 2 hilos = 6)
+15:49:18.485655 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=7, trabajador-2=1, trabajador-3=2
+15:49:18.485991 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=3, despachador-1-2=4, despachador-2-2=1, despachador-3-1=1, despachador-3-2=1
+15:49:18.486308 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   CPU: principal=0.13 s, trabajadores=0.07 s | tiempo real=6.80 s | uso medio de CPU de los trabajadores=1.1 %
+15:49:18.486601 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=330, involuntarios=2
+15:49:18.486945 | PID  64172 | PPID  63617 | TID  64172 | centro_despacho | MainThread       | FIN centro de despacho (con fallos)

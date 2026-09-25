@@ -47,7 +47,7 @@ def hilos_proceso(pid: int) -> list[dict]:
     hilos = []
     try:
         tids = sorted(int(t) for t in os.listdir(f"/proc/{pid}/task"))
-    except FileNotFoundError:
+    except (FileNotFoundError, ProcessLookupError):
         return hilos
     for tid in tids:
         try:
@@ -55,7 +55,9 @@ def hilos_proceso(pid: int) -> list[dict]:
                 nombre = f.read().strip()
             with open(f"/proc/{pid}/task/{tid}/stat") as f:
                 estado = f.read().rsplit(")", 1)[1].split()[0]
-        except FileNotFoundError:
+        except (FileNotFoundError, ProcessLookupError):
+            # El hilo terminó entre el listado del directorio y la lectura: el kernel
+            # responde ENOENT o ESRCH. /proc es una vista viva, no una foto consistente.
             continue
         hilos.append({"tid": tid, "nombre": nombre, "estado": estado})
     return hilos

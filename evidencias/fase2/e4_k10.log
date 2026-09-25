@@ -1,0 +1,195 @@
+16:02:36.358282 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=1 x 3 hilos | generadores=3 | solicitudes=30 | cola=semaforos(10) | semilla=42 | log=evidencias/fase2/e4_k10.log
+16:02:36.369933 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 73778
+16:02:36.371309 | PID  73778 | PPID  73774 | TID  73778 | trabajador-1    | MainThread       | INICIO trabajador 1 con 3 hilos despachadores
+16:02:36.371534 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | SINCRONIZADO: 1 trabajadores listos
+16:02:36.373211 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+16:02:36.373468 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+16:02:36.373330 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RÁFAGA 1: 3 generadores liberados simultáneamente
+16:02:36.373739 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 21 (Jumbo: Tunja -> Duitama) | esperó en cola 1 ms
+16:02:36.373930 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 1 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~1
+16:02:36.374126 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 2 (ráfaga 1) Jumbo: Chiquinquirá -> Paipa | en cola ~1
+16:02:36.374286 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 3 (ráfaga 1) Homecenter: Tunja -> Moniquirá | en cola ~2
+16:02:36.374513 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 4 (ráfaga 1) D1: Moniquirá -> Sogamoso | en cola ~3
+16:02:36.373892 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 11 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms
+16:02:36.374559 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 1 (Homecenter: Sogamoso -> Tunja) | esperó en cola 1 ms
+16:02:36.374660 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 5 (ráfaga 1) Éxito: Tunja -> Sogamoso | en cola ~4
+16:02:36.373571 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 21 (ráfaga 1) Jumbo: Tunja -> Duitama | en cola ~1
+16:02:36.373677 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 11 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~1
+16:02:36.375006 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 12 (ráfaga 1) Olímpica: Garagoa -> Villa de Leyva | en cola ~7
+16:02:36.375103 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 13 (ráfaga 1) D1: Duitama -> Villa de Leyva | en cola ~8
+16:02:36.375213 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 14 (ráfaga 1) Falabella: Villa de Leyva -> Moniquirá | en cola ~9
+16:02:36.375303 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 15 (ráfaga 1) D1: Paipa -> Moniquirá | en cola ~10
+16:02:36.375376 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 16 espera
+16:02:36.374893 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 22 (ráfaga 1) Alkosto: Garagoa -> Paipa | en cola ~6
+16:02:36.375495 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 23 espera
+16:02:36.374419 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   73774   73634   centro_despacho  R      4      23064    
+16:02:36.374783 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 6 (ráfaga 1) Homecenter: Duitama -> Villa de Leyva | en cola ~5
+16:02:36.375707 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 7 espera
+16:02:36.375992 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |       └ TID 73774   centro_despacho  R
+16:02:36.376068 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |       └ TID 73782   generador-1      S
+16:02:36.376130 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |       └ TID 73783   generador-2      S
+16:02:36.376188 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |       └ TID 73784   generador-3      S
+16:02:36.376350 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   73778   73774   trabajador-1     S      4      19132    
+16:02:36.376610 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |       └ TID 73778   trabajador-1     S
+16:02:36.376674 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |       └ TID 73779   despachador-1-1  S
+16:02:36.376741 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |       └ TID 73780   despachador-1-2  S
+16:02:36.376805 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |       └ TID 73781   despachador-1-3  S
+16:02:36.535069 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 21
+16:02:36.596914 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 1
+16:02:36.601863 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 11
+16:02:36.820264 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 21 | servicio 446 ms
+16:02:36.823257 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 449 ms
+16:02:36.823991 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 448 ms
+16:02:36.824961 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 16 (ráfaga 1) Éxito: Tunja -> Paipa | en cola ~10
+16:02:36.825488 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 17 espera
+16:02:37.006162 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2
+16:02:37.029658 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 11 | servicio 656 ms
+16:02:37.030650 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 3 (Homecenter: Tunja -> Moniquirá) | esperó en cola 656 ms
+16:02:37.030801 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 655 ms
+16:02:37.031324 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 23 (ráfaga 1) D1: Garagoa -> Tunja | en cola ~10
+16:02:37.031800 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 24 espera
+16:02:37.062644 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 1 | servicio 688 ms
+16:02:37.063576 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 4 (D1: Moniquirá -> Sogamoso) | esperó en cola 689 ms
+16:02:37.064016 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 688 ms
+16:02:37.065230 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 7 (ráfaga 1) Homecenter: Paipa -> Tunja | en cola ~10
+16:02:37.065890 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 8 espera
+16:02:37.214798 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2 | servicio 392 ms
+16:02:37.215445 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 5 (Éxito: Tunja -> Sogamoso) | esperó en cola 841 ms
+16:02:37.215626 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 390 ms
+16:02:37.216024 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 17 (ráfaga 1) Jumbo: Paipa -> Moniquirá | en cola ~10
+16:02:37.216361 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 18 espera
+16:02:37.219274 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 4
+16:02:37.253854 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 3
+16:02:37.428475 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 5
+16:02:37.518674 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 4 | servicio 455 ms
+16:02:37.519493 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 6 (Homecenter: Duitama -> Villa de Leyva) | esperó en cola 1145 ms
+16:02:37.519641 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 303 ms
+16:02:37.520176 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 18 (ráfaga 1) Éxito: Paipa -> Moniquirá | en cola ~10
+16:02:37.521060 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 19 espera
+16:02:37.743659 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 6
+16:02:37.760285 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 5 | servicio 545 ms
+16:02:37.761347 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 22 (Alkosto: Garagoa -> Paipa) | esperó en cola 1386 ms
+16:02:37.761479 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 729 ms
+16:02:37.762139 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 24 (ráfaga 1) Alkosto: Paipa -> Duitama | en cola ~10
+16:02:37.763131 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 25 espera
+16:02:37.821822 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 3 | servicio 791 ms
+16:02:37.822809 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 12 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 1448 ms
+16:02:37.822929 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 757 ms
+16:02:37.823472 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 8 (ráfaga 1) D1: Villa de Leyva -> Sogamoso | en cola ~10
+16:02:37.824015 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 9 espera
+16:02:37.973497 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 22
+16:02:38.002457 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 6 | servicio 483 ms
+16:02:38.003328 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 13 (D1: Duitama -> Villa de Leyva) | esperó en cola 1628 ms
+16:02:38.003466 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 179 ms
+16:02:38.004621 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 9 (ráfaga 1) Ara: Chiquinquirá -> Moniquirá | en cola ~10
+16:02:38.005083 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 10 espera
+16:02:38.111294 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 12
+16:02:38.117692 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 13
+16:02:38.314124 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 12 | servicio 491 ms
+16:02:38.315088 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 14 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 1940 ms
+16:02:38.315212 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 794 ms
+16:02:38.315809 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 19 (ráfaga 1) Falabella: Tunja -> Chiquinquirá | en cola ~10
+16:02:38.316213 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 20 espera
+16:02:38.346378 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 13 | servicio 343 ms
+16:02:38.347490 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 15 (D1: Paipa -> Moniquirá) | esperó en cola 1972 ms
+16:02:38.347664 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 584 ms
+16:02:38.348610 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 25 (ráfaga 1) Homecenter: Duitama -> Garagoa | en cola ~10
+16:02:38.349162 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 26 espera
+16:02:38.385197 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 22 | servicio 624 ms
+16:02:38.385618 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 16 (Éxito: Tunja -> Paipa) | esperó en cola 2010 ms
+16:02:38.385751 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 380 ms
+16:02:38.385871 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | RECIBIDA solicitud 10 (ráfaga 1) Ara: Garagoa -> Tunja | en cola ~10
+16:02:38.385998 | PID  73774 | PPID  73634 | TID  73782 | centro_despacho | generador-1      | FIN generador 1: generadas=10, bloqueos por cola llena=4 (2.004 s)
+16:02:38.433270 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 14
+16:02:38.616177 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 15
+16:02:38.640926 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 16
+16:02:38.835681 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 14 | servicio 521 ms
+16:02:38.836569 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 23 (D1: Garagoa -> Tunja) | esperó en cola 2461 ms
+16:02:38.837230 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 520 ms
+16:02:38.837865 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | RECIBIDA solicitud 20 (ráfaga 1) Ara: Tunja -> Moniquirá | en cola ~10
+16:02:38.838861 | PID  73774 | PPID  73634 | TID  73783 | centro_despacho | generador-2      | FIN generador 2: generadas=10, bloqueos por cola llena=5 (2.455 s)
+16:02:39.014916 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 15 | servicio 667 ms
+16:02:39.015882 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 7 (Homecenter: Paipa -> Tunja) | esperó en cola 2640 ms
+16:02:39.016010 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 666 ms
+16:02:39.016569 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 26 (ráfaga 1) Olímpica: Tunja -> Moniquirá | en cola ~10
+16:02:39.017367 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 27 espera
+16:02:39.112309 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 23
+16:02:39.118628 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 16 | servicio 733 ms
+16:02:39.119539 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 17 (Jumbo: Paipa -> Moniquirá) | esperó en cola 2294 ms
+16:02:39.119745 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 102 ms
+16:02:39.120251 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 27 (ráfaga 1) Éxito: Chiquinquirá -> Duitama | en cola ~10
+16:02:39.120769 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 28 espera
+16:02:39.144969 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 7
+16:02:39.364771 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 17
+16:02:39.414065 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 23 | servicio 577 ms
+16:02:39.414978 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 18 (Éxito: Paipa -> Moniquirá) | esperó en cola 2199 ms
+16:02:39.415132 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 294 ms
+16:02:39.415618 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 28 (ráfaga 1) Alkosto: Moniquirá -> Sogamoso | en cola ~10
+16:02:39.416451 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 29 espera
+16:02:39.552862 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 18
+16:02:39.589928 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 7 | servicio 574 ms
+16:02:39.590739 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 24 (Alkosto: Paipa -> Duitama) | esperó en cola 2559 ms
+16:02:39.590880 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 174 ms
+16:02:39.591400 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 29 (ráfaga 1) D1: Chiquinquirá -> Moniquirá | en cola ~10
+16:02:39.592316 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 30 espera
+16:02:39.774654 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 24
+16:02:39.935598 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 17 | servicio 816 ms
+16:02:39.936814 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 344 ms
+16:02:39.936704 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 8 (D1: Villa de Leyva -> Sogamoso) | esperó en cola 2871 ms
+16:02:39.937843 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | RECIBIDA solicitud 30 (ráfaga 1) Éxito: Moniquirá -> Duitama | en cola ~10
+16:02:39.938235 | PID  73774 | PPID  73634 | TID  73784 | centro_despacho | generador-3      | FIN generador 3: generadas=10, bloqueos por cola llena=8 (3.548 s)
+16:02:40.025683 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 18 | servicio 611 ms
+16:02:40.026634 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 9 (Ara: Chiquinquirá -> Moniquirá) | esperó en cola 2203 ms
+16:02:40.027667 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | GENERACIÓN terminada: se envían 3 centinelas (uno por hilo despachador)
+16:02:40.156110 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 24 | servicio 565 ms
+16:02:40.157082 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 19 (Falabella: Tunja -> Chiquinquirá) | esperó en cola 2636 ms
+16:02:40.170849 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 8
+16:02:40.213604 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 9
+16:02:40.407274 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 19
+16:02:40.594720 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 8 | servicio 658 ms
+16:02:40.595749 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 25 (Homecenter: Duitama -> Garagoa) | esperó en cola 2833 ms
+16:02:40.602344 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 9 | servicio 576 ms
+16:02:40.604102 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 10 (Ara: Garagoa -> Tunja) | esperó en cola 2599 ms
+16:02:40.786978 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 10
+16:02:40.881724 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 25
+16:02:40.902058 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 19 | servicio 745 ms
+16:02:40.902840 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 20 (Ara: Tunja -> Moniquirá) | esperó en cola 2587 ms
+16:02:41.173940 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 20
+16:02:41.200854 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 10 | servicio 597 ms
+16:02:41.202199 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 26 (Olímpica: Tunja -> Moniquirá) | esperó en cola 2853 ms
+16:02:41.329023 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 26
+16:02:41.412479 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 25 | servicio 817 ms
+16:02:41.413470 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 27 (Éxito: Chiquinquirá -> Duitama) | esperó en cola 2396 ms
+16:02:41.553713 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 20 | servicio 651 ms
+16:02:41.554969 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 28 (Alkosto: Moniquirá -> Sogamoso) | esperó en cola 2434 ms
+16:02:41.589442 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 27
+16:02:41.699986 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 26 | servicio 498 ms
+16:02:41.701015 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 29 (D1: Chiquinquirá -> Moniquirá) | esperó en cola 2285 ms
+16:02:41.820697 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 28
+16:02:41.854026 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 29
+16:02:42.188232 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 27 | servicio 775 ms
+16:02:42.189318 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 30 (Éxito: Moniquirá -> Duitama) | esperó en cola 2597 ms
+16:02:42.378306 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 28 | servicio 823 ms
+16:02:42.378610 | PID  73778 | PPID  73774 | TID  73781 | trabajador-1    | despachador-1-3  | CENTINELA recibido: el hilo termina
+16:02:42.411355 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 30
+16:02:42.446635 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 29 | servicio 746 ms
+16:02:42.446908 | PID  73778 | PPID  73774 | TID  73780 | trabajador-1    | despachador-1-2  | CENTINELA recibido: el hilo termina
+16:02:42.857873 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 30 | servicio 669 ms
+16:02:42.858885 | PID  73778 | PPID  73774 | TID  73779 | trabajador-1    | despachador-1-1  | CENTINELA recibido: el hilo termina
+16:02:42.885154 | PID  73778 | PPID  73774 | TID  73778 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=10, despachador-1-2=10, despachador-1-3=10
+16:02:43.060950 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 73778): exit(0)
+16:02:43.112317 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | RESUMEN de terminación:
+16:02:43.113151 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   trabajador-1   PID 73778   exit(0)
+16:02:43.113886 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+16:02:43.114484 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | ESTADÍSTICAS:
+16:02:43.114904 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   solicitudes: generadas=30 entregadas=30 canceladas=0 no atendidas=0
+16:02:43.115271 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=17, tiempo bloqueados=8.007 s
+16:02:43.115792 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=1820 máx=2871
+16:02:43.116123 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   servicio (s): prom=0.618 | trabajo total (suma)=18.53 s
+16:02:43.116414 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   tiempo total=6.48 s | rendimiento=4.63 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=2.86
+16:02:43.117025 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   concurrencia máxima observada=3 (capacidad = 1 trabajadores x 3 hilos = 3)
+16:02:43.117709 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=30
+16:02:43.118058 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=10, despachador-1-2=10, despachador-1-3=10
+16:02:43.118394 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   CPU: principal=0.15 s, trabajadores=0.09 s | tiempo real=6.75 s | uso medio de CPU de los trabajadores=1.3 %
+16:02:43.118768 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=270, involuntarios=8
+16:02:43.119092 | PID  73774 | PPID  73634 | TID  73774 | centro_despacho | MainThread       | FIN centro de despacho (correcto)

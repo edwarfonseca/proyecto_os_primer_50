@@ -47,7 +47,7 @@ Proceso principal: centro_despacho (PID P)
 └── Proceso trabajador-W ...
 
 Recursos compartidos entre procesos (memoria compartida, multiprocessing):
-  - cola_solicitudes : multiprocessing.Queue(maxsize=K)   → productor-consumidor acotado
+  - cola_solicitudes : ColaAcotada(K) (semáforos + pipe) → productor-consumidor acotado
   - vehiculos        : multiprocessing.Array('i', V)       → 0 = libre, n = id de solicitud
   - contadores       : multiprocessing.Value / Array       → recibidas, pendientes, finalizadas...
   - andenes          : multiprocessing.Lock por andén      → segundo tipo de recurso (interbloqueo)
@@ -89,12 +89,15 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] Evidencia: E1–E5 con `pstree`, `ps`, `top -H`, `/proc` (`scripts/evidencias_fase1.sh`).
 - [x] Hallazgos documentados: H1 (`multiprocessing.Event` bloqueado por la muerte de un participante) y H2 (huérfanos).
 
-### Fase 2 — Hilos y productor-consumidor
-- [ ] Hilos generadores (productores) en el proceso principal; `threading.Barrier` para llegada **simultánea**.
-- [ ] Cola acotada `multiprocessing.Queue(maxsize=K)`: el productor se bloquea si está llena, el consumidor si está vacía.
-- [ ] T hilos despachadores por trabajador (consumidores).
-- [ ] Tiempos aleatorios (reproducibles) de despacho y entrega.
-- [ ] Evidencia: `ps -eLf`, `ps -L -o pid,lwp,comm,stat`, `/proc/<pid>/status` (Threads).
+### Fase 2 — Hilos y productor-consumidor ✅
+- [x] Hilos generadores (productores) en el proceso principal; `threading.Barrier` para llegada **simultánea** por ráfagas.
+- [x] Cola acotada propia `ColaAcotada` (semáforos `vacios`/`llenos` + mutex sobre un pipe); `--cola mp` conserva `multiprocessing.Queue`.
+- [x] T hilos despachadores por trabajador (consumidores) + cola de resultados hacia el principal.
+- [x] Tiempos aleatorios reproducibles de despacho y entrega (`--semilla`).
+- [x] Cierre por centinelas; cancelación contabilizada con Ctrl+C; balance verificado.
+- [x] Estadísticas: espera, servicio, rendimiento, concurrencia, reparto, CPU (`getrusage`).
+- [x] Evidencia: E1–E4 (`scripts/evidencias_fase2.sh`): ráfagas, `pstree -t`, `ps -L`, `top -H`, escalamiento, capacidad.
+- [x] Hallazgos: H3 (inanición con `multiprocessing.Queue`, 4/10 → 0/10) y H4 (carrera `Barrier.wait`/`abort`, 13/30 → 0/30).
 
 ### Fase 3 — Condición de carrera (versión con el problema)
 - [ ] Arreglo compartido de vehículos sin protección (`lock=False`).

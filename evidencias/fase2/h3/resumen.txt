@@ -1,0 +1,24 @@
+COLA       RUN  DESPACHOS TRAS SIGKILL   BALANCE                                                     
+mp         1    0                        generadas=10 entregadas=4 canceladas=0 no atendidas=6       
+mp         2    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+mp         3    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+mp         4    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+mp         5    0                        generadas=10 entregadas=4 canceladas=0 no atendidas=6       
+mp         6    0                        generadas=10 entregadas=4 canceladas=0 no atendidas=6       
+mp         7    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+mp         8    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+mp         9    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+mp         10   0                        generadas=10 entregadas=4 canceladas=0 no atendidas=6       
+semaforos  1    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  2    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  3    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  4    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  5    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  6    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  7    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  8    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  9    6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+semaforos  10   6                        generadas=10 entregadas=10 canceladas=0 no atendidas=0      
+
+cola=mp: inanición (0 despachos tras el SIGKILL) en 4 de 10 ejecuciones
+cola=semaforos: inanición (0 despachos tras el SIGKILL) en 0 de 10 ejecuciones

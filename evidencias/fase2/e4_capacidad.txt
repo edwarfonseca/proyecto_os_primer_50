@@ -1,0 +1,7 @@
+Carga fija: 30 solicitudes en una ráfaga, 3 generadores, 1 trabajador x 3 hilos, semilla 42.
+
+CAPACIDAD  BLOQUEOS     T.BLOQUEADOS(s)    ESPERA PROM(ms)      ESPERA MÁX(ms)      TIEMPO(s) 
+1          26           14.174             662                  1474                 6.35      
+3          24           12.085             953                  1556                 6.39      
+10         17           8.007              1820                 2871                 6.48      
+30         0            0.000              2796                 5685                 6.34      

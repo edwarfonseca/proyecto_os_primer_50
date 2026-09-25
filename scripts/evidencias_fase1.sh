@@ -11,13 +11,14 @@
 
 set -uo pipefail
 cd "$(dirname "$0")/.."
-DIR=evidencias/fase1
+DIR="${DIR:-evidencias/fase1}"
 mkdir -p "$DIR"
 rm -f "$DIR"/e[0-9]_*
 
 # Lanza el sistema en su propio grupo de procesos (setsid) para poder enviar señales
-# al grupo completo, como hace el terminal al pulsar Ctrl+C.
-lanzar() { setsid python3 main.py "$@" > /dev/null & PID=$!; sleep 1.5; }
+# al grupo completo, como hace el terminal al pulsar Ctrl+C. Se usa generación
+# continua (-n 0) para que el sistema siga activo mientras se observa.
+lanzar() { setsid python3 main.py -n 0 "$@" > /dev/null & PID=$!; sleep 1.5; }
 
 # Espera a que el principal termine (máx. 15 s). Si no termina, lo reporta como
 # bloqueado y elimina el grupo completo para no dejar procesos colgados.
