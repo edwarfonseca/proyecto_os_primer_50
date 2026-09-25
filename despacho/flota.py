@@ -4,16 +4,29 @@ El estado vive en memoria compartida (multiprocessing.RawArray, un archivo de /d
 mapeado por todos los procesos):  estado[v] = 0 si el vehículo v está libre, o el id
 de la solicitud que lo tiene asignado.
 
-Fase 3 — versión INSEGURA: la asignación es un "check-then-act" sin exclusión mutua:
+Asignar un vehículo es una operación compuesta "check-then-act":
     1. buscar un vehículo con estado 0          (check)
     2. validar el vehículo (ventana de tiempo)
     3. escribir el id de la solicitud           (act)
-Dos despachadores que hacen el paso 1 antes de que alguno haga el paso 3 ven el mismo
-vehículo libre y ambos se lo asignan: DOBLE ASIGNACIÓN.
+
+--modo inseguro  (Fase 3): los pasos se ejecutan sin exclusión mutua. Dos despachadores
+                 que hacen el paso 1 antes de que alguno haga el paso 3 ven el mismo
+                 vehículo libre y ambos se lo asignan: DOBLE ASIGNACIÓN.
+--modo seguro    (Fase 4): un mutex compartido (multiprocessing.Lock) convierte la
+                 búsqueda y el marcado en una sección crítica indivisible.
+                 --seccion fina:   se reserva el vehículo dentro del mutex y se valida
+                                   fuera (el vehículo ya es exclusivo): sección mínima.
+                 --seccion gruesa: la validación también queda dentro del mutex.
+
+--espera activa      sin vehículos libres, el despachador reintenta cada --reintento s.
+--espera bloqueante  un semáforo contador (BoundedSemaphore(V)) representa los vehículos
+                     libres: P() antes de buscar, V() al liberar. Sin vehículos, el hilo
+                     se bloquea en el kernel (futex) sin consumir CPU.
 
 Detección (no corrige nada, sólo observa): una "sonda" cuenta los ocupantes reales de
-cada vehículo con su propio lock DESPUÉS del paso 3, fuera de la ventana de carrera.
-Si al registrarse un ocupante ya había otro, hay doble asignación.
+cada vehículo con su propio lock DESPUÉS de marcar, fuera de la ventana de carrera. Si al
+registrarse un ocupante ya había otro, hay doble asignación. Al liberar se comprueba que
+el registro siga indicando la solicitud que libera (si no, hubo una actualización perdida).
 """
 
 import os
@@ -21,44 +34,82 @@ import random
 import threading
 import time
 
-REINTENTO = 0.005   # segundos entre búsquedas cuando no hay vehículos libres
+ESPERA_SEMAFORO = 0.5   # timeout de P(disponibles): permite revisar la orden de parada
 
 
 class Flota:
-    def __init__(self, ctx, n: int, ventana: float):
-        self.n = n
-        self.ventana = ventana
-        self.estado = ctx.RawArray("i", n)          # sin lock: acceso sin protección
+    def __init__(self, ctx, cfg):
+        self.n = cfg.vehiculos
+        self.ventana = cfg.ventana
+        self.modo = cfg.modo
+        self.espera = cfg.espera
+        self.seccion = cfg.seccion
+        self.reintento = cfg.reintento
+        self.estado = ctx.RawArray("i", self.n)     # sin lock propio: el acceso lo decide el modo
+        # --- sincronización (modo seguro / espera bloqueante) --------------------------
+        self._mutex = ctx.Lock()                     # exclusión mutua de la sección crítica
+        self._disponibles = ctx.BoundedSemaphore(self.n)   # vehículos libres
         # --- instrumentación (sonda) -------------------------------------------------
         self._sonda = ctx.Lock()
-        self._ocupantes = ctx.RawArray("i", n)       # ocupantes reales de cada vehículo
-        self._titular = ctx.RawArray("i", n)         # última solicitud registrada
-        self._titular_pid = ctx.RawArray("i", n)
-        self._titular_tid = ctx.RawArray("i", n)
+        self._ocupantes = ctx.RawArray("i", self.n)  # ocupantes reales de cada vehículo
+        self._titular = ctx.RawArray("i", self.n)    # última solicitud registrada
+        self._titular_pid = ctx.RawArray("i", self.n)
+        self._titular_tid = ctx.RawArray("i", self.n)
         self.dobles = ctx.RawValue("i", 0)           # dobles asignaciones detectadas
+        self.inconsistencias = ctx.RawValue("i", 0)  # liberaciones con registro ajeno
 
-    # -- operación ------------------------------------------------------------------
+    # -- asignación -----------------------------------------------------------------
 
-    def asignar(self, id_sol: int, detener, log) -> tuple[int | None, int]:
-        """Asigna un vehículo libre a la solicitud. Devuelve (vehículo, reintentos).
+    def asignar(self, id_sol: int, detener, log):
+        """Asigna un vehículo a la solicitud.
 
-        Si no hay vehículos libres reintenta cada REINTENTO segundos (espera activa con
-        retardo). Devuelve (None, reintentos) si se ordena la parada mientras espera.
+        Devuelve (vehículo, reintentos, espera_mutex_s); vehículo es None si se ordena la
+        parada mientras espera.
         """
-        reintentos = 0
+        reintentos, espera_mutex = 0, 0.0
+        if self.espera == "bloqueante":
+            if not self._disponibles.acquire(False):
+                log.info("SIN VEHÍCULOS: solicitud %d bloqueada en el semáforo de vehículos "
+                         "libres", id_sol)
+                while not self._disponibles.acquire(timeout=ESPERA_SEMAFORO):
+                    if detener.value:
+                        return None, reintentos, espera_mutex
+
         while True:
-            v = self._buscar_y_marcar(id_sol)
+            v, espera = self._buscar_y_marcar(id_sol)
+            espera_mutex += espera
             if v is not None:
                 self._registrar_ocupante(v, id_sol, log)
-                return v, reintentos
+                return v, reintentos, espera_mutex
             if detener.value:
-                return None, reintentos
+                if self.espera == "bloqueante":
+                    self._disponibles.release()
+                return None, reintentos, espera_mutex
             if reintentos == 0:
-                log.info("SIN VEHÍCULOS: solicitud %d espera un vehículo libre", id_sol)
+                log.info("SIN VEHÍCULOS: solicitud %d reintenta cada %.3f s (espera activa)",
+                         id_sol, self.reintento)
             reintentos += 1
-            time.sleep(REINTENTO)
+            time.sleep(self.reintento)
 
-    def _buscar_y_marcar(self, id_sol: int) -> int | None:
+    def _buscar_y_marcar(self, id_sol: int) -> tuple[int | None, float]:
+        """Devuelve (vehículo marcado o None, segundos esperando el mutex)."""
+        if self.modo == "inseguro":
+            return self._buscar_y_marcar_sin_exclusion(id_sol), 0.0
+
+        t0 = time.monotonic()
+        with self._mutex:                            # --- inicio de la sección crítica
+            espera = time.monotonic() - t0
+            v = self._primer_libre()                 # (1) check
+            if v is not None:
+                if self.seccion == "gruesa" and self.ventana:
+                    time.sleep(self.ventana)         # (2) validación dentro del mutex
+                self.estado[v] = id_sol              # (3) act
+        #                                            # --- fin de la sección crítica
+        if v is not None and self.seccion == "fina" and self.ventana:
+            time.sleep(self.ventana)                 # (2) validación: el vehículo ya es suyo
+        return v, espera
+
+    def _buscar_y_marcar_sin_exclusion(self, id_sol: int) -> int | None:
         # Cada búsqueda empieza en un vehículo al azar (simula elegir el más cercano), así
         # no todos los despachadores compiten siempre por el primero de la lista.
         inicio = random.randrange(self.n)
@@ -71,12 +122,42 @@ class Flota:
                 return v
         return None
 
-    def liberar(self, v: int, id_sol: int) -> None:
-        self.estado[v] = 0
+    def _primer_libre(self) -> int | None:
+        inicio = random.randrange(self.n)
+        for i in range(self.n):
+            v = (inicio + i) % self.n
+            if self.estado[v] == 0:
+                return v
+        return None
+
+    # -- liberación -----------------------------------------------------------------
+
+    def liberar(self, v: int, id_sol: int, log) -> None:
+        # La sonda se actualiza ANTES de que el vehículo quede libre para otro; al revés,
+        # un nuevo ocupante podría registrarse antes que este descuento (falso positivo).
         with self._sonda:
             self._ocupantes[v] -= 1
             if self._ocupantes[v] == 0:
                 self._titular[v] = 0
+
+        if self.modo == "seguro":
+            with self._mutex:
+                registrado = self.estado[v]
+                self.estado[v] = 0
+        else:
+            registrado = self.estado[v]
+            self.estado[v] = 0
+
+        if registrado != id_sol:
+            # Otra solicitud sobrescribió el registro (actualización perdida) o ya lo había
+            # liberado otra (liberación prematura).
+            with self._sonda:
+                self.inconsistencias.value += 1
+            log.warning("REGISTRO INCONSISTENTE: al liberar V%d el registro indicaba %s, "
+                        "no la solicitud %d", v + 1,
+                        f"la solicitud {registrado}" if registrado else "'libre'", id_sol)
+        if self.espera == "bloqueante":
+            self._disponibles.release()              # V(disponibles)
 
     def libres(self) -> int:
         """Vehículos con estado 0 (lectura sin lock: es una foto aproximada)."""

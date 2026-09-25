@@ -33,3 +33,4 @@ class Resultado:
     t_asignado: float = 0.0
     t_liberado: float = 0.0
     reintentos: int = 0    # búsquedas fallidas de vehículo (espera activa)
+    espera_mutex: float = 0.0   # segundos esperando el mutex de la flota

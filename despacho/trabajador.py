@@ -96,7 +96,7 @@ class Despachador(threading.Thread):
                 break
 
             t_inicio = time.monotonic()
-            v, reintentos = (None, 0) if self.detener.value else \
+            v, reintentos, espera_mutex = (None, 0, 0.0) if self.detener.value else \
                 self.flota.asignar(s.id, self.detener, self.log)
             if v is None:
                 # Parada solicitada antes de conseguir vehículo: la solicitud se retira sin
@@ -115,11 +115,11 @@ class Despachador(threading.Thread):
             self.log.info("EN RUTA solicitud %d en V%d", s.id, v + 1)
             time.sleep(s.t_entrega)         # trayecto hasta la entrega
             t_liberado = time.monotonic()
-            self.flota.liberar(v, s.id)
+            self.flota.liberar(v, s.id, self.log)
             t_fin = time.monotonic()
             self.entregadas += 1
             self.log.info("ENTREGADA solicitud %d | V%d liberado | servicio %.0f ms", s.id,
                           v + 1, (t_fin - t_inicio) * 1000)
             self.resultados.put(Resultado(s.id, ENTREGADA, self.id_trabajador, self.name,
                                           tid, s.t_llegada, t_inicio, t_fin, v, t_asignado,
-                                          t_liberado, reintentos))
+                                          t_liberado, reintentos, espera_mutex))
