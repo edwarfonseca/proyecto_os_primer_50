@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Salidas temporales de ejecución (las evidencias finales sí se versionan en evidencias/)
+logs/tmp/
+*.tmp
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store
