@@ -17,11 +17,14 @@ DIR="${DIR:-evidencias/fase3}"
 mkdir -p "$DIR" logs/fase3
 rm -f "$DIR"/e[0-9]_*
 
+# Desde la Fase 4 el modo por defecto es el seguro: aquí se fuerza la versión con el problema.
+INSEGURO="--modo inseguro --espera activa"
+
 sonda() { grep -oE "sonda en vivo=[0-9]+" "$1" | cut -d= -f2; }
 auditoria() { grep -oE "vehículo ocupado=[0-9]+" "$1" | cut -d= -f2; }
 
 echo "== E1: demostración de la condición de carrera =="
-python3 main.py -w 2 -t 3 -g 4 -n 24 -v 3 --log "$DIR/e1_ejecucion.log" > /dev/null
+python3 main.py $INSEGURO -w 2 -t 3 -g 4 -n 24 -v 3 --log "$DIR/e1_ejecucion.log" > /dev/null
 echo "exit code: $? (1 = el sistema detectó resultados incorrectos)" | tee -a "$DIR/e1_ejecucion.log"
 {
     echo "## Detecciones en vivo (sonda)"
@@ -49,7 +52,7 @@ echo "== E2: reproducibilidad ($REP ejecuciones, semilla 42) =="
     con=0
     for i in $(seq "$REP"); do
         L="logs/fase3/e2_$i.log"; rm -f "$L"
-        python3 main.py -w 2 -t 3 -g 4 -n 24 -v 3 --log "$L" > /dev/null; ex=$?
+        python3 main.py $INSEGURO -w 2 -t 3 -g 4 -n 24 -v 3 --log "$L" > /dev/null; ex=$?
         s=$(sonda "$L"); [[ "$s" -gt 0 ]] && con=$((con + 1))
         printf "%-6s %-12s %-14s %-12s\n" "$i" "$s" "$(auditoria "$L")" "$ex"
     done
@@ -64,7 +67,7 @@ echo "== E3: ancho de la ventana de carrera =="
         con=0; tot=0; max=0
         for i in $(seq "$REP"); do
             L="logs/fase3/e3_${vent}_$i.log"; rm -f "$L"
-            python3 main.py -w 2 -t 3 -g 4 -n 24 -v 3 --ventana "$vent" --log "$L" > /dev/null
+            python3 main.py $INSEGURO -w 2 -t 3 -g 4 -n 24 -v 3 --ventana "$vent" --log "$L" > /dev/null
             s=$(sonda "$L"); tot=$((tot + s)); [[ "$s" -gt 0 ]] && con=$((con + 1))
             [[ "$s" -gt "$max" ]] && max=$s
         done
@@ -82,7 +85,7 @@ echo "== E4: hilos frente a procesos =="
             set -- $conf; con=0; tot=0
             for i in $(seq "$REP"); do
                 L="logs/fase3/e4_$1_$2_${vent}_$i.log"; rm -f "$L"
-                python3 main.py -w "$1" -t "$2" -g 6 -n 48 --tam-rafaga 2 --intervalo 0.3 -v 3 \
+                python3 main.py $INSEGURO -w "$1" -t "$2" -g 6 -n 48 --tam-rafaga 2 --intervalo 0.3 -v 3 \
                     --ventana "$vent" --log "$L" > /dev/null
                 s=$(sonda "$L"); tot=$((tot + s)); [[ "$s" -gt 0 ]] && con=$((con + 1))
             done
@@ -93,7 +96,7 @@ echo "== E4: hilos frente a procesos =="
 } | tee "$DIR/e4_hilos_procesos.txt"
 
 echo "== E5: memoria compartida vista desde el SO =="
-setsid python3 main.py -n 0 --tam-rafaga 2 --intervalo 0.5 --log "$DIR/e5_ejecucion.log" > /dev/null &
+setsid python3 main.py $INSEGURO -n 0 --tam-rafaga 2 --intervalo 0.5 --log "$DIR/e5_ejecucion.log" > /dev/null &
 PID=$!
 sleep 2
 scripts/observar.sh "$PID" "$DIR/e5_observacion.txt" > /dev/null

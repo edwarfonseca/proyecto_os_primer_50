@@ -38,8 +38,12 @@ titulo() { printf '\n===== %s =====\n' "$1"; }
     titulo "5. /proc/<pid>/status (campos relevantes)"
     for p in ${TODOS//,/ }; do
         echo "-- PID $p"
-        grep -E '^(Name|State|Pid|PPid|Threads|VmRSS|VmSize|voluntary_ctxt_switches|nonvoluntary_ctxt_switches):' \
-            "/proc/$p/status" | sed 's/^/   /'
+        grep -E '^(Name|State|Pid|PPid|Threads|VmRSS|VmSize):' "/proc/$p/status" | sed 's/^/   /'
+        # Los cambios de contexto de /proc/<pid>/status son sólo los del hilo líder; los del
+        # proceso completo se obtienen sumando los de cada hilo en /proc/<pid>/task/*/status.
+        cat /proc/"$p"/task/*/status 2>/dev/null | awk '
+            /^voluntary_ctxt/ {v += $2} /^nonvoluntary_ctxt/ {n += $2}
+            END {printf "   cambios de contexto (todos los hilos): voluntarios=%d involuntarios=%d\n", v, n}'
         # PSS reparte las páginas compartidas (copy-on-write tras fork) entre quienes
         # las comparten; a diferencia de RSS, la suma de PSS sí es la memoria real.
         grep -E '^(Rss|Pss|Shared_Clean|Private_Dirty):' "/proc/$p/smaps_rollup" 2>/dev/null \

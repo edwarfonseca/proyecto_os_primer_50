@@ -36,10 +36,10 @@ class CentroDespacho:
         c = self.cfg
         self.log.info("INICIO centro de despacho | método=%s | trabajadores=%d x %d hilos | "
                       "generadores=%d | solicitudes=%s | cola=%s(%d) | vehículos=%d | "
-                      "ventana=%.4f s | semilla=%d | log=%s",
+                      "modo=%s | espera=%s | sección=%s | ventana=%.4f s | semilla=%d | log=%s",
                       c.metodo_inicio, c.trabajadores, c.hilos, c.generadores,
                       c.solicitudes or "continuo", c.tipo_cola, c.capacidad_cola, c.vehiculos,
-                      c.ventana, c.semilla, c.ruta_log)
+                      c.modo, c.espera, c.seccion, c.ventana, c.semilla, c.ruta_log)
 
         so_utils.habilitar_volcado_hilos()
         ctx = mp.get_context(c.metodo_inicio)
@@ -65,7 +65,7 @@ class CentroDespacho:
         self.resultados = ctx.Queue()
         # Flota compartida: se crea antes del fork para que todos los procesos hereden el
         # mismo segmento de memoria compartida (/dev/shm) mapeado en su espacio de direcciones.
-        self.flota = Flota(ctx, c.vehiculos, c.ventana)
+        self.flota = Flota(ctx, c)
 
         # Los procesos se crean ANTES de lanzar cualquier hilo en el principal: hacer
         # fork() de un proceso con varios hilos sólo copia el hilo que llama y puede
@@ -274,19 +274,22 @@ class CentroDespacho:
                sum(g.t_bloqueado for g in self.generadores))
         if entregadas:
             esperas = [(r.t_inicio - r.t_llegada) * 1000 for r in entregadas]
-            servicios = [r.t_fin - r.t_inicio for r in entregadas]
+            # Servicio = uso del vehículo (desde que se asignó hasta la entrega); la espera
+            # por un vehículo libre se reporta aparte en las métricas de la flota.
+            servicios = [r.t_fin - r.t_asignado for r in entregadas]
             inicio = min(r.t_llegada for r in entregadas)
             makespan = max(r.t_fin for r in entregadas) - inicio
             L.info("  espera en cola (ms): mín=%.0f prom=%.0f máx=%.0f",
                    min(esperas), statistics.fmean(esperas), max(esperas))
-            L.info("  servicio (s): prom=%.3f | trabajo total (suma)=%.2f s",
+            L.info("  servicio con vehículo (s): prom=%.3f | trabajo total (suma)=%.2f s",
                    statistics.fmean(servicios), sum(servicios))
             L.info("  tiempo total=%.2f s | rendimiento=%.2f solicitudes/s | "
                    "concurrencia efectiva (trabajo/tiempo)=%.2f",
                    makespan, len(entregadas) / makespan, sum(servicios) / makespan)
-            L.info("  concurrencia máxima observada=%d (capacidad = %d trabajadores x %d hilos"
-                   " = %d)", self._concurrencia_maxima(entregadas), self.cfg.trabajadores,
-                   self.cfg.hilos, self.cfg.trabajadores * self.cfg.hilos)
+            L.info("  hilos ocupados a la vez: máx=%d (capacidad = %d trabajadores x %d hilos"
+                   " = %d)", self._concurrencia_maxima(entregadas, "t_inicio", "t_fin"),
+                   self.cfg.trabajadores, self.cfg.hilos,
+                   self.cfg.trabajadores * self.cfg.hilos)
             por_trab = Counter(r.trabajador for r in entregadas)
             por_hilo = Counter(r.hilo for r in entregadas)
             L.info("  reparto por trabajador: %s",
@@ -320,14 +323,24 @@ class CentroDespacho:
         """Métricas de la flota y auditoría de dobles asignaciones. Devuelve las detectadas."""
         L, fl = self.log, self.flota
         con_vehiculo = [r for r in entregadas if r.vehiculo >= 0]
-        L.info("  FLOTA: %d vehículos | asignaciones=%d | reparto: %s", fl.n, len(con_vehiculo),
+        L.info("  FLOTA: %d vehículos | modo=%s | espera=%s | sección=%s | asignaciones=%d | "
+               "reparto: %s", fl.n, fl.modo, fl.espera, fl.seccion, len(con_vehiculo),
                ", ".join(f"V{v + 1}={k}" for v, k in
                          sorted(Counter(r.vehiculo for r in con_vehiculo).items())))
+        if con_vehiculo:
+            en_ruta = self._concurrencia_maxima(con_vehiculo, "t_asignado", "t_liberado")
+            (L.warning if en_ruta > fl.n else L.info)(
+                "  entregas con vehículo a la vez: máx=%d con %d vehículos%s", en_ruta, fl.n,
+                " (¡más entregas que vehículos!)" if en_ruta > fl.n else "")
         if con_vehiculo:
             esperas = [(r.t_asignado - r.t_inicio) * 1000 for r in con_vehiculo]
             L.info("  espera por vehículo (ms): prom=%.0f máx=%.0f | reintentos de búsqueda "
                    "(espera activa)=%d", statistics.fmean(esperas), max(esperas),
                    sum(r.reintentos for r in self.resultados_recibidos))
+            if fl.modo == "seguro":
+                mutex = [r.espera_mutex * 1000 for r in con_vehiculo]
+                L.info("  espera por el mutex de la flota (ms): prom=%.2f máx=%.2f",
+                       statistics.fmean(mutex), max(mutex))
 
         # 1) Detector en vivo: la sonda contó ocupantes simultáneos de un mismo vehículo.
         en_vivo = fl.dobles.value
@@ -346,8 +359,11 @@ class CentroDespacho:
             L.warning("    V%d: solicitud %d [%s] y solicitud %d [%s] lo usaron a la vez "
                       "durante %.0f ms", v + 1, a.id, a.hilo, b.id, b.hilo,
                       (min(a.t_liberado, b.t_liberado) - b.t_asignado) * 1000)
+        nivel = L.warning if fl.inconsistencias.value else L.info
+        nivel("  REGISTROS INCONSISTENTES al liberar (actualizaciones perdidas)=%d",
+              fl.inconsistencias.value)
         L.info("  estado final de la flota: libres=%d/%d", fl.libres(), fl.n)
-        return max(en_vivo, conflictivas)
+        return max(en_vivo, conflictivas, fl.inconsistencias.value)
 
     @staticmethod
     def _auditar_solapamientos(rs):
@@ -365,9 +381,10 @@ class CentroDespacho:
         return solapes
 
     @staticmethod
-    def _concurrencia_maxima(rs) -> int:
-        """Máximo de solicitudes en servicio al mismo tiempo (barrido de eventos)."""
-        eventos = sorted([(r.t_inicio, 1) for r in rs] + [(r.t_fin, -1) for r in rs],
+    def _concurrencia_maxima(rs, inicio: str, fin: str) -> int:
+        """Máximo de intervalos [inicio, fin] superpuestos (barrido de eventos)."""
+        eventos = sorted([(getattr(r, inicio), 1) for r in rs] +
+                         [(getattr(r, fin), -1) for r in rs],
                          key=lambda e: (e[0], e[1]))
         actual = maximo = 0
         for _, delta in eventos:

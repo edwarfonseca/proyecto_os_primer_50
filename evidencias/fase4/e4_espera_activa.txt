@@ -1,0 +1,6 @@
+Carga: -w 4 -t 4 -g 4 -n 48 -v 2 --ventana 0 -k 48 (16 despachadores compiten por 2 vehículos), modo seguro
+
+ESPERA                     TIEMPO(s)  CPU TRAB(s)  CPU MEDIA(%)   CTX.VOLUNT.    REINTENTOS  
+bloqueante                 14.88      0.26         1.7            1486           0           
+activa 0.005               14.93      2.70         17.8           48321          32504       
+activa 0                   14.84      26.44        175.1          4362832        2037133     
