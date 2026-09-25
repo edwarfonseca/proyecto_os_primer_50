@@ -7,11 +7,12 @@ import resource
 import signal
 import statistics
 import time
-from collections import Counter
+from collections import Counter, defaultdict
 
 from . import registro, so_utils
 from .cola import ColaAcotada
 from .config import Config
+from .flota import Flota
 from .generador import crear_generadores
 from .modelo import CANCELADA, ENTREGADA, Resultado
 from .trabajador import proceso_trabajador
@@ -34,10 +35,11 @@ class CentroDespacho:
         self.log = registro.configurar(self.cfg.ruta_log)
         c = self.cfg
         self.log.info("INICIO centro de despacho | método=%s | trabajadores=%d x %d hilos | "
-                      "generadores=%d | solicitudes=%s | cola=%s(%d) | semilla=%d | log=%s",
+                      "generadores=%d | solicitudes=%s | cola=%s(%d) | vehículos=%d | "
+                      "ventana=%.4f s | semilla=%d | log=%s",
                       c.metodo_inicio, c.trabajadores, c.hilos, c.generadores,
-                      c.solicitudes or "continuo", c.tipo_cola, c.capacidad_cola, c.semilla,
-                      c.ruta_log)
+                      c.solicitudes or "continuo", c.tipo_cola, c.capacidad_cola, c.vehiculos,
+                      c.ventana, c.semilla, c.ruta_log)
 
         so_utils.habilitar_volcado_hilos()
         ctx = mp.get_context(c.metodo_inicio)
@@ -61,6 +63,9 @@ class CentroDespacho:
             self.cola = ctx.Queue(maxsize=c.capacidad_cola)
         # Cola de resultados (sin límite): trabajadores -> principal.
         self.resultados = ctx.Queue()
+        # Flota compartida: se crea antes del fork para que todos los procesos hereden el
+        # mismo segmento de memoria compartida (/dev/shm) mapeado en su espacio de direcciones.
+        self.flota = Flota(ctx, c.vehiculos, c.ventana)
 
         # Los procesos se crean ANTES de lanzar cualquier hilo en el principal: hacer
         # fork() de un proceso con varios hilos sólo copia el hilo que llama y puede
@@ -94,7 +99,7 @@ class CentroDespacho:
             for i in range(1, self.cfg.trabajadores + 1):
                 p = ctx.Process(target=proceso_trabajador, name=f"trabajador-{i}",
                                 args=(i, self.detener, listos, self.cola, self.resultados,
-                                      self.cfg))
+                                      self.flota, self.cfg))
                 p.start()
                 self.trabajadores.append(p)
                 self.log.info("CREADO %s -> PID %d", p.name, p.pid)
@@ -299,6 +304,7 @@ class CentroDespacho:
                100 * (hijos.ru_utime + hijos.ru_stime) / pared)
         L.info("  cambios de contexto trabajadores: voluntarios=%d, involuntarios=%d",
                hijos.ru_nvcsw, hijos.ru_nivcsw)
+        dobles = self._estadisticas_flota(entregadas)
         if perdidas:
             L.warning("  BALANCE: %d solicitudes quedaron sin registrar (trabajador caído o "
                       "cola bloqueada)", perdidas)
@@ -308,7 +314,55 @@ class CentroDespacho:
         if incompletas:
             L.warning("  BALANCE: se pidieron %d solicitudes y se generaron %d",
                       self.cfg.solicitudes, generadas)
-        return perdidas == 0 and not incompletas
+        return perdidas == 0 and not incompletas and dobles == 0
+
+    def _estadisticas_flota(self, entregadas) -> int:
+        """Métricas de la flota y auditoría de dobles asignaciones. Devuelve las detectadas."""
+        L, fl = self.log, self.flota
+        con_vehiculo = [r for r in entregadas if r.vehiculo >= 0]
+        L.info("  FLOTA: %d vehículos | asignaciones=%d | reparto: %s", fl.n, len(con_vehiculo),
+               ", ".join(f"V{v + 1}={k}" for v, k in
+                         sorted(Counter(r.vehiculo for r in con_vehiculo).items())))
+        if con_vehiculo:
+            esperas = [(r.t_asignado - r.t_inicio) * 1000 for r in con_vehiculo]
+            L.info("  espera por vehículo (ms): prom=%.0f máx=%.0f | reintentos de búsqueda "
+                   "(espera activa)=%d", statistics.fmean(esperas), max(esperas),
+                   sum(r.reintentos for r in self.resultados_recibidos))
+
+        # 1) Detector en vivo: la sonda contó ocupantes simultáneos de un mismo vehículo.
+        en_vivo = fl.dobles.value
+        # 2) Auditoría independiente: intervalos de uso [asignado, liberado] que se solapan
+        #    en el mismo vehículo. t_asignado se toma DESPUÉS de marcar el vehículo y
+        #    t_liberado ANTES de liberarlo, así una ejecución correcta nunca solapa.
+        solapes = self._auditar_solapamientos(con_vehiculo)
+        conflictivas = len({id(b) for _, _, b in solapes})
+        entre = sum(1 for _, a, b in solapes if a.trabajador != b.trabajador)
+        nivel = L.warning if (en_vivo or solapes) else L.info
+        nivel("  DOBLES ASIGNACIONES: sonda en vivo=%d | auditoría: asignaciones sobre un "
+              "vehículo ocupado=%d, pares solapados=%d (entre procesos=%d, entre hilos del "
+              "mismo proceso=%d)", en_vivo, conflictivas, len(solapes), entre,
+              len(solapes) - entre)
+        for v, a, b in solapes[:5]:
+            L.warning("    V%d: solicitud %d [%s] y solicitud %d [%s] lo usaron a la vez "
+                      "durante %.0f ms", v + 1, a.id, a.hilo, b.id, b.hilo,
+                      (min(a.t_liberado, b.t_liberado) - b.t_asignado) * 1000)
+        L.info("  estado final de la flota: libres=%d/%d", fl.libres(), fl.n)
+        return max(en_vivo, conflictivas)
+
+    @staticmethod
+    def _auditar_solapamientos(rs):
+        por_vehiculo = defaultdict(list)
+        for r in rs:
+            por_vehiculo[r.vehiculo].append(r)
+        solapes = []
+        for v, lista in sorted(por_vehiculo.items()):
+            lista.sort(key=lambda r: r.t_asignado)
+            activos = []
+            for r in lista:
+                activos = [a for a in activos if a.t_liberado > r.t_asignado]
+                solapes.extend((v, a, r) for a in activos)
+                activos.append(r)
+        return solapes
 
     @staticmethod
     def _concurrencia_maxima(rs) -> int:

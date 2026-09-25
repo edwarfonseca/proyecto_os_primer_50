@@ -9,7 +9,7 @@
 - [0. Contexto, entorno y diseño](#fase-0--contexto-entorno-y-diseño)
 - [1. Procesos](#fase-1--procesos) ✅
 - [2. Hilos y productor-consumidor](#fase-2--hilos-y-productor-consumidor) ✅
-- [3. Condición de carrera](#fase-3--condición-de-carrera) *(pendiente)*
+- [3. Condición de carrera](#fase-3--condición-de-carrera) ✅
 - [4. Corrección por sincronización](#fase-4--corrección-por-sincronización) *(pendiente)*
 - [5. Interbloqueo](#fase-5--interbloqueo) *(pendiente)*
 - [6. CPU y memoria](#fase-6--cpu-y-memoria) *(pendiente)*
@@ -153,7 +153,7 @@ centro_despacho(P)            ← proceso principal
 |---|---|---|---|---|
 | `cola_solicitudes` | Cola acotada | Proceso principal y trabajadores | `put`/`get` | `ColaAcotada`: `vacios`, `llenos`, `mutex_lectura`, `mutex_escritura` (Fase 2) |
 | `resultados` | Cola sin límite | Trabajadores → principal | `put`/`get` | Interna de `multiprocessing.Queue` (un solo lector: el principal) |
-| `vehiculos[V]` | Arreglo compartido | Todos los despachadores de todos los trabajadores | Buscar libre + marcar ocupado; liberar | `multiprocessing.Lock` + `Semaphore(V)` |
+| `vehiculos[V]` | Arreglo compartido (`RawArray`, `/dev/shm`) | Todos los despachadores de todos los trabajadores | Buscar libre + marcar ocupado; liberar | Fase 3: ninguno (versión con el problema). Fase 4: `multiprocessing.Lock` + `Semaphore(V)` |
 | Contadores | `Value`/`Array` | Todos | Incrementos `x += 1` (leer-modificar-escribir) | Lock asociado al `Value` |
 | `andenes[A]` | Locks | Despachadores | Carga/descarga | Orden global de adquisición / timeout |
 
@@ -834,7 +834,241 @@ centro_despacho(72899)-+-trabajador-1(72905)-+-{QueueFeederThre}(72915)
   compararon antes y después.
 
 ## Fase 3 — Condición de carrera
-*(pendiente)*
+
+> Rama `fase-3-condicion-carrera` · etiqueta `fase-3` · evidencias en `evidencias/fase3/`
+>
+> Esta fase construye deliberadamente la **versión con el problema** (requisitos 4 y 7). La
+> corrección es la Fase 4. Ambas versiones quedarán en el mismo código, seleccionables por
+> parámetro, para compararlas con la misma carga.
+
+### 3.1 Qué se hizo
+- **Flota compartida** (`despacho/flota.py`): `estado[V]` en memoria compartida entre todos los
+  procesos (`RawArray`, sin lock). `estado[v] = 0` significa libre; `n > 0` es el id de la
+  solicitud asignada.
+- Cada despachador, antes de despachar, **asigna un vehículo** con un *check-then-act* sin
+  exclusión mutua; al entregar, lo **libera** (`estado[v] = 0`).
+- Parámetro `--ventana` (defecto 0.01 s): tiempo de "validación del vehículo" entre verlo libre y
+  marcarlo. **No crea la carrera; la ensancha** para que sea reproducible (E3 lo demuestra).
+- **Dos detectores independientes** que no corrigen nada, sólo observan:
+  1. **Sonda en vivo:** después de marcar el vehículo, con su propio lock, cuenta los ocupantes
+     reales. Si ya había otro, registra `DOBLE ASIGNACIÓN` con ambas solicitudes, sus PID/TID y si
+     el conflicto fue entre procesos o entre hilos del mismo proceso.
+  2. **Auditoría posterior** en el principal: con los intervalos de uso `[asignado, liberado]` que
+     reporta cada resultado, busca solapamientos en el mismo vehículo.
+- El sistema termina con **código de salida 1** si detecta dobles asignaciones: el resultado es
+  incorrecto aunque "haya funcionado".
+- `observar.sh` muestra ahora la **memoria compartida desde `/proc/<pid>/maps`**.
+
+Parámetros nuevos: `-v, --vehiculos` (defecto 3) y `--ventana` (defecto 0.01 s).
+
+### 3.2 El código con el problema
+```python
+def _buscar_y_marcar(self, id_sol):
+    inicio = random.randrange(self.n)          # empieza por un vehículo al azar ("el más cercano")
+    for i in range(self.n):
+        v = (inicio + i) % self.n
+        if self.estado[v] == 0:                # (1) CHECK: el vehículo parece libre
+            if self.ventana:
+                time.sleep(self.ventana)       # (2) validación del vehículo
+            self.estado[v] = id_sol            # (3) ACT: se marca como asignado
+            return v
+    return None
+
+def liberar(self, v, id_sol):
+    self.estado[v] = 0                         # libera sin comprobar quién lo tenía
+```
+**Sección crítica:** las líneas (1) a (3). Deben ejecutarse como una unidad **indivisible** respecto
+de los demás despachadores y no lo hacen. Si no hay vehículos libres, el despachador reintenta cada
+5 ms (espera activa con retardo); en la Fase 4 se reemplaza por un semáforo.
+
+### 3.3 Anatomía de la carrera
+
+```mermaid
+sequenceDiagram
+    participant A as despachador-1-1<br/>(trabajador-1)
+    participant M as estado[V2]<br/>(memoria compartida)
+    participant B as despachador-2-2<br/>(trabajador-2)
+    A->>M: (1) lee estado[V2] → 0 (libre)
+    B->>M: (1) lee estado[V2] → 0 (libre)
+    Note over A,B: ventana: ambos creen que V2 está libre
+    A->>M: (3) escribe estado[V2] = 19
+    B->>M: (3) escribe estado[V2] = 8  ← sobrescribe: el registro "olvida" la 19
+    Note over A,B: las solicitudes 19 y 8 salen en V2 al mismo tiempo
+    A->>M: entrega 19: estado[V2] = 0  ← ¡la 8 sigue en ruta en V2!
+    Note over M: V2 "parece libre" → se asigna otra vez (cascada)
+```
+
+Condiciones que se cumplen simultáneamente, y que la corrección debe romper:
+1. **Dato compartido y modificable** por varios flujos de ejecución (`estado[]` en `/dev/shm`).
+2. **Operación compuesta no atómica:** leer, decidir y escribir son pasos separados (*check-then-act*
+   o TOCTOU, *time-of-check to time-of-use*).
+3. **Ejecución concurrente o paralela** de esos pasos: hilos intercalados por el planificador, o
+   procesos en núcleos distintos al mismo tiempo.
+4. **Sin exclusión mutua** sobre la sección crítica.
+
+Consecuencias observables (los síntomas del enunciado):
+- **Doble asignación:** dos o más solicitudes en ruta con el mismo vehículo.
+- **Actualización perdida** (*lost update*): la segunda escritura sobrescribe a la primera; el
+  registro de la flota "olvida" una solicitud en curso.
+- **Liberación prematura y cascada:** la primera entrega pone el vehículo en 0 mientras otra
+  solicitud sigue usándolo; el vehículo aparece libre y vuelve a asignarse. Un solo conflicto
+  genera varios más.
+- **Registros inconsistentes:** al final, `libres=3/3` aunque durante la ejecución hubo hasta 3
+  solicitudes a la vez en un mismo vehículo; el estado final "cuadra" y oculta el problema.
+- **Rendimiento falso:** nunca hay que esperar vehículo (`reintentos=0`): con 6 despachadores y
+  3 vehículos, parte de los hilos debería esperar. La versión insegura rinde más porque usa
+  vehículos que no tiene.
+
+### 3.4 Cómo ejecutarlo
+```bash
+python3 main.py -w 2 -t 3 -g 4 -n 24 -v 3            # demostración (exit code 1)
+python3 main.py -w 2 -t 3 -g 4 -n 24 -v 3 --ventana 0 # sin ventana artificial
+python3 main.py -w 6 -t 1 -g 6 -n 48 --tam-rafaga 2 --intervalo 0.3 --ventana 0   # sólo procesos
+grep "DOBLE ASIGNACIÓN" logs/<archivo>.log           # detecciones en vivo
+scripts/evidencias_fase3.sh 10                       # E1–E5 (≈ 10 min)
+```
+
+### 3.5 Evidencias y cómo explicarlas
+
+**E1 — Demostración** (`e1_dobles.txt`, `e1_cronologia_V2.txt`, `e1_ejecucion.log`)
+```
+DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 7 mientras lo usa la solicitud 19 (PID 81639, TID 81641) [mismo proceso]
+DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 8 mientras lo usa la solicitud 7 (PID 81639, TID 81642) [entre procesos]
+...
+FLOTA: 3 vehículos | asignaciones=24 | reparto: V1=5, V2=12, V3=7
+espera por vehículo (ms): prom=11 máx=11 | reintentos de búsqueda (espera activa)=0
+DOBLES ASIGNACIONES: sonda en vivo=18 | auditoría: asignaciones sobre un vehículo ocupado=18,
+                     pares solapados=27 (entre procesos=14, entre hilos del mismo proceso=13)
+estado final de la flota: libres=3/3
+FIN centro de despacho (con fallos)          → exit code 1
+```
+- *Qué decir:* **18 de 24 asignaciones** cayeron sobre un vehículo ocupado. Los dos detectores
+  independientes coinciden exactamente (18 y 18). La sonda cuenta asignaciones que encontraron
+  el vehículo ocupado; "pares solapados" cuenta parejas (3 solicitudes simultáneas = 3 pares).
+- La carrera ocurre **entre hilos del mismo proceso y entre procesos**: no es un problema "de
+  hilos" ni "de procesos", sino de estado compartido sin exclusión mutua.
+- **Cronología de V2** (extracto de `e1_cronologia_V2.txt`):
+  ```
+  32.401977 despachador-1-1 | ASIGNADO vehículo V2 a la solicitud 19
+  32.402278 despachador-1-2 | DOBLE ASIGNACIÓN: V2 → solicitud 7 mientras lo usa la 19
+  32.402938 despachador-2-2 | DOBLE ASIGNACIÓN: V2 → solicitud 8 mientras lo usa la 7
+  32.628676 despachador-1-1 | EN RUTA solicitud 19 en V2
+  32.630196 despachador-1-2 | EN RUTA solicitud 7 en V2      ← tres entregas en V2 a la vez
+  32.690763 despachador-2-2 | EN RUTA solicitud 8 en V2
+  32.892035 despachador-1-1 | ENTREGADA solicitud 19 | V2 liberado   ← la 7 sigue en ruta
+  32.903782 despachador-1-1 | DOBLE ASIGNACIÓN: V2 → solicitud 1 mientras lo usa la 8   ← cascada
+  ```
+  Las tres asignaciones iniciales ocurren en **menos de 1 ms**, dentro de la misma ventana de
+  validación (la espera por vehículo fue de 10–11 ms, que es la ventana).
+
+**E2 — Reproducibilidad** (`e2_reproducibilidad.txt`; misma configuración y semilla)
+
+| Ejecución | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Sonda | 19 | 19 | 19 | 17 | 19 | 18 | 16 | 18 | 16 | 16 |
+| Auditoría | 19 | 19 | 19 | 17 | 19 | 18 | 16 | 18 | 16 | 16 |
+| Exit code | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
+
+- *Qué decir:* el fallo aparece en **10 de 10** ejecuciones (reproducible), pero la cantidad
+  exacta varía (16–19): la carga es idéntica por la semilla, el **intercalado** lo decide el
+  planificador en cada ejecución. Esa variación es la firma de una condición de carrera.
+
+**E3 — Ancho de la ventana frente a la frecuencia del fallo** (`e3_ventana.txt`)
+
+| Ventana | Ejecuciones con fallo | Dobles promedio | Máximo |
+|---|---|---|---|
+| 0 (sin `sleep`) | 3/10 | 0.9 | 4 |
+| 0.5 ms | 10/10 | 18.3 | 21 |
+| 1 ms | 10/10 | 18.1 | 21 |
+| 5 ms | 10/10 | 17.8 | 20 |
+| 10 ms | 10/10 | 18.0 | 19 |
+
+- *Qué decir:* **la carrera existe sin ninguna ventana artificial** (3 de 10). Es intermitente,
+  como en producción: aparece "en periodos de alta demanda" y desaparece al intentar reproducirla.
+  Basta medio milisegundo entre el *check* y el *act* para que ocurra siempre. En un sistema real
+  esa ventana la ponen una consulta a una base de datos, una llamada de red o una validación.
+- Desde 0.5 ms el número de dobles se satura (~18): con 6 despachadores y 3 vehículos, casi toda
+  asignación que coincide con otra termina en conflicto, y la cascada hace el resto.
+
+**E4 — Hilos frente a procesos: el GIL no es sincronización** (`e4_hilos_procesos.txt`;
+48 solicitudes, 3 vehículos)
+
+| Procesos × hilos | Ventana 0: ejecuciones con fallo (dobles prom.) | Ventana 1 ms: ejecuciones con fallo (dobles prom.) |
+|---|---|---|
+| 1 × 6 (sólo hilos) | **0/10** (0.0) | 10/10 (**39.8**) |
+| 6 × 1 (sólo procesos) | **10/10** (23.0) | 10/10 (37.0) |
+| 2 × 3 (híbrido) | 5/10 (3.6) | 10/10 (36.8) |
+
+- *Qué decir:*
+  - **Sin ventana y con sólo hilos no hubo fallos en 10 ejecuciones.** Dentro de un proceso sólo
+    un hilo ejecuta bytecode a la vez (GIL), y el intérprete cambia de hilo cada ~5 ms
+    (`sys.getswitchinterval()`). La probabilidad de que el cambio caiga justo entre el *check* y el
+    *act* (unas pocas instrucciones) es muy baja, **pero no es cero**: el GIL no garantiza la
+    atomicidad de una secuencia de operaciones.
+  - **Sin ventana y con sólo procesos, fallos en 10/10.** Cada proceso tiene su propio intérprete
+    y su propio GIL; en los 4 núcleos se ejecutan **en paralelo real** sobre la misma memoria
+    compartida. Cuando una ráfaga despierta a varios despachadores a la vez, leen `estado[v]` en el
+    mismo instante.
+  - **Con 1 ms de ventana, el peor caso es "sólo hilos" (39.8).** `time.sleep()` libera el GIL, igual
+    que cualquier E/S o espera: en cuanto hay una operación bloqueante en la sección crítica, otro
+    hilo entra con total seguridad.
+  - Conclusión: **el GIL no es un mecanismo de sincronización del programa.** Reduce la
+    probabilidad de algunas carreras entre hilos, no las elimina, y no existe entre procesos. En
+    Python sin GIL (*free-threaded*, 3.13t/3.14t) los hilos se comportarían como los procesos de
+    esta tabla. La única garantía es la exclusión mutua explícita (Fase 4).
+
+**E5 — La flota vista desde el SO** (`e5_observacion.txt`, sección 6)
+```
+-- PID 88898 (centro_despacho)
+   inodo 8770     /dev/shm/pym-88898-1t4sp94s (deleted)     ← flota, sonda, indicador de parada
+   inodo 8771     /dev/shm/sem.baPddd (deleted)             ← semáforos/locks (9 en total)
+   ...
+-- PID 88902 (trabajador-1)
+   inodo 8770     /dev/shm/pym-88898-1t4sp94s (deleted)     ← el MISMO inodo
+```
+- *Qué decir:* `multiprocessing.RawArray` crea un archivo en `/dev/shm` (un `tmpfs`: vive en RAM),
+  lo mapea con `mmap(MAP_SHARED)` y lo borra del directorio (`deleted`). Por `fork` los hijos
+  heredan el mapeo: **el mismo inodo aparece en los tres procesos, así que es la misma memoria
+  física.** Por eso una escritura de `trabajador-2` en `estado[v]` es visible inmediatamente para
+  `trabajador-1`, y también por eso existe la carrera.
+- Los 9 `sem.*` son los semáforos POSIX con nombre de `multiprocessing` (1 de arranque, 4 de
+  `ColaAcotada`, 3 de la cola de resultados y 1 de la sonda), también compartidos por inodo.
+
+### 3.6 Decisiones de la fase
+- **D3.1 `RawArray` (sin lock) para el estado.** `multiprocessing.Array` trae un lock opcional, y
+  usarlo "de pasada" en cada lectura o escritura individual **no** corregiría la carrera: protege
+  cada acceso, no la secuencia *check-then-act*. Se usa `RawArray` para que la falta de protección
+  sea explícita; la Fase 4 protege la **sección crítica completa**.
+- **D3.2 Búsqueda desde un vehículo al azar.** Si todos buscan desde V1, todos chocan en V1 (se
+  probó: 24 de 24 asignaciones al V1). Empezar al azar simula elegir el vehículo más cercano y
+  hace que la demostración sea realista, no trivial. Tras `fork` el módulo `random` se re-siembra
+  en cada hijo, así que los procesos no eligen la misma secuencia.
+- **D3.3 La instrumentación no puede ocultar el problema.** La sonda toma su lock **después** del
+  paso (3), fuera de la ventana de carrera: no serializa la búsqueda ni el marcado. La auditoría se
+  hace con datos que ya existían (tiempos de cada resultado) y es conservadora: `t_asignado` se toma
+  después de marcar y `t_liberado` antes de liberar, así que una ejecución correcta nunca produce
+  un solapamiento falso.
+- **D3.4 Relojes comparables entre procesos.** Los tiempos usan `time.monotonic()`
+  (`CLOCK_MONOTONIC`), un reloj del kernel común a todo el sistema, que no retrocede. Por eso los
+  intervalos de procesos distintos son comparables.
+- **D3.5 Salida con error.** `exit 1` ante dobles asignaciones convierte el fallo en algo
+  verificable automáticamente (scripts, repeticiones).
+
+### 3.7 Preguntas probables en la sustentación
+- **¿Dónde está exactamente la sección crítica?** Entre la lectura `estado[v] == 0` y la escritura
+  `estado[v] = id_sol`: la secuencia completa, no cada acceso.
+- **¿La carrera la causa el `sleep`?** No: E3 muestra fallos sin ventana (3/10) y E4 con sólo
+  procesos (10/10). El `sleep` sólo la hace reproducible.
+- **¿Por qué la cantidad de fallos cambia entre ejecuciones con la misma semilla?** La semilla fija
+  la carga, no el orden en que el planificador ejecuta los hilos y procesos (E2).
+- **¿Python no tiene GIL? ¿No debería evitar esto?** E4.
+- **¿Cómo saben que los dos procesos comparten la memoria?** E5: mismo inodo de `/dev/shm` en
+  `/proc/<pid>/maps`.
+- **¿Cómo detectan el fallo si el estado final está bien (`libres=3/3`)?** Sonda + auditoría de
+  intervalos, dos métodos independientes que coinciden.
+- **¿Por qué la versión insegura es "más rápida"?** Porque asigna vehículos ocupados: nunca espera
+  (`reintentos=0`). Un resultado rápido e incorrecto no es un mejor resultado (se medirá en la
+  Fase 4).
 
 ## Fase 4 — Corrección por sincronización
 *(pendiente)*
@@ -862,10 +1096,10 @@ centro_despacho(72899)-+-trabajador-1(72905)-+-{QueueFeederThre}(72915)
 | 1 | Proceso principal administrador | 1 ✅ | `centro.py` | F1-E1: `pstree -p` |
 | 2 | Procesos trabajadores | 1 ✅ | `trabajador.py` | F1-E1..E5 |
 | 3 | Múltiples hilos | 2 ✅ | hilos `generador-i`, `despachador-w-t` | F2-E2: `pstree -t`, `ps -L`, `top -H`, `/proc/<pid>/task` |
-| 4 | Info compartida de vehículos | 3 | `multiprocessing.Array` | log de estados |
+| 4 | Info compartida de vehículos | 3 ✅ | `Flota`: `RawArray` en `/dev/shm` | F3-E5: mismo inodo en `/proc/<pid>/maps` |
 | 5 | Cola productor-consumidor | 2 ✅ | `ColaAcotada` (semáforos) | F2-E1, F2-E4, H3 |
 | 6 | Llegada simultánea | 2 ✅ | `threading.Barrier` por ráfaga | F2-E1: 8 llegadas en < 3 ms; H4 |
-| 7 | Carrera en asignación | 3 | `--modo inseguro` | contador de dobles asignaciones > 0 |
+| 7 | Carrera en asignación | 3 ✅ | *check-then-act* sin exclusión, `--ventana` | F3-E1..E4: sonda = auditoría, 10/10, exit 1 |
 | 8 | Corrección por sincronización | 4 | `--modo seguro` | contador = 0 |
 | 9 | Tiempos de despacho/entrega | 2 ✅ | `--despacho`, `--entrega`, `--semilla` | log (servicio por solicitud), F2-E3 |
 | 10 | Recursos en orden distinto | 5 | vehículo↔andén | `wchan`, watchdog |

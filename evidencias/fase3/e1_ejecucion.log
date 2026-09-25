@@ -1,0 +1,201 @@
+16:17:32.373325 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 x 3 hilos | generadores=4 | solicitudes=24 | cola=semaforos(10) | vehículos=3 | ventana=0.0100 s | semilla=42 | log=evidencias/fase3/e1_ejecucion.log
+16:17:32.387019 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 81639
+16:17:32.388372 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 81640
+16:17:32.388754 | PID  81639 | PPID  81628 | TID  81639 | trabajador-1    | MainThread       | INICIO trabajador 1 con 3 hilos despachadores
+16:17:32.389909 | PID  81640 | PPID  81628 | TID  81640 | trabajador-2    | MainThread       | INICIO trabajador 2 con 3 hilos despachadores
+16:17:32.390189 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | SINCRONIZADO: 2 trabajadores listos
+16:17:32.391657 | PID  81628 | PPID  81622 | TID  81650 | centro_despacho | generador-4      | RECIBIDA solicitud 19 (ráfaga 1) Ara: Tunja -> Garagoa | en cola ~0
+16:17:32.391842 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | RECIBIDA solicitud 7 (ráfaga 1) Jumbo: Paipa -> Duitama | en cola ~1
+16:17:32.392184 | PID  81628 | PPID  81622 | TID  81650 | centro_despacho | generador-4      | RECIBIDA solicitud 20 (ráfaga 1) D1: Villa de Leyva -> Duitama | en cola ~1
+16:17:32.392335 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | JERARQUÍA de procesos e hilos (leída de /proc):
+16:17:32.392555 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+16:17:32.392442 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | RECIBIDA solicitud 13 (ráfaga 1) Jumbo: Tunja -> Duitama | en cola ~1
+16:17:32.392057 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | RÁFAGA 1: 4 generadores liberados simultáneamente
+16:17:32.392671 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | RECIBIDA solicitud 8 (ráfaga 1) Olímpica: Garagoa -> Villa de Leyva | en cola ~1
+16:17:32.392755 | PID  81628 | PPID  81622 | TID  81650 | centro_despacho | generador-4      | RECIBIDA solicitud 21 (ráfaga 1) Olímpica: Paipa -> Sogamoso | en cola ~1
+16:17:32.394444 | PID  81628 | PPID  81622 | TID  81650 | centro_despacho | generador-4      | RECIBIDA solicitud 22 (ráfaga 1) Ara: Sogamoso -> Tunja | en cola ~4
+16:17:32.394581 | PID  81628 | PPID  81622 | TID  81650 | centro_despacho | generador-4      | RECIBIDA solicitud 23 (ráfaga 1) Homecenter: Paipa -> Chiquinquirá | en cola ~5
+16:17:32.394699 | PID  81628 | PPID  81622 | TID  81650 | centro_despacho | generador-4      | RECIBIDA solicitud 24 (ráfaga 1) Homecenter: Garagoa -> Sogamoso | en cola ~6
+16:17:32.394805 | PID  81628 | PPID  81622 | TID  81650 | centro_despacho | generador-4      | FIN generador 4: generadas=6, bloqueos por cola llena=0 (0.000 s)
+16:17:32.393771 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | RECIBIDA solicitud 14 (ráfaga 1) Alkosto: Garagoa -> Paipa | en cola ~1
+16:17:32.395057 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | RECIBIDA solicitud 15 (ráfaga 1) D1: Garagoa -> Tunja | en cola ~7
+16:17:32.395189 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | RECIBIDA solicitud 16 (ráfaga 1) Alkosto: Paipa -> Duitama | en cola ~8
+16:17:32.394038 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   81628   81622   centro_despacho  R      5      23256    
+16:17:32.394307 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | RECIBIDA solicitud 9 (ráfaga 1) D1: Duitama -> Villa de Leyva | en cola ~3
+16:17:32.394169 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | RECIBIDA solicitud 1 (ráfaga 1) Homecenter: Sogamoso -> Tunja | en cola ~2
+16:17:32.395690 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 2 espera
+16:17:32.396013 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81628   centro_despacho  R
+16:17:32.396100 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81647   generador-1      S
+16:17:32.396198 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81648   generador-2      R
+16:17:32.396277 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81649   generador-3      S
+16:17:32.395314 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | RECIBIDA solicitud 17 (ráfaga 1) Homecenter: Duitama -> Garagoa | en cola ~9
+16:17:32.396440 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 18 espera
+16:17:32.395537 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | RECIBIDA solicitud 10 (ráfaga 1) Falabella: Villa de Leyva -> Moniquirá | en cola ~10
+16:17:32.396700 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 11 espera
+16:17:32.396889 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   81639   81628   trabajador-1     S      4      19068    
+16:17:32.397186 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81639   trabajador-1     S
+16:17:32.397259 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81641   despachador-1-1  S
+16:17:32.397331 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81642   despachador-1-2  S
+16:17:32.397402 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81643   despachador-1-3  S
+16:17:32.397591 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   81640   81628   trabajador-2     S      4      19136    
+16:17:32.397845 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81640   trabajador-2     S
+16:17:32.397909 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81644   despachador-2-1  S
+16:17:32.397984 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81645   despachador-2-2  S
+16:17:32.398049 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |       └ TID 81646   despachador-2-3  S
+16:17:32.401977 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 19 | libres ~2/3
+16:17:32.402145 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 19 en V2 (Ara: Tunja -> Garagoa) | esperó en cola 0 ms, por vehículo 10 ms
+16:17:32.402278 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 7 mientras lo usa la solicitud 19 (PID 81639, TID 81641) [mismo proceso]
+16:17:32.402454 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 7 en V2 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms, por vehículo 10 ms
+16:17:32.402352 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 20 | libres ~1/3
+16:17:32.402577 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 20 en V1 (D1: Villa de Leyva -> Duitama) | esperó en cola 0 ms, por vehículo 10 ms
+16:17:32.402763 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | ASIGNADO vehículo V3 a la solicitud 13 | libres ~0/3
+16:17:32.403158 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 13 en V3 (Jumbo: Tunja -> Duitama) | esperó en cola 1 ms, por vehículo 11 ms
+16:17:32.402938 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 8 mientras lo usa la solicitud 7 (PID 81639, TID 81642) [entre procesos]
+16:17:32.403338 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 8 en V2 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 1 ms, por vehículo 11 ms
+16:17:32.403016 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 21 mientras lo usa la solicitud 13 (PID 81640, TID 81644) [mismo proceso]
+16:17:32.403483 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 21 en V3 (Olímpica: Paipa -> Sogamoso) | esperó en cola 1 ms, por vehículo 11 ms
+16:17:32.563485 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 13 en V3
+16:17:32.628676 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 19 en V2
+16:17:32.629219 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 20 en V1
+16:17:32.630196 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 7 en V2
+16:17:32.690763 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 8 en V2
+16:17:32.692755 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 21 en V3
+16:17:32.848656 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 13 | V3 liberado | servicio 456 ms
+16:17:32.850609 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 455 ms
+16:17:32.852097 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | RECIBIDA solicitud 2 (ráfaga 1) Jumbo: Chiquinquirá -> Paipa | en cola ~10
+16:17:32.852521 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 3 espera
+16:17:32.860651 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 14 mientras lo usa la solicitud 21 (PID 81640, TID 81646) [mismo proceso]
+16:17:32.861156 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 14 en V3 (Alkosto: Garagoa -> Paipa) | esperó en cola 457 ms, por vehículo 11 ms
+16:17:32.892035 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 19 | V2 liberado | servicio 500 ms
+16:17:32.893719 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 8 | V2 liberado | servicio 501 ms
+16:17:32.893781 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | PRODUCTOR DESBLOQUEADO tras 497 ms
+16:17:32.894334 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | RECIBIDA solicitud 18 (ráfaga 1) Olímpica: Tunja -> Moniquirá | en cola ~9
+16:17:32.895945 | PID  81628 | PPID  81622 | TID  81649 | centro_despacho | generador-3      | FIN generador 3: generadas=6, bloqueos por cola llena=1 (0.497 s)
+16:17:32.895618 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 499 ms
+16:17:32.896721 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | RECIBIDA solicitud 11 (ráfaga 1) D1: Paipa -> Moniquirá | en cola ~10
+16:17:32.897061 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 12 espera
+16:17:32.903782 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 1 mientras lo usa la solicitud 8 (PID 81640, TID 81645) [entre procesos]
+16:17:32.904322 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 1 en V2 (Homecenter: Sogamoso -> Tunja) | esperó en cola 499 ms, por vehículo 11 ms
+16:17:32.904729 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 9 mientras lo usa la solicitud 1 (PID 81639, TID 81641) [entre procesos]
+16:17:32.905186 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 9 en V2 (D1: Duitama -> Villa de Leyva) | esperó en cola 500 ms, por vehículo 11 ms
+16:17:33.007888 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 20 | V1 liberado | servicio 616 ms
+16:17:33.008975 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 156 ms
+16:17:33.009856 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | RECIBIDA solicitud 3 (ráfaga 1) Homecenter: Tunja -> Moniquirá | en cola ~10
+16:17:33.010310 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 4 espera
+16:17:33.018742 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 9 en V2
+16:17:33.019080 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 22 | libres ~0/3
+16:17:33.019625 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 22 en V1 (Ara: Sogamoso -> Tunja) | esperó en cola 614 ms, por vehículo 11 ms
+16:17:33.040678 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 21 | V3 liberado | servicio 648 ms
+16:17:33.041624 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | PRODUCTOR DESBLOQUEADO tras 144 ms
+16:17:33.042187 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | RECIBIDA solicitud 12 (ráfaga 1) Éxito: Tunja -> Paipa | en cola ~10
+16:17:33.042887 | PID  81628 | PPID  81622 | TID  81648 | centro_despacho | generador-2      | FIN generador 2: generadas=6, bloqueos por cola llena=2 (0.643 s)
+16:17:33.051708 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 23 mientras lo usa la solicitud 14 (PID 81640, TID 81644) [mismo proceso]
+16:17:33.052167 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 23 en V3 (Homecenter: Paipa -> Chiquinquirá) | esperó en cola 647 ms, por vehículo 11 ms
+16:17:33.058020 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 7 | V2 liberado | servicio 666 ms
+16:17:33.059113 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 48 ms
+16:17:33.059703 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | RECIBIDA solicitud 4 (ráfaga 1) D1: Moniquirá -> Sogamoso | en cola ~10
+16:17:33.060500 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 5 espera
+16:17:33.069183 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 24 mientras lo usa la solicitud 9 (PID 81640, TID 81645) [entre procesos]
+16:17:33.069897 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 24 en V2 (Homecenter: Garagoa -> Sogamoso) | esperó en cola 664 ms, por vehículo 11 ms
+16:17:33.072749 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 14 en V3
+16:17:33.126969 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 1 en V2
+16:17:33.247524 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 9 | V2 liberado | servicio 353 ms
+16:17:33.248916 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 188 ms
+16:17:33.249513 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | RECIBIDA solicitud 5 (ráfaga 1) Éxito: Tunja -> Sogamoso | en cola ~10
+16:17:33.250600 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR BLOQUEADO: cola llena (10/10), solicitud 6 espera
+16:17:33.258143 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 22 en V1
+16:17:33.259049 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 15 mientras lo usa la solicitud 24 (PID 81639, TID 81642) [entre procesos]
+16:17:33.259712 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 15 en V2 (D1: Garagoa -> Tunja) | esperó en cola 854 ms, por vehículo 11 ms
+16:17:33.345654 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 23 en V3
+16:17:33.360631 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 24 en V2
+16:17:33.484535 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 14 | V3 liberado | servicio 634 ms
+16:17:33.485840 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | PRODUCTOR DESBLOQUEADO tras 235 ms
+16:17:33.486907 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | RECIBIDA solicitud 6 (ráfaga 1) Homecenter: Duitama -> Villa de Leyva | en cola ~10
+16:17:33.487344 | PID  81628 | PPID  81622 | TID  81647 | centro_despacho | generador-1      | FIN generador 1: generadas=6, bloqueos por cola llena=5 (1.082 s)
+16:17:33.495763 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 16 mientras lo usa la solicitud 23 (PID 81640, TID 81646) [mismo proceso]
+16:17:33.496254 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 16 en V3 (Alkosto: Paipa -> Duitama) | esperó en cola 1090 ms, por vehículo 11 ms
+16:17:33.513042 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 22 | V1 liberado | servicio 504 ms
+16:17:33.514676 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | GENERACIÓN terminada: se envían 6 centinelas (uno por hilo despachador)
+16:17:33.524318 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 17 | libres ~0/3
+16:17:33.525141 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 17 en V1 (Homecenter: Duitama -> Garagoa) | esperó en cola 1119 ms, por vehículo 11 ms
+16:17:33.535409 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 15 en V2
+16:17:33.562024 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 24 | V2 liberado | servicio 503 ms
+16:17:33.573136 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 10 mientras lo usa la solicitud 15 (PID 81640, TID 81645) [entre procesos]
+16:17:33.573841 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 10 en V2 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 1167 ms, por vehículo 11 ms
+16:17:33.592768 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 1 | V2 liberado | servicio 699 ms
+16:17:33.603832 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 2 mientras lo usa la solicitud 10 (PID 81639, TID 81642) [mismo proceso]
+16:17:33.604690 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 2 en V2 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 1198 ms, por vehículo 11 ms
+16:17:33.679737 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 16 en V3
+16:17:33.691628 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 10 en V2
+16:17:33.787492 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 2 en V2
+16:17:33.811193 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 17 en V1
+16:17:33.837163 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 15 | V2 liberado | servicio 588 ms
+16:17:33.847895 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 18 mientras lo usa la solicitud 2 (PID 81639, TID 81641) [entre procesos]
+16:17:33.848276 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 18 en V2 (Olímpica: Tunja -> Moniquirá) | esperó en cola 1441 ms, por vehículo 11 ms
+16:17:33.867149 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 23 | V3 liberado | servicio 826 ms
+16:17:33.878323 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 11 mientras lo usa la solicitud 16 (PID 81640, TID 81644) [mismo proceso]
+16:17:33.878852 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | DESPACHO solicitud 11 en V3 (D1: Paipa -> Moniquirá) | esperó en cola 1471 ms, por vehículo 11 ms
+16:17:33.974853 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 18 en V2
+16:17:33.995911 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 2 | V2 liberado | servicio 402 ms
+16:17:34.007106 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 3 mientras lo usa la solicitud 18 (PID 81640, TID 81645) [entre procesos]
+16:17:34.007850 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | DESPACHO solicitud 3 en V2 (Homecenter: Tunja -> Moniquirá) | esperó en cola 1144 ms, por vehículo 11 ms
+16:17:34.061201 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 16 | V3 liberado | servicio 576 ms
+16:17:34.072317 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 12 mientras lo usa la solicitud 11 (PID 81640, TID 81646) [mismo proceso]
+16:17:34.072951 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | DESPACHO solicitud 12 en V3 (Éxito: Tunja -> Paipa) | esperó en cola 1165 ms, por vehículo 11 ms
+16:17:34.094089 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 10 | V2 liberado | servicio 531 ms
+16:17:34.105279 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 4 mientras lo usa la solicitud 3 (PID 81639, TID 81641) [mismo proceso]
+16:17:34.105950 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | DESPACHO solicitud 4 en V2 (D1: Moniquirá -> Sogamoso) | esperó en cola 1085 ms, por vehículo 11 ms
+16:17:34.147445 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | EN RUTA solicitud 11 en V3
+16:17:34.230587 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | EN RUTA solicitud 3 en V2
+16:17:34.261723 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | EN RUTA solicitud 4 en V2
+16:17:34.328604 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | EN RUTA solicitud 12 en V3
+16:17:34.341785 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 17 | V1 liberado | servicio 828 ms
+16:17:34.345638 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 18 | V2 liberado | servicio 508 ms
+16:17:34.352991 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | ASIGNADO vehículo V1 a la solicitud 5 | libres ~1/3
+16:17:34.353936 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | DESPACHO solicitud 5 en V1 (Éxito: Tunja -> Sogamoso) | esperó en cola 1282 ms, por vehículo 11 ms
+16:17:34.356745 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V1 asignado a la solicitud 6 mientras lo usa la solicitud 5 (PID 81639, TID 81643) [entre procesos]
+16:17:34.357173 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | DESPACHO solicitud 6 en V1 (Homecenter: Duitama -> Villa de Leyva) | esperó en cola 1096 ms, por vehículo 11 ms
+16:17:34.546353 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | ENTREGADA solicitud 11 | V3 liberado | servicio 678 ms
+16:17:34.547171 | PID  81640 | PPID  81628 | TID  81646 | trabajador-2    | despachador-2-3  | CENTINELA recibido: el hilo termina
+16:17:34.561508 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | ENTREGADA solicitud 4 | V2 liberado | servicio 467 ms
+16:17:34.562365 | PID  81639 | PPID  81628 | TID  81642 | trabajador-1    | despachador-1-2  | CENTINELA recibido: el hilo termina
+16:17:34.566703 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | EN RUTA solicitud 5 en V1
+16:17:34.580923 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | EN RUTA solicitud 6 en V1
+16:17:34.798371 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | ENTREGADA solicitud 3 | V2 liberado | servicio 802 ms
+16:17:34.799242 | PID  81639 | PPID  81628 | TID  81641 | trabajador-1    | despachador-1-1  | CENTINELA recibido: el hilo termina
+16:17:34.806685 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | ENTREGADA solicitud 12 | V3 liberado | servicio 745 ms
+16:17:34.807275 | PID  81640 | PPID  81628 | TID  81644 | trabajador-2    | despachador-2-1  | CENTINELA recibido: el hilo termina
+16:17:34.839713 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | ENTREGADA solicitud 6 | V1 liberado | servicio 493 ms
+16:17:34.840343 | PID  81640 | PPID  81628 | TID  81645 | trabajador-2    | despachador-2-2  | CENTINELA recibido: el hilo termina
+16:17:34.895137 | PID  81640 | PPID  81628 | TID  81640 | trabajador-2    | MainThread       | FIN trabajador 2 | atendidas por hilo: despachador-2-1=4, despachador-2-2=5, despachador-2-3=3
+16:17:34.898259 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | ENTREGADA solicitud 5 | V1 liberado | servicio 556 ms
+16:17:34.898942 | PID  81639 | PPID  81628 | TID  81643 | trabajador-1    | despachador-1-3  | CENTINELA recibido: el hilo termina
+16:17:34.900030 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | TERMINÓ trabajador-2 (PID 81640): exit(0)
+16:17:34.994252 | PID  81639 | PPID  81628 | TID  81639 | trabajador-1    | MainThread       | FIN trabajador 1 | atendidas por hilo: despachador-1-1=4, despachador-1-2=4, despachador-1-3=4
+16:17:35.100711 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | TERMINÓ trabajador-1 (PID 81639): exit(0)
+16:17:35.151210 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | RESUMEN de terminación:
+16:17:35.151646 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   trabajador-1   PID 81639   exit(0)
+16:17:35.151961 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   trabajador-2   PID 81640   exit(0)
+16:17:35.152325 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+16:17:35.152634 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | ESTADÍSTICAS:
+16:17:35.152775 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   solicitudes: generadas=24 entregadas=24 canceladas=0 no atendidas=0
+16:17:35.152917 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   productores: bloqueos por cola llena=8, tiempo bloqueados=2.222 s
+16:17:35.153120 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   espera en cola (ms): mín=0 prom=729 máx=1471
+16:17:35.153302 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   servicio (s): prom=0.587 | trabajo total (suma)=14.08 s
+16:17:35.153450 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   tiempo total=2.51 s | rendimiento=9.57 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=5.62
+16:17:35.153682 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   concurrencia máxima observada=6 (capacidad = 2 trabajadores x 3 hilos = 6)
+16:17:35.153965 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   reparto por trabajador: trabajador-1=12, trabajador-2=12
+16:17:35.154143 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   reparto por hilo: despachador-1-1=4, despachador-1-2=4, despachador-1-3=4, despachador-2-1=4, despachador-2-2=5, despachador-2-3=3
+16:17:35.154345 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   CPU: principal=0.16 s, trabajadores=0.09 s | tiempo real=2.76 s | uso medio de CPU de los trabajadores=3.3 %
+16:17:35.154526 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   cambios de contexto trabajadores: voluntarios=242, involuntarios=11
+16:17:35.154780 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   FLOTA: 3 vehículos | asignaciones=24 | reparto: V1=5, V2=12, V3=7
+16:17:35.154995 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   espera por vehículo (ms): prom=11 máx=11 | reintentos de búsqueda (espera activa)=0
+16:17:35.155454 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   DOBLES ASIGNACIONES: sonda en vivo=18 | auditoría: asignaciones sobre un vehículo ocupado=18, pares solapados=27 (entre procesos=14, entre hilos del mismo proceso=13)
+16:17:35.155686 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |     V1: solicitud 5 [despachador-1-3] y solicitud 6 [despachador-2-2] lo usaron a la vez durante 482 ms
+16:17:35.155859 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |     V2: solicitud 19 [despachador-1-1] y solicitud 7 [despachador-1-2] lo usaron a la vez durante 489 ms
+16:17:35.156019 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |     V2: solicitud 19 [despachador-1-1] y solicitud 8 [despachador-2-2] lo usaron a la vez durante 489 ms
+16:17:35.156181 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |     V2: solicitud 7 [despachador-1-2] y solicitud 8 [despachador-2-2] lo usaron a la vez durante 490 ms
+16:17:35.156361 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |     V2: solicitud 7 [despachador-1-2] y solicitud 1 [despachador-1-1] lo usaron a la vez durante 154 ms
+16:17:35.156571 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       |   estado final de la flota: libres=3/3
+16:17:35.156768 | PID  81628 | PPID  81622 | TID  81628 | centro_despacho | MainThread       | FIN centro de despacho (con fallos)
+exit code: 1 (1 = el sistema detectó resultados incorrectos)

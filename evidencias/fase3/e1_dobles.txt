@@ -1,0 +1,43 @@
+## Detecciones en vivo (sonda)
+16:17:32.402278 despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 7 mientras lo usa la solicitud 19 (PID 81639, TID 81641) [mismo proceso]
+16:17:32.402938 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 8 mientras lo usa la solicitud 7 (PID 81639, TID 81642) [entre procesos]
+16:17:32.403016 despachador-2-3  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 21 mientras lo usa la solicitud 13 (PID 81640, TID 81644) [mismo proceso]
+16:17:32.860651 despachador-2-1  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 14 mientras lo usa la solicitud 21 (PID 81640, TID 81646) [mismo proceso]
+16:17:32.903782 despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 1 mientras lo usa la solicitud 8 (PID 81640, TID 81645) [entre procesos]
+16:17:32.904729 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 9 mientras lo usa la solicitud 1 (PID 81639, TID 81641) [entre procesos]
+16:17:33.051708 despachador-2-3  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 23 mientras lo usa la solicitud 14 (PID 81640, TID 81644) [mismo proceso]
+16:17:33.069183 despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 24 mientras lo usa la solicitud 9 (PID 81640, TID 81645) [entre procesos]
+16:17:33.259049 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 15 mientras lo usa la solicitud 24 (PID 81639, TID 81642) [entre procesos]
+16:17:33.495763 despachador-2-1  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 16 mientras lo usa la solicitud 23 (PID 81640, TID 81646) [mismo proceso]
+16:17:33.573136 despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 10 mientras lo usa la solicitud 15 (PID 81640, TID 81645) [entre procesos]
+16:17:33.603832 despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 2 mientras lo usa la solicitud 10 (PID 81639, TID 81642) [mismo proceso]
+16:17:33.847895 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 18 mientras lo usa la solicitud 2 (PID 81639, TID 81641) [entre procesos]
+16:17:33.878323 despachador-2-3  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 11 mientras lo usa la solicitud 16 (PID 81640, TID 81644) [mismo proceso]
+16:17:34.007106 despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 3 mientras lo usa la solicitud 18 (PID 81640, TID 81645) [entre procesos]
+16:17:34.072317 despachador-2-1  | DOBLE ASIGNACIÓN: vehículo V3 asignado a la solicitud 12 mientras lo usa la solicitud 11 (PID 81640, TID 81646) [mismo proceso]
+16:17:34.105279 despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 4 mientras lo usa la solicitud 3 (PID 81639, TID 81641) [mismo proceso]
+16:17:34.356745 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V1 asignado a la solicitud 6 mientras lo usa la solicitud 5 (PID 81639, TID 81643) [entre procesos]
+
+## Bloque de estadísticas
+| ESTADÍSTICAS:
+|   solicitudes: generadas=24 entregadas=24 canceladas=0 no atendidas=0
+|   productores: bloqueos por cola llena=8, tiempo bloqueados=2.222 s
+|   espera en cola (ms): mín=0 prom=729 máx=1471
+|   servicio (s): prom=0.587 | trabajo total (suma)=14.08 s
+|   tiempo total=2.51 s | rendimiento=9.57 solicitudes/s | concurrencia efectiva (trabajo/tiempo)=5.62
+|   concurrencia máxima observada=6 (capacidad = 2 trabajadores x 3 hilos = 6)
+|   reparto por trabajador: trabajador-1=12, trabajador-2=12
+|   reparto por hilo: despachador-1-1=4, despachador-1-2=4, despachador-1-3=4, despachador-2-1=4, despachador-2-2=5, despachador-2-3=3
+|   CPU: principal=0.16 s, trabajadores=0.09 s | tiempo real=2.76 s | uso medio de CPU de los trabajadores=3.3 %
+|   cambios de contexto trabajadores: voluntarios=242, involuntarios=11
+|   FLOTA: 3 vehículos | asignaciones=24 | reparto: V1=5, V2=12, V3=7
+|   espera por vehículo (ms): prom=11 máx=11 | reintentos de búsqueda (espera activa)=0
+|   DOBLES ASIGNACIONES: sonda en vivo=18 | auditoría: asignaciones sobre un vehículo ocupado=18, pares solapados=27 (entre procesos=14, entre hilos del mismo proceso=13)
+|     V1: solicitud 5 [despachador-1-3] y solicitud 6 [despachador-2-2] lo usaron a la vez durante 482 ms
+|     V2: solicitud 19 [despachador-1-1] y solicitud 7 [despachador-1-2] lo usaron a la vez durante 489 ms
+|     V2: solicitud 19 [despachador-1-1] y solicitud 8 [despachador-2-2] lo usaron a la vez durante 489 ms
+|     V2: solicitud 7 [despachador-1-2] y solicitud 8 [despachador-2-2] lo usaron a la vez durante 490 ms
+|     V2: solicitud 7 [despachador-1-2] y solicitud 1 [despachador-1-1] lo usaron a la vez durante 154 ms
+|   estado final de la flota: libres=3/3
+| FIN centro de despacho (con fallos)
+

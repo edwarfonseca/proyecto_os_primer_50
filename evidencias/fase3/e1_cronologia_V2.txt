@@ -1,0 +1,51 @@
+## Cronología de V2 (ordenada por marca de tiempo)
+## Lectura: entre ASIGNADO/DOBLE y ENTREGADA la solicitud usa V2; si otra
+## solicitud entra antes de que la anterior termine, V2 está en dos rutas a la vez.
+16:17:32.401977 despachador-1-1  | ASIGNADO vehículo V2 a la solicitud 19 | libres ~2/3
+16:17:32.402145 despachador-1-1  | DESPACHO solicitud 19 en V2 (Ara: Tunja -> Garagoa) | esperó en cola 0 ms, por vehículo 10 ms
+16:17:32.402278 despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 7 mientras lo usa la solicitud 19 (PID 81639, TID 81641) [mismo proceso]
+16:17:32.402454 despachador-1-2  | DESPACHO solicitud 7 en V2 (Jumbo: Paipa -> Duitama) | esperó en cola 0 ms, por vehículo 10 ms
+16:17:32.402938 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 8 mientras lo usa la solicitud 7 (PID 81639, TID 81642) [entre procesos]
+16:17:32.403338 despachador-2-2  | DESPACHO solicitud 8 en V2 (Olímpica: Garagoa -> Villa de Leyva) | esperó en cola 1 ms, por vehículo 11 ms
+16:17:32.628676 despachador-1-1  | EN RUTA solicitud 19 en V2
+16:17:32.630196 despachador-1-2  | EN RUTA solicitud 7 en V2
+16:17:32.690763 despachador-2-2  | EN RUTA solicitud 8 en V2
+16:17:32.892035 despachador-1-1  | ENTREGADA solicitud 19 | V2 liberado | servicio 500 ms
+16:17:32.893719 despachador-2-2  | ENTREGADA solicitud 8 | V2 liberado | servicio 501 ms
+16:17:32.903782 despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 1 mientras lo usa la solicitud 8 (PID 81640, TID 81645) [entre procesos]
+16:17:32.904322 despachador-1-1  | DESPACHO solicitud 1 en V2 (Homecenter: Sogamoso -> Tunja) | esperó en cola 499 ms, por vehículo 11 ms
+16:17:32.904729 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 9 mientras lo usa la solicitud 1 (PID 81639, TID 81641) [entre procesos]
+16:17:32.905186 despachador-2-2  | DESPACHO solicitud 9 en V2 (D1: Duitama -> Villa de Leyva) | esperó en cola 500 ms, por vehículo 11 ms
+16:17:33.018742 despachador-2-2  | EN RUTA solicitud 9 en V2
+16:17:33.058020 despachador-1-2  | ENTREGADA solicitud 7 | V2 liberado | servicio 666 ms
+16:17:33.069183 despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 24 mientras lo usa la solicitud 9 (PID 81640, TID 81645) [entre procesos]
+16:17:33.069897 despachador-1-2  | DESPACHO solicitud 24 en V2 (Homecenter: Garagoa -> Sogamoso) | esperó en cola 664 ms, por vehículo 11 ms
+16:17:33.126969 despachador-1-1  | EN RUTA solicitud 1 en V2
+16:17:33.247524 despachador-2-2  | ENTREGADA solicitud 9 | V2 liberado | servicio 353 ms
+16:17:33.259049 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 15 mientras lo usa la solicitud 24 (PID 81639, TID 81642) [entre procesos]
+16:17:33.259712 despachador-2-2  | DESPACHO solicitud 15 en V2 (D1: Garagoa -> Tunja) | esperó en cola 854 ms, por vehículo 11 ms
+16:17:33.360631 despachador-1-2  | EN RUTA solicitud 24 en V2
+16:17:33.535409 despachador-2-2  | EN RUTA solicitud 15 en V2
+16:17:33.562024 despachador-1-2  | ENTREGADA solicitud 24 | V2 liberado | servicio 503 ms
+16:17:33.573136 despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 10 mientras lo usa la solicitud 15 (PID 81640, TID 81645) [entre procesos]
+16:17:33.573841 despachador-1-2  | DESPACHO solicitud 10 en V2 (Falabella: Villa de Leyva -> Moniquirá) | esperó en cola 1167 ms, por vehículo 11 ms
+16:17:33.592768 despachador-1-1  | ENTREGADA solicitud 1 | V2 liberado | servicio 699 ms
+16:17:33.603832 despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 2 mientras lo usa la solicitud 10 (PID 81639, TID 81642) [mismo proceso]
+16:17:33.604690 despachador-1-1  | DESPACHO solicitud 2 en V2 (Jumbo: Chiquinquirá -> Paipa) | esperó en cola 1198 ms, por vehículo 11 ms
+16:17:33.691628 despachador-1-2  | EN RUTA solicitud 10 en V2
+16:17:33.787492 despachador-1-1  | EN RUTA solicitud 2 en V2
+16:17:33.837163 despachador-2-2  | ENTREGADA solicitud 15 | V2 liberado | servicio 588 ms
+16:17:33.847895 despachador-2-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 18 mientras lo usa la solicitud 2 (PID 81639, TID 81641) [entre procesos]
+16:17:33.848276 despachador-2-2  | DESPACHO solicitud 18 en V2 (Olímpica: Tunja -> Moniquirá) | esperó en cola 1441 ms, por vehículo 11 ms
+16:17:33.974853 despachador-2-2  | EN RUTA solicitud 18 en V2
+16:17:33.995911 despachador-1-1  | ENTREGADA solicitud 2 | V2 liberado | servicio 402 ms
+16:17:34.007106 despachador-1-1  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 3 mientras lo usa la solicitud 18 (PID 81640, TID 81645) [entre procesos]
+16:17:34.007850 despachador-1-1  | DESPACHO solicitud 3 en V2 (Homecenter: Tunja -> Moniquirá) | esperó en cola 1144 ms, por vehículo 11 ms
+16:17:34.094089 despachador-1-2  | ENTREGADA solicitud 10 | V2 liberado | servicio 531 ms
+16:17:34.105279 despachador-1-2  | DOBLE ASIGNACIÓN: vehículo V2 asignado a la solicitud 4 mientras lo usa la solicitud 3 (PID 81639, TID 81641) [mismo proceso]
+16:17:34.105950 despachador-1-2  | DESPACHO solicitud 4 en V2 (D1: Moniquirá -> Sogamoso) | esperó en cola 1085 ms, por vehículo 11 ms
+16:17:34.230587 despachador-1-1  | EN RUTA solicitud 3 en V2
+16:17:34.261723 despachador-1-2  | EN RUTA solicitud 4 en V2
+16:17:34.345638 despachador-2-2  | ENTREGADA solicitud 18 | V2 liberado | servicio 508 ms
+16:17:34.561508 despachador-1-2  | ENTREGADA solicitud 4 | V2 liberado | servicio 467 ms
+16:17:34.798371 despachador-1-1  | ENTREGADA solicitud 3 | V2 liberado | servicio 802 ms
