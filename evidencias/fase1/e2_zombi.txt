@@ -1,0 +1,14 @@
+## Antes: hijos del principal (PID 56730)
+    PID    PPID STAT COMMAND
+  56732   56730 S    trabajador-1
+  56733   56730 S    trabajador-2
+  56734   56730 S    trabajador-3
+
+## kill -KILL 56733; ps inmediatamente después
+    PID    PPID STAT COMMAND
+  56733   56730 Z    trabajador-2 <defunct>
+
+## 0.5 s después (el principal ya hizo waitpid)
+    PID    PPID STAT COMMAND
+  56732   56730 S    trabajador-1
+  56734   56730 S    trabajador-3

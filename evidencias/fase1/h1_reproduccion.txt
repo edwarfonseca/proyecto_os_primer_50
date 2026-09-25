@@ -1,0 +1,27 @@
+Versión CON EL PROBLEMA (Event) | principal PID 56480 | hijos [56481, 56482, 56483]
+SIGKILL al hijo 2 (PID 56482) mientras esperaba
+El principal ordena la parada...
+
+BLOQUEADO: la orden de parada no retornó en 3.0 s. Pila de todos los hilos del principal:
+Current thread 0x00007fa1602116c0 [vigilante] (most recent call first):
+  File "/home/edwar/Desktop/OS/proyecto_os/experimentos/h1_event_bloqueado.py", line 65 in vigilante
+  File "/usr/lib/python3.14/threading.py", line 1024 in run
+  File "/usr/lib/python3.14/threading.py", line 1082 in _bootstrap_inner
+  File "/usr/lib/python3.14/threading.py", line 1044 in _bootstrap
+
+Thread 0x00007fa1616afbc0 [python3] (most recent call first):
+  File "/usr/lib/python3.14/multiprocessing/synchronize.py", line 304 in notify
+  File "/usr/lib/python3.14/multiprocessing/synchronize.py", line 311 in notify_all
+  File "/usr/lib/python3.14/multiprocessing/synchronize.py", line 352 in set
+  File "/home/edwar/Desktop/OS/proyecto_os/experimentos/h1_event_bloqueado.py", line 76 in main
+  File "/home/edwar/Desktop/OS/proyecto_os/experimentos/h1_event_bloqueado.py", line 84 in <module>
+exit=1
+
+Versión CORREGIDA (RawValue) | principal PID 56510 | hijos [56511, 56512, 56513]
+SIGKILL al hijo 2 (PID 56512) mientras esperaba
+El principal ordena la parada...
+  hijo 1 (PID 56511): recibió la orden y termina
+  hijo 3 (PID 56513): recibió la orden y termina
+Parada completada: todos los hijos terminaron.
+exit=0
+

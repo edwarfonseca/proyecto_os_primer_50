@@ -1,0 +1,15 @@
+15:34:29.107656 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=2 | log=evidencias/fase1/e5_ejecucion.log
+15:34:29.121850 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 56880
+15:34:29.122500 | PID  56880 | PPID  56878 | TID  56880 | trabajador-1    | MainThread       | INICIO trabajador 1
+15:34:29.122880 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 56881
+15:34:29.123606 | PID  56881 | PPID  56878 | TID  56881 | trabajador-2    | MainThread       | INICIO trabajador 2
+15:34:29.123930 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       | SINCRONIZADO: 2 trabajadores listos
+15:34:29.124081 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       | JERARQUÍA de procesos (leída de /proc):
+15:34:29.124162 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+15:34:29.124432 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       |   56878   56673   centro_despacho  R      1      21812    
+15:34:29.124619 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       |   56880   56878   trabajador-1     S      1      17768    
+15:34:29.124781 | PID  56878 | PPID  56673 | TID  56878 | centro_despacho | MainThread       |   56881   56878   trabajador-2     S      1      17768    
+15:34:30.124661 | PID  56880 | PPID  56878 | TID  56880 | trabajador-1    | MainThread       | LATIDO 1
+15:34:30.125816 | PID  56881 | PPID  56878 | TID  56881 | trabajador-2    | MainThread       | LATIDO 1
+15:34:30.626156 | PID  56880 | PPID   1338 | TID  56880 | trabajador-1    | MainThread       | HUÉRFANO: el principal (PID 56878) terminó; adoptado por PID 1338. Se termina
+15:34:30.626938 | PID  56881 | PPID   1338 | TID  56881 | trabajador-2    | MainThread       | HUÉRFANO: el principal (PID 56878) terminó; adoptado por PID 1338. Se termina

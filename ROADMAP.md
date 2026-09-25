@@ -80,13 +80,14 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] Identificación a priori de secciones críticas y posibles bloqueos.
 - [x] Matriz de trazabilidad requisito → fase → evidencia.
 
-### Fase 1 — Procesos
-- [ ] `main.py` con CLI (`argparse`): `--trabajadores`, `--hilos`, `--vehiculos`, `--solicitudes`, `--semilla`.
-- [ ] Proceso principal crea W procesos trabajadores (`multiprocessing.Process`, método `fork`).
-- [ ] Nombre del proceso visible en `ps` (escritura en `/proc/self/comm`).
-- [ ] Logger común: `timestamp | PID | PPID | TID | hilo | evento`.
-- [ ] Terminación ordenada: "píldora venenosa" (centinela `None`) + manejo de `SIGINT`/`SIGTERM`, sin zombis (`join`).
-- [ ] Evidencia: `pstree -p <PID>`, `ps -o pid,ppid,stat,comm --ppid <PID>`.
+### Fase 1 — Procesos ✅
+- [x] `main.py` con CLI (`argparse`): `--trabajadores`, `--duracion`, `--metodo-inicio`, `--latido`, `--espera-fin`, `--log` (los demás parámetros se agregan en su fase).
+- [x] Proceso principal crea W procesos trabajadores (`multiprocessing.Process`, método `fork` explícito: en Python 3.14 el defecto es `forkserver`).
+- [x] Nombre del proceso visible en `ps` (escritura en `/proc/self/comm`).
+- [x] Logger común: `timestamp | PID | PPID | TID | proceso | hilo | evento`.
+- [x] Terminación ordenada: indicador de parada compartido + `SIGINT`/`SIGTERM`, escalamiento `SIGTERM → SIGKILL`, sin zombis, detección de huérfanos. (Los centinelas en la cola llegan en la Fase 2.)
+- [x] Evidencia: E1–E5 con `pstree`, `ps`, `top -H`, `/proc` (`scripts/evidencias_fase1.sh`).
+- [x] Hallazgos documentados: H1 (`multiprocessing.Event` bloqueado por la muerte de un participante) y H2 (huérfanos).
 
 ### Fase 2 — Hilos y productor-consumidor
 - [ ] Hilos generadores (productores) en el proceso principal; `threading.Barrier` para llegada **simultánea**.

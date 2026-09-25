@@ -1,0 +1,30 @@
+15:34:19.702480 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | INICIO centro de despacho | método=fork | trabajadores=3 | log=evidencias/fase1/e2_ejecucion.log
+15:34:19.716870 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | CREADO trabajador-1 -> PID 56732
+15:34:19.717519 | PID  56732 | PPID  56730 | TID  56732 | trabajador-1    | MainThread       | INICIO trabajador 1
+15:34:19.717910 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | CREADO trabajador-2 -> PID 56733
+15:34:19.718735 | PID  56733 | PPID  56730 | TID  56733 | trabajador-2    | MainThread       | INICIO trabajador 2
+15:34:19.719068 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | CREADO trabajador-3 -> PID 56734
+15:34:19.719803 | PID  56734 | PPID  56730 | TID  56734 | trabajador-3    | MainThread       | INICIO trabajador 3
+15:34:19.720125 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | SINCRONIZADO: 3 trabajadores listos
+15:34:19.720288 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | JERARQUÍA de procesos (leída de /proc):
+15:34:19.720354 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       |   PID     PPID    NOMBRE           ESTADO HILOS  RSS(kB)  
+15:34:19.720628 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       |   56730   56673   centro_despacho  R      1      21732    
+15:34:19.720802 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       |   56732   56730   trabajador-1     S      1      17800    
+15:34:19.720959 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       |   56733   56730   trabajador-2     S      1      17800    
+15:34:19.721123 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       |   56734   56730   trabajador-3     S      1      17800    
+15:34:20.719720 | PID  56732 | PPID  56730 | TID  56732 | trabajador-1    | MainThread       | LATIDO 1
+15:34:20.720838 | PID  56733 | PPID  56730 | TID  56733 | trabajador-2    | MainThread       | LATIDO 1
+15:34:20.721713 | PID  56734 | PPID  56730 | TID  56734 | trabajador-3    | MainThread       | LATIDO 1
+15:34:21.323261 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | CAÍDO trabajador-2 (PID 56733): terminado por señal SIGKILL
+15:34:21.721895 | PID  56732 | PPID  56730 | TID  56732 | trabajador-1    | MainThread       | LATIDO 2
+15:34:21.723694 | PID  56734 | PPID  56730 | TID  56734 | trabajador-3    | MainThread       | LATIDO 2
+15:34:21.924572 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | SEÑAL SIGTERM recibida: se inicia el cierre ordenado
+15:34:22.022913 | PID  56732 | PPID  56730 | TID  56732 | trabajador-1    | MainThread       | FIN trabajador 1 (latidos=2)
+15:34:22.024731 | PID  56734 | PPID  56730 | TID  56734 | trabajador-3    | MainThread       | FIN trabajador 3 (latidos=2)
+15:34:22.027599 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | RESUMEN de terminación:
+15:34:22.028041 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       |   trabajador-1   PID 56732   exit(0)
+15:34:22.028464 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       |   trabajador-2   PID 56733   terminado por señal SIGKILL
+15:34:22.028798 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       |   trabajador-3   PID 56734   exit(0)
+15:34:22.029266 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | VERIFICACIÓN: procesos hijos que siguen en /proc: ninguno (sin zombis ni huérfanos)
+15:34:22.029609 | PID  56730 | PPID  56673 | TID  56730 | centro_despacho | MainThread       | FIN centro de despacho (con fallos)
+exit code del principal: 1
