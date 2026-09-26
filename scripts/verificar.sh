@@ -73,6 +73,36 @@ else
     echo "  [FALLA] experimento H1"; falla=$((falla + 1))
 fi
 
+echo "5. Frontend (web/servidor.py)"
+PUERTO=8765
+python3 web/servidor.py --puerto "$PUERTO" > "$L/servidor_web.log" 2>&1 &
+WEB=$!
+sleep 1
+if python3 - "$PUERTO" <<'PY' > "$L/frontend.log" 2>&1
+import json, sys, time, urllib.request
+base = f"http://127.0.0.1:{sys.argv[1]}"
+def pedir(ruta, cuerpo=None):
+    datos = None if cuerpo is None else json.dumps(cuerpo).encode()
+    with urllib.request.urlopen(urllib.request.Request(base + ruta, data=datos), timeout=10) as r:
+        return json.load(r) if ruta.startswith("/api") else r.read()
+assert b"Centro de despacho" in pedir("/")
+assert len(pedir("/api/escenarios")["pasos"]) == 7
+pedir("/api/ejecutar", {"escenario": "carrera_despues"})
+for _ in range(60):
+    e = pedir("/api/estado")["ejecucion"]
+    if not e["activa"]:
+        break
+    time.sleep(0.5)
+assert e["exit"] == 0 and e["metricas"]["dobles_sonda"] == "0", e
+print("frontend ok", e["duracion"], "s")
+PY
+then
+    echo "  [OK]    servidor web, página, API y un escenario completo"; ok=$((ok + 1))
+else
+    echo "  [FALLA] frontend (ver $L/frontend.log)"; falla=$((falla + 1))
+fi
+kill -INT "$WEB" 2>/dev/null; wait "$WEB" 2>/dev/null
+
 echo
 echo "Resultado: $ok correctas, $falla fallas (logs en $L/)"
 [[ $falla -eq 0 ]]
