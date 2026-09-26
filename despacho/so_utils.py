@@ -5,6 +5,7 @@ import os
 import signal
 
 _TICKS = os.sysconf("SC_CLK_TCK")
+TICKS_POR_SEGUNDO = _TICKS          # ticks de reloj por segundo (utime/stime en /proc)
 _PAGINA_KB = os.sysconf("SC_PAGE_SIZE") // 1024
 
 
@@ -57,24 +58,54 @@ def memoria_proceso(pid: int) -> dict:
 
 
 def hilos_proceso(pid: int) -> list[dict]:
-    """Lista los hilos (tareas) de un proceso: /proc/<pid>/task/<tid>."""
+    """Lista los hilos (tareas) de un proceso: /proc/<pid>/task/<tid>.
+
+    Por hilo: tid, nombre, estado (R, S, D, T, Z), wchan (función del kernel donde duerme)
+    y ticks (utime + stime acumulados, en ticks de reloj).
+    """
     hilos = []
     try:
         tids = sorted(int(t) for t in os.listdir(f"/proc/{pid}/task"))
     except (FileNotFoundError, ProcessLookupError):
         return hilos
     for tid in tids:
+        base = f"/proc/{pid}/task/{tid}"
         try:
-            with open(f"/proc/{pid}/task/{tid}/comm") as f:
+            with open(f"{base}/comm") as f:
                 nombre = f.read().strip()
-            with open(f"/proc/{pid}/task/{tid}/stat") as f:
-                estado = f.read().rsplit(")", 1)[1].split()[0]
+            with open(f"{base}/stat") as f:
+                campos = f.read().rsplit(")", 1)[1].split()
+            with open(f"{base}/wchan") as f:
+                wchan = f.read().strip()
         except (FileNotFoundError, ProcessLookupError):
             # El hilo terminó entre el listado del directorio y la lectura: el kernel
             # responde ENOENT o ESRCH. /proc es una vista viva, no una foto consistente.
             continue
-        hilos.append({"tid": tid, "nombre": nombre, "estado": estado})
+        hilos.append({"tid": tid, "nombre": nombre, "estado": campos[0],
+                      "wchan": wchan if wchan not in ("", "0") else "-",
+                      "ticks": int(campos[11]) + int(campos[12])})
     return hilos
+
+
+def hijos_proceso(pid: int) -> list[int]:
+    """PIDs de los hijos directos: /proc/<pid>/task/<tid>/children de cada hilo.
+
+    El kernel anota cada hijo en el archivo `children` del hilo que hizo fork(), por eso
+    se leen los de todos los hilos del proceso.
+    """
+    hijos = []
+    try:
+        tareas = os.listdir(f"/proc/{pid}/task")
+    except (FileNotFoundError, ProcessLookupError):
+        return hijos
+    for tid in tareas:
+        try:
+            with open(f"/proc/{pid}/task/{tid}/children") as f:
+                hijos += [int(x) for x in f.read().split()]
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+    return sorted(set(hijos))
+
 
 
 def habilitar_volcado_hilos() -> None:
