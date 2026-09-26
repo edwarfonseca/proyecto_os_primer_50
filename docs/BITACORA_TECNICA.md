@@ -1,6 +1,6 @@
 # Bitácora técnica — Proyecto 6: Sistema de despacho y logística
 
-> Documento vivo, actualizado al cerrar cada fase (proyecto terminado: fases 0 a 9). Sirve como fuente para el informe técnico
+> Documento vivo, actualizado al cerrar cada fase (proyecto terminado: fases 0 a 10). Sirve como fuente para el informe técnico
 > y como guía para la demostración/sustentación. Cada sección de fase contiene:
 > **Qué se hizo · Decisiones y justificación · Conceptos de SO · Cómo ejecutarlo ·
 > Qué observar y cómo explicarlo · Evidencias.**
@@ -16,6 +16,7 @@
 - [7. Registro y observación](#fase-7--registro-y-observación) ✅
 - [8. Experimentos y comparación antes/después](#fase-8--experimentos-y-comparación-antesdespués) ✅
 - [9. Cierre: diseño final, demostración, revisión y conclusiones](#fase-9--guion-de-demostración-y-sustentación) ✅
+- [10. Frontend de demostración](#fase-10--frontend-de-demostración) ✅
 - [Anexo A. Matriz de trazabilidad](#anexo-a-matriz-de-trazabilidad)
 - [Anexo B. Glosario de comandos del SO usados](#anexo-b-comandos-del-so)
 
@@ -2157,6 +2158,7 @@ reprodujeron, se explicaron con conceptos de SO, se corrigieron y se midieron an
 | H4 | Un generador pierde su última ráfaga | Condición de carrera entre `Barrier.wait()` y `Barrier.abort()` | 13/30 | 0/30 | F2, `experimentos/h4_barrera_abortada.sh` |
 | H5 | Volcados de pila mezclados carácter a carácter | Escrituras concurrentes sin sincronizar sobre un descriptor compartido (stderr) | ilegibles | legibles (señales escalonadas) | F5-E1 |
 | H6 | `Value(lock=True)` pierde incrementos | El lock protege cada acceso, no la secuencia leer-modificar-escribir | 62 % perdido (procesos), 54 % (hilos) | 0 % con `get_lock()` | F7-E4, `experimentos/h6_contador_compartido.py` |
+| H7 | El servidor del frontend no se detiene con Ctrl+C y deja el sistema corriendo | Un proceso en segundo plano de un shell no interactivo hereda `SIGINT` ignorado (POSIX) | no se detiene; puerto ocupado | manejadores explícitos; detiene el sistema al salir | F10 10.6 |
 
 ### 8.6 Decisiones y validez de los resultados
 - **D8.1 Repeticiones y dispersión.** Cada celda tiene 3 repeticiones, con media ± desviación
@@ -2386,7 +2388,7 @@ indica dónde se implementa cada uno y su evidencia.
 | 6 | Evidencia del problema antes de la corrección | F3, F5-E1, H1–H6 (antes), F8 |
 | 7 | Evidencia de la solución después de la corrección | F4, F5-E3, H1–H6 (después), F8 |
 | 8 | Conclusiones técnicas | 9.5 |
-| 9 | Presentación o demostración funcional | `scripts/demo.sh`, `docs/GUION_DEMOSTRACION.md` |
+| 9 | Presentación o demostración funcional | En consola: `scripts/demo.sh`; en el navegador: `web/servidor.py` (Fase 10); guion de ambas: `docs/GUION_DEMOSTRACION.md` |
 
 ### 9.5 Conclusiones técnicas
 
@@ -2440,6 +2442,140 @@ pregunta orientadora. Las conclusiones:
   físicos, turbo, `powersave`) y tiempos de servicio simulados (F8 D8.4).
 - **Balanceo:** una única cola compartida reparte bien la carga aquí; con muchos más trabajadores,
   la contención en `mutex_lectura` crecería y convendría una cola por trabajador con robo de trabajo.
+
+---
+
+## Fase 10 — Frontend de demostración
+
+> Rama `fase-10-frontend` · etiqueta `fase-10` · capturas en `evidencias/fase10/capturas/`
+>
+> Una segunda forma de presentar la demostración (entregable 9): la misma historia de los 7 pasos de
+> `scripts/demo.sh`, vista en el navegador y en vivo.
+
+### 10.1 Qué se hizo
+- **`web/servidor.py`**: servidor HTTP con la biblioteca estándar (`http.server`). Lanza el sistema
+  con los escenarios del guion, lo observa y ofrece una API JSON al navegador.
+- **`web/static/`** (`index.html`, `estilos.css`, `app.js`): página sin librerías externas, que
+  funciona sin internet. Consulta el estado cada 0.7 s mientras hay una ejecución.
+- **`despacho/metricas.py`**: la extracción de métricas del log, antes dentro de la batería de la
+  Fase 8, pasó a un módulo compartido por la batería y el servidor.
+- **`so_utils`** ahora da, por hilo, el canal de espera (`wchan`) y los ticks de CPU, y los hijos de
+  un proceso leyendo `/proc/<pid>/task/<tid>/children`.
+- **`scripts/verificar.sh`** comprueba también el frontend: servidor, página, API y un escenario
+  completo (15 comprobaciones).
+- El guion de demostración describe las dos formas de presentar.
+
+### 10.2 Arquitectura
+
+```mermaid
+flowchart LR
+    NAV["Navegador<br/>index.html · app.js"]
+    subgraph S["web/servidor.py (127.0.0.1)"]
+        API["API JSON<br/>/api/escenarios · /api/estado<br/>/api/ejecutar · /api/detener · /api/senal"]
+        OBS["Observador<br/>lee /proc: árbol, estados,<br/>wchan, CPU por hilo, memoria"]
+        LEC["Lector del log<br/>eventos, ESTADO, dobles,<br/>ciclos, métricas finales"]
+    end
+    SYS["main.py<br/>(su propio grupo de procesos)"]
+    ARCH[("log · estado.csv ·<br/>recursos.csv · stderr")]
+    NAV -- "cada 0.7 s" --> API
+    API --> OBS & LEC
+    API -- "Popen(start_new_session)<br/>SIGINT/SIGSTOP/SIGCONT/SIGUSR1/SIGKILL" --> SYS
+    OBS -. "/proc/<pid>/..." .-> SYS
+    SYS --> ARCH --> LEC
+```
+
+La página muestra el sistema desde **dos puntos de vista independientes**, como en toda la bitácora:
+
+| Vista | Fuente | Paneles |
+|---|---|---|
+| El SO, como observador externo | El servidor lee `/proc` en cada consulta | Procesos e hilos (estado, `wchan`, CPU por hilo, RSS, PSS), botones de señales |
+| El programa, que se mide a sí mismo | Log, `<log>.estado.csv` (monitor) y `<log>.recursos.csv` (muestreador) | Indicadores del monitor, flota, grafo de espera, eventos, gráficas de CPU y memoria, resultado final |
+
+Cuando ambas vistas coinciden, por ejemplo cuando el vigilante nombra un ciclo y el árbol muestra
+esos mismos hilos en «espera lock/semáforo» con 0 % de CPU, la conclusión es firme.
+
+### 10.3 Cómo ejecutarlo
+```bash
+python3 web/servidor.py                 # http://127.0.0.1:8080  (Ctrl+C para cerrar)
+python3 web/servidor.py --abrir         # abre el navegador
+python3 web/servidor.py --puerto 9000   # otro puerto
+# en la dirección: #comparar abre la comparación; ?tema=oscuro|claro fija el tema
+```
+El recorrido completo, paso por paso, está en `docs/GUION_DEMOSTRACION.md` («Versión gráfica»).
+
+### 10.4 Decisiones
+- **D10.1 Aplicación web local, no una página alojada:** tiene que lanzar procesos y leer `/proc`
+  del equipo que presenta. Además funciona sin internet el día de la sustentación.
+- **D10.2 Sólo biblioteca estándar** (`http.server`, JavaScript y SVG propios): nada que instalar;
+  la misma decisión que en las gráficas de la Fase 8.
+- **D10.3 Seguridad:** escucha sólo en `127.0.0.1`; ejecuta sólo los escenarios definidos o
+  parámetros validados contra una lista blanca con rangos (nunca comandos arbitrarios); envía
+  señales sólo a procesos **hijos de la ejecución en curso** (lo comprueba en `/proc`) y sólo
+  `STOP`, `CONT`, `TERM`, `KILL` y `USR1`. Una ejecución a la vez.
+- **D10.4 El sistema corre en su propio grupo de procesos** (`start_new_session`, equivalente a
+  `setsid`): el botón **Detener** envía `SIGINT` a todo el grupo, igual que Ctrl+C en la terminal.
+- **D10.5 El observador no hace `waitpid`:** sólo el hilo que lanzó el proceso espera su fin
+  (`Popen.wait`); el resto sólo lee `/proc` (la misma regla del muestreador, F6 D6.4).
+- **D10.6 La CPU por hilo se calcula como en `top`:** diferencia de ticks (`utime + stime` de
+  `/proc/<pid>/task/<tid>/stat`) entre dos lecturas, dividida por el tiempo transcurrido.
+- **D10.7 El log se lee incrementalmente** (desde la última posición) y una línea a medio escribir
+  se deja para la siguiente lectura. Un lock cubre la lectura **y** la interpretación, porque la
+  llaman dos hilos: el que atiende al navegador y el que espera el fin de la ejecución.
+- **D10.8 Eventos importantes aparte del detalle:** en escenarios con mucha actividad (cientos de
+  líneas «RUTA…», «SIN VEHÍCULOS»), los eventos importantes del inicio quedaban fuera de la ventana
+  enviada al navegador. Se guardan en una lista propia.
+- **D10.9 Diseño de la interfaz:** colores por rol con modo claro y oscuro propios; colores de
+  estado reservados, siempre con ícono y texto («✖ Doble asignación», «⏸ detenido»); líneas de
+  2 px, leyenda y etiqueta al final de cada serie, y tooltip con cruz al pasar el mouse. Los paneles
+  no se redibujan si no cambiaron, y el árbol no se redibuja mientras se presiona un botón de señal,
+  para que el clic no se pierda.
+
+### 10.5 Evidencias y cómo explicarlas (`evidencias/fase10/capturas/`)
+
+| Captura | Qué muestra |
+|---|---|
+| `01_procesos_e_hilos.png` | Paso 1: el árbol de procesos e hilos leído de `/proc`, con PID/PPID, estado y espera de cada hilo; notas del presentador en el guion |
+| `02_carrera_en_vivo.png` | Paso 2 (antes): tarjetas de la flota con «✖ Doble asignación» (por ejemplo «sol. 17 sobre 4, entre procesos») y eventos de la carrera en vivo |
+| `03_carrera_resultado.png` | Resultado: «✖ Con fallos (código de salida 1)», dobles asignaciones, registros inconsistentes y «6 con 3 vehículos» marcados como problema |
+| `04_comparacion.png` | Pestaña Comparar: antes frente a después con la misma carga (17 frente a 0 dobles, 6/3 frente a 3/3) |
+| `05_interbloqueo_oscuro.png` | Paso 3 en modo oscuro: grafo de espera `inspector-1 → V2 → despachador-1-3 → A2 → inspector-1` y, en el árbol, los dos hilos marcados «✖ en el ciclo» |
+| `06_gil_un_proceso.png` | Paso 4: con 1 proceso × 4 hilos sólo **un** hilo está en `R`; los demás aparecen en «espera lock/semáforo» y la gráfica de CPU marca ≈ 100 % (un núcleo) |
+| `07_monitor_sin_progreso.png` | Paso 6: ambos trabajadores detenidos con `SIGSTOP` (todos sus hilos en `T`), rendimiento 0,0 y el evento «SIN PROGRESO» |
+
+- *Qué decir sobre la captura 06:* los hilos que esperan el GIL aparecen en `futex_do_wait`
+  («espera lock/semáforo») y no en `R`, porque el GIL es por dentro un lock sobre un futex. El SO
+  muestra el GIL como lo que es: una exclusión mutua que deja a un solo hilo ejecutar Python.
+
+**Verificación funcional** (además de las capturas): se comprobó por la API que el servidor rechaza
+una segunda ejecución en paralelo, una señal a un proceso ajeno (PID 1), una señal no permitida y un
+parámetro fuera de rango. También se comprobó que `SIGSTOP`/`SIGCONT` producen la alerta y la
+recuperación, que `SIGUSR1` llena el panel de volcados de pila, que la detección muestra la víctima
+y que el RSS crece con el historial sin límite. `scripts/verificar.sh` ejecuta un escenario completo
+por la API.
+
+### 10.6 Hallazgo H7 — un proceso en segundo plano no recibe Ctrl+C
+1. **Problema:** al probar el servidor, lanzado en segundo plano desde un shell no interactivo, el
+   `kill -INT` no lo detuvo; el siguiente arranque falló con `Address already in use` y la ejecución
+   continua siguió corriendo sin control.
+2. **Causa:** por POSIX, cuando el control de trabajos está desactivado (shell no interactivo), los
+   procesos en segundo plano arrancan con `SIGINT` y `SIGQUIT` **ignorados**. Python respeta esa
+   disposición heredada y no instala su manejador de Ctrl+C. Es la herencia de disposiciones de señales
+   de la Fase 1 (D1.4), ahora del lado del que la recibe.
+3. **Corrección:** el servidor instala explícitamente manejadores para `SIGINT` y `SIGTERM`. Al salir
+   envía `SIGINT` al grupo del sistema y, si no termina en 20 s, `SIGKILL`.
+4. **Evidencia:** tras la corrección, `kill -INT` al servidor lanzado en segundo plano lo cierra y
+   detiene también la ejecución en curso («Deteniendo la ejecución en curso…»; no queda ningún
+   proceso).
+
+### 10.7 Preguntas probables
+- **¿De dónde saca el frontend lo que muestra?** De dos fuentes independientes: `/proc` (el SO) y los
+  registros del propio programa (log y CSV). Tabla de 10.2.
+- **¿El frontend cambia el comportamiento del sistema?** No: lanza el mismo `main.py` con los mismos
+  parámetros del guion y sólo agrega `--intervalo-monitor 0.5 --muestreo 0.5` para que las gráficas
+  se actualicen más seguido. Leer `/proc` no afecta a los procesos observados.
+- **¿Es seguro dejar un servidor que ejecuta procesos?** Escucha sólo en la máquina local, ejecuta sólo
+  escenarios o parámetros validados y sólo envía señales a sus propios procesos hijos (D10.3).
+- **¿Por qué los hilos que esperan el GIL salen como «espera lock/semáforo»?** Captura 06.
 
 ---
 

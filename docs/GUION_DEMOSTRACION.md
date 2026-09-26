@@ -1,8 +1,18 @@
 # Guion de demostración — Proyecto 6: Sistema de despacho y logística
 
-Duración objetivo: **10 minutos** (7 de demostración + 3 de introducción y cierre). El script
-`scripts/demo.sh` ejecuta cada paso con los comandos exactos y se detiene (Enter) entre partes,
-para explicar sin teclear comandos en vivo.
+Duración objetivo: **10 minutos** (7 de demostración + 3 de introducción y cierre).
+
+Hay **dos formas** de presentar el mismo guion de 7 pasos, con el mismo contenido:
+
+| | Consola | Frontend (navegador) |
+|---|---|---|
+| Cómo se inicia | `scripts/demo.sh` | `python3 web/servidor.py --abrir` |
+| Cómo se avanza | Enter entre partes | un botón por escenario |
+| Fuerte en | mostrar los comandos reales del SO (`pstree`, `ps -L`, `top -H`) | ver todo a la vez y en vivo: árbol de hilos, flota, grafo de espera, gráficas, comparación |
+| Sección de esta guía | la mayor parte del documento | «Versión gráfica», al final |
+
+Una combinación recomendada: presentar con el frontend y abrir una terminal para demostrar que los
+datos coinciden con `pstree -p -t` o `ps -L` (el profesor valora ver las herramientas del SO).
 
 ## Antes de la sustentación
 
@@ -13,6 +23,9 @@ para explicar sin teclear comandos en vivo.
       en la carpeta del proyecto por si piden un comando adicional.
 - [ ] Tener abiertos `docs/BITACORA_TECNICA.md` (secciones 8.4 y 8.5) y las gráficas de
       `evidencias/fase8/graficas/` por si piden ver resultados completos.
+- [ ] Si se usará el frontend: `python3 web/servidor.py`, abrir `http://127.0.0.1:8080`, pantalla
+      completa (F11) y probar un escenario. Elegir el tema según el proyector (`?tema=claro` o
+      `?tema=oscuro` en la dirección) y decidir si se muestran las notas (casilla «Notas»).
 
 ## Introducción (1 min, sin comandos)
 
@@ -114,3 +127,37 @@ Mostrar la tabla 8.4 de la bitácora o la gráfica G1 (`g1_dobles_asignaciones.s
 | El hallazgo H1 | `python3 experimentos/h1_event_bloqueado.py` y luego con `--corregido` |
 | El hallazgo H6 | `python3 experimentos/h6_contador_compartido.py 50000` |
 | Volver a una fase anterior | `git checkout fase-3` (y `git checkout main` para volver) |
+
+## Versión gráfica (frontend)
+
+### Preparación
+1. `python3 web/servidor.py --abrir` (o abrir `http://127.0.0.1:8080`). F11 para pantalla completa.
+2. A la izquierda está el guion con los 7 pasos; cada uno tiene sus botones y, si la casilla
+   **Notas** está marcada, «Qué observar» y «Qué decir». Desmarcarla si se proyecta la pantalla y no
+   se quiere mostrar el apoyo.
+3. Sólo se puede ejecutar un escenario a la vez: los botones se desactivan mientras hay uno en curso.
+   **Detener (Ctrl+C)** envía `SIGINT` a todo el grupo de procesos; **Forzar (SIGKILL)**, sólo si algo
+   no responde.
+4. Al cerrar el servidor con Ctrl+C, detiene también la ejecución en curso.
+
+### Recorrido
+
+| Paso | Botón | Qué señalar en pantalla | Qué hacer |
+|---|---|---|---|
+| 1. Procesos e hilos | *Ejecución continua* | Panel **Procesos e hilos**: 3 hijos con PPID = PID del principal; cada hilo con su letra de estado y su espera («espera lock/semáforo», «duerme (tiempo)») | Tras explicar, **Detener (Ctrl+C)**: el panel dice «no quedan procesos (ni zombis)» |
+| 2. Condición de carrera | *Antes (inseguro)* y luego *Después (corregido)* | Durante «antes»: tarjetas de **Flota** con «✖ Doble asignación» y eventos «carrera». Al terminar: **Resultado** «✖ Con fallos», dobles > 0, «6 con 3 vehículos» | Pestaña **Comparar ejecuciones**: barras de dobles asignaciones (≈ 17 frente a 0) y la tabla |
+| 3. Interbloqueo | *Sin orden (se bloquea)*; luego *Orden global* y *Detección y recuperación* | **Grafo de espera**: hilo → recurso → hilo con «✖ Espera circular»; en el árbol, los dos hilos marcados «✖ en el ciclo», en «espera lock/semáforo» y 0 % de CPU | Esperar el cierre forzado (≈ 15 s, se ve en eventos). Con *Detección*: «✔ Recuperado, la víctima inspector-1 soltó…» |
+| 4. CPU (GIL) | *1 proceso × 4 hilos* y luego *4 procesos × 1 hilo* | Árbol: con hilos, **un solo hilo en R** (los demás esperan el GIL, que es un lock: «espera lock/semáforo»); gráfica **CPU** ≈ 100 %. Con procesos: todos en R, CPU ≈ 300 % | **Comparar**: métrica «Tiempo total» o «Real / CPU por ruta» |
+| 5. Espera activa | *Espera activa* y luego *Espera bloqueante* | Gráfica **CPU** alta y plana (activa) frente a casi cero (bloqueante), con el mismo avance en **Monitor** | **Comparar**: métrica «CPU de los trabajadores (s)» |
+| 6. Monitor en vivo | *Ejecución continua* | Indicadores arriba y gráfica **Monitor** | En el árbol, **⏸ Detener** en trabajador-1 y en trabajador-2: hilos en **T**, rendimiento 0,0 y a los 3 s el evento «SIN PROGRESO». Luego **▶ Reanudar** en ambos: se recupera. **Pila** muestra el volcado en «Salida de error» |
+| 7. Memoria | *Historial sin límite* y luego *Historial acotado (20)* | Gráfica **Memoria (RSS)**: línea que sube sin parar frente a una que se estabiliza | **Comparar**: métrica «Memoria PSS total (MB)» |
+
+### Si algo sale distinto en el frontend
+
+| Situación | Qué hacer |
+|---|---|
+| El interbloqueo no se forma en *Sin orden* | Ejecutarlo de nuevo (ocurre en ~8 de cada 10) o usar *Detección y recuperación*, que lo forma casi siempre |
+| La página dice «Sin conexión con el servidor» | El servidor se cerró: `python3 web/servidor.py` y recargar la página |
+| Un botón de señal no responde | Esperar un segundo y volver a presionar (la ejecución pudo terminar entre medio) |
+| «ya hay una ejecución en curso» | Presionar **Detener (Ctrl+C)** y esperar a que termine |
+| Se quiere mostrar la herramienta del SO real | Abrir una terminal: `pstree -p -t $(pgrep -xo centro_despacho)` coincide con el panel |

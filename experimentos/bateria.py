@@ -16,13 +16,15 @@ Cada ejecución deja su log (y sus CSV de estado y recursos) en logs/fase8/.
 """
 
 import csv
-import re
 import subprocess
 import sys
 import time
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(RAIZ))
+from despacho.metricas import METRICAS, extraer  # noqa: E402  (tras ajustar sys.path)
+
 SALIDA = RAIZ / "evidencias" / "fase8" / "resultados.csv"
 LOGS = RAIZ / "logs" / "fase8"
 
@@ -31,29 +33,6 @@ DESPUES = ["--modo", "seguro", "--espera", "bloqueante"]
 # Aísla el fenómeno de cada grupo: sin taller, andenes de sobra, sin carga de CPU/memoria.
 AISLADO = ["-i", "0", "-a", "100", "-p", "0", "--traza-kb", "0"]
 
-# Métricas que se extraen del bloque ESTADÍSTICAS del log: nombre -> expresión regular.
-METRICAS = {
-    "generadas": r"generadas=(\d+)",
-    "entregadas": r"solicitudes: generadas=\d+ entregadas=(\d+)",
-    "canceladas": r"canceladas=(\d+) no atendidas",
-    "no_atendidas": r"no atendidas=(\d+)",
-    "tiempo_total_s": r"tiempo total=([\d.]+)",
-    "rendimiento": r"rendimiento=([\d.]+)",
-    "espera_cola_ms": r"espera en cola \(ms\): mín=\d+ prom=(\d+)",
-    "espera_vehiculo_ms": r"espera por vehículo \(ms\): prom=(\d+)",
-    "reintentos_sondeo": r"reintentos de búsqueda \(espera activa\)=(\d+)",
-    "dobles_sonda": r"sonda en vivo=(\d+)",
-    "dobles_auditoria": r"vehículo ocupado=(\d+)",
-    "inconsistencias": r"actualizaciones perdidas\)=(\d+)",
-    "en_ruta_max": r"entregas con vehículo a la vez: máx=(\d+)",
-    "cpu_trabajadores_s": r"trabajadores=([\d.]+) s \|",
-    "cpu_trabajadores_pct": r"CPU de los trabajadores=([\d.]+)",
-    "ctx_voluntarios": r"voluntarios=(\d+), involuntarios",
-    "ctx_involuntarios": r"involuntarios=(\d+)",
-    "interbloqueos": r"INTERBLOQUEOS: detectados=(\d+)",
-    "recuperaciones": r"recuperaciones \(víctimas\)=(\d+)",
-    "reintentos_timeout": r"reintentos por tiempo límite=(\d+)",
-}
 
 
 def configuraciones(grupos):
@@ -77,17 +56,6 @@ def configuraciones(grupos):
             yield ("espera", nombre, 48,
                    ["-w", "4", "-t", "4", "-g", "4", "-n", "48", "-k", "48", "-v", "2",
                     "--ventana", "0", *flags, *AISLADO])
-
-
-def extraer(ruta_log: Path) -> dict:
-    texto = ruta_log.read_text(encoding="utf-8")
-    bloque = texto[texto.find("ESTADÍSTICAS:"):] if "ESTADÍSTICAS:" in texto else ""
-    fila = {}
-    for nombre, patron in METRICAS.items():
-        m = re.search(patron, bloque)
-        fila[nombre] = m.group(1) if m else ""
-    fila["interbloqueo_sin_resolver"] = int("INTERBLOQUEO sin recuperación" in texto)
-    return fila
 
 
 def main():
@@ -118,7 +86,7 @@ def main():
                 fila = {"grupo": grupo, "variante": variante, "solicitudes": n,
                         "repeticion": rep, "exit_code": proc.returncode,
                         "duracion_real_s": round(time.monotonic() - t0, 2),
-                        "log": log.relative_to(RAIZ), **extraer(log)}
+                        "log": log.relative_to(RAIZ), **extraer(log.read_text(encoding="utf-8"))}
                 w.writerow(fila)
                 f.flush()
                 print(f"[{k}/{total}] {grupo:14} {variante:17} n={n:<4} rep={rep} "

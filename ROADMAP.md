@@ -1,6 +1,6 @@
 # Ruta de desarrollo — Proyecto 6: Sistema de despacho y logística
 
-> **Estado: terminado.** Las 10 fases (0 a 9) están completas y etiquetadas en git (`fase-0` … `fase-9`).
+> **Estado: terminado.** Las 11 fases (0 a 10) están completas y etiquetadas en git (`fase-0` … `fase-10`).
 
 > Plan de trabajo por fases. Cada fase termina con: código funcionando, evidencia real
 > del SO capturada en `evidencias/`, y su sección completada en
@@ -144,3 +144,9 @@ entrega simulados con `sleep`), pero **no** paralelizan cálculo. La tarea inten
 - [x] `scripts/verificar.sh` (14 comprobaciones) y `scripts/demo.sh` (demostración guiada, ensayada).
 - [x] Guion de demostración (`docs/GUION_DEMOSTRACION.md`) y banco de preguntas (`docs/PREGUNTAS_SUSTENTACION.md`).
 - [x] Diseño final, mapa hacia el informe, revisión contra el enunciado y conclusiones (bitácora, sección 9).
+
+### Fase 10 — Frontend de demostración ✅
+- [x] `web/servidor.py` (biblioteca estándar): escenarios del guion, observación de `/proc`, lectura incremental del log, API JSON; seguro (127.0.0.1, lista blanca, señales sólo a sus hijos).
+- [x] `web/static/`: guion con notas del presentador, árbol de procesos e hilos con botones de señales, indicadores del monitor, flota, grafo de espera, eventos, gráficas de CPU y memoria, resultado y comparación de ejecuciones; modo claro/oscuro; sin dependencias externas.
+- [x] Verificación visual con Chrome headless (7 capturas) y funcional por la API; `scripts/verificar.sh` incluye el frontend.
+- [x] Hallazgo H7: `SIGINT` ignorado heredado por procesos en segundo plano.

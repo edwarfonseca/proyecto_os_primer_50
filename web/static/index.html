@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Centro de despacho — demostración</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <header class="barra">
+    <div class="marca">
+      <h1>Centro de despacho</h1>
+      <span class="marca-sub">Proyecto 6 · Sistemas Operativos · demostración gráfica</span>
+    </div>
+    <div class="ejecucion" id="ejecucion" aria-live="polite"></div>
+    <div class="acciones">
+      <button id="btn-detener" disabled title="SIGINT a todo el grupo de procesos, como Ctrl+C">Detener (Ctrl+C)</button>
+      <button id="btn-forzar" class="secundario" disabled title="SIGKILL a todo el grupo de procesos">Forzar (SIGKILL)</button>
+      <label class="interruptor"><input type="checkbox" id="chk-notas" checked> Notas</label>
+      <button id="btn-tema" class="secundario" aria-label="Cambiar entre tema claro y oscuro">◐ Tema</button>
+    </div>
+  </header>
+
+  <div class="cuerpo">
+    <aside class="guion" aria-label="Guion de la demostración">
+      <h2 class="guion-titulo">Guion de la demostración</h2>
+      <ol id="pasos" class="pasos"></ol>
+      <details class="personalizado">
+        <summary>Ejecución personalizada</summary>
+        <form id="form-personalizado"></form>
+      </details>
+    </aside>
+
+    <main>
+      <nav class="pestanas" role="tablist">
+        <button role="tab" data-vista="vivo" aria-selected="true">En vivo</button>
+        <button role="tab" data-vista="comparar" aria-selected="false">Comparar ejecuciones <span id="n-historial" class="contador"></span></button>
+      </nav>
+
+      <section id="vista-vivo">
+        <div id="aviso" class="aviso" hidden></div>
+        <div id="tiles" class="tiles"></div>
+        <article id="panel-resumen" class="panel resumen" hidden>
+          <h2>Resultado de la ejecución</h2>
+          <div id="resumen"></div>
+        </article>
+
+        <div class="rejilla">
+          <article class="panel">
+            <h2>Procesos e hilos <small>vista del SO: el servidor lee /proc</small></h2>
+            <div id="arbol" class="arbol"><p class="vacio">Elija un paso del guion para comenzar.</p></div>
+          </article>
+
+          <div class="columna">
+            <article class="panel">
+              <h2>Flota de vehículos <small>foto del monitor, bajo el mutex</small></h2>
+              <div id="flota" class="flota"><p class="vacio">Sin datos.</p></div>
+            </article>
+            <article class="panel">
+              <h2>Grafo de espera <small>detectado por el vigilante</small></h2>
+              <div id="ciclo"><p class="vacio">Sin interbloqueos detectados.</p></div>
+            </article>
+          </div>
+
+          <article class="panel">
+            <h2>Monitor del programa <small>requisito 12 · &lt;log&gt;.estado.csv</small></h2>
+            <div id="graf-monitor" class="grafica"></div>
+          </article>
+
+          <article class="panel">
+            <h2>Eventos <small>log del sistema</small>
+              <label class="interruptor derecha"><input type="checkbox" id="chk-todos"> todos</label></h2>
+            <ol id="eventos" class="eventos"></ol>
+          </article>
+
+          <article class="panel">
+            <h2>CPU por proceso <small>muestreador · &lt;log&gt;.recursos.csv</small></h2>
+            <div id="graf-cpu" class="grafica"></div>
+          </article>
+
+          <article class="panel">
+            <h2>Memoria residente (RSS) <small>muestreador</small></h2>
+            <div id="graf-mem" class="grafica"></div>
+          </article>
+
+          <details class="panel ancho">
+            <summary>Salida de error: volcados de pila (botón «Pila» = kill -USR1)</summary>
+            <pre id="stderr" class="stderr">—</pre>
+          </details>
+        </div>
+      </section>
+
+      <section id="vista-comparar" hidden>
+        <article class="panel">
+          <h2>Comparar ejecuciones de esta sesión</h2>
+          <p class="nota">Ejecute las variantes «antes» y «después» de un paso para compararlas con la misma carga (semilla 42).</p>
+          <label class="selector">Métrica
+            <select id="sel-metrica"></select>
+          </label>
+          <div id="graf-comparar" class="grafica"></div>
+          <div class="tabla-envoltura"><table id="tabla-comparar"></table></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <div id="tooltip" class="tooltip" role="status" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
