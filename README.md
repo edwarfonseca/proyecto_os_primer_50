@@ -24,10 +24,32 @@ operativo, los corrige y mide la diferencia con la misma carga:
 
 ## Inicio rápido
 ```bash
-scripts/verificar.sh                     # comprueba que todo funciona (≈ 40 s)
+scripts/verificar.sh                     # comprueba que todo funciona (≈ 50 s)
 python3 main.py --vista resumen          # una ejecución: estado cada segundo + resumen final
-scripts/demo.sh                          # demostración guiada de 7 pasos (≈ 8 min)
+scripts/demo.sh                          # demostración guiada en consola (7 pasos, ≈ 8 min)
+python3 web/servidor.py --abrir          # demostración gráfica en el navegador (http://127.0.0.1:8080)
 ```
+
+## Demostración gráfica (frontend)
+```bash
+python3 web/servidor.py            # y abrir http://127.0.0.1:8080  (Ctrl+C para cerrar)
+python3 web/servidor.py --abrir    # abre el navegador automáticamente
+```
+Una página con el mismo guion de 7 pasos que `scripts/demo.sh`: cada paso tiene sus botones
+(por ejemplo *Antes (inseguro)* y *Después (corregido)*) y las notas del presentador. Durante la
+ejecución muestra en vivo, desde dos puntos de vista:
+
+- **El SO (observador externo):** árbol de procesos e hilos leído de `/proc` con su estado (R/S/T/Z),
+  canal de espera (`wchan`) y CPU; botones para enviar `SIGSTOP`, `SIGCONT`, `SIGUSR1` y `SIGKILL`.
+- **El programa:** indicadores del monitor (recibidas, en cola, en proceso, vehículos, finalizadas),
+  flota con las dobles asignaciones, grafo de espera cuando hay un interbloqueo, eventos del log,
+  gráficas de CPU y memoria, y el resultado final con sus métricas.
+
+La pestaña **Comparar ejecuciones** pone lado a lado las ejecuciones de la sesión (por ejemplo, antes
+y después). Sólo usa la biblioteca estándar de Python y funciona sin internet; escucha sólo en
+`127.0.0.1` y sólo ejecuta los escenarios del guion o parámetros validados.
+
+![Frontend durante un interbloqueo](evidencias/fase10/capturas/05_interbloqueo_oscuro.png)
 
 ## Arquitectura
 ```
@@ -122,12 +144,12 @@ python3 experimentos/h6_contador_compartido.py             # H6: Value(lock=True
 | Documento | Contenido |
 |---|---|
 | [docs/BITACORA_TECNICA.md](docs/BITACORA_TECNICA.md) | Bitácora por fases: diseño, decisiones, evidencias y cómo explicarlas, hallazgos, conclusiones |
-| [docs/GUION_DEMOSTRACION.md](docs/GUION_DEMOSTRACION.md) | Guion de la demostración (10 min) paso a paso |
+| [docs/GUION_DEMOSTRACION.md](docs/GUION_DEMOSTRACION.md) | Guion de la demostración (10 min) paso a paso, en consola y en el frontend |
 | [docs/PREGUNTAS_SUSTENTACION.md](docs/PREGUNTAS_SUSTENTACION.md) | Preguntas probables con respuestas, por criterio de evaluación |
 | [evidencias/fase8/resumen.md](evidencias/fase8/resumen.md) | Tablas y gráficas de la comparación antes/después |
 | [ROADMAP.md](ROADMAP.md) | Ruta de desarrollo por fases |
 
-Cada fase quedó etiquetada en git (`fase-0` … `fase-9`): `git checkout fase-3` muestra el
+Cada fase quedó etiquetada en git (`fase-0` … `fase-10`): `git checkout fase-3` muestra el
 proyecto tal como estaba al terminar esa fase.
 
 ## Estructura
@@ -146,7 +168,11 @@ despacho/
   muestreador.py             CPU y memoria de cada proceso desde /proc
   contadores.py              contadores compartidos entre procesos
   carga.py                   ruta óptima (CPU) e historial de trazas (memoria)
+  metricas.py                extracción de métricas del log (batería y frontend)
   config.py, modelo.py, registro.py, so_utils.py
+web/
+  servidor.py                servidor de la demostración gráfica (API + /proc + lectura del log)
+  static/                    página (index.html, estilos.css, app.js), sin dependencias externas
 scripts/                     observación, demostración, verificación y evidencias por fase
 experimentos/                hallazgos H1-H6, batería de la fase 8 y gráficas SVG
 evidencias/faseN/            salidas reales de cada fase (fase8/graficas: gráficas SVG)

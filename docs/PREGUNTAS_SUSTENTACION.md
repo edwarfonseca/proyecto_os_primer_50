@@ -202,6 +202,25 @@ Tabla 8.4 de la bitácora.
 diferencias son de órdenes de magnitud frente a la dispersión. Amenazas declaradas: portátil con
 turbo, tiempos simulados. → F8 D8.1, D8.4.
 
+## Demostración gráfica (frontend)
+
+**¿De dónde saca el frontend lo que muestra?**
+De dos fuentes independientes: `/proc`, que el servidor lee como un observador externo (árbol de
+procesos e hilos, estados, `wchan`, CPU y memoria), y los registros del propio programa (log, serie
+del monitor y del muestreador). Cuando coinciden, la conclusión es firme. → F10 10.2.
+
+**¿El frontend altera lo que se mide?**
+No: ejecuta el mismo `main.py` con los mismos parámetros del guion; sólo muestrea más seguido.
+Leer `/proc` no afecta a los procesos observados. → F10 10.7.
+
+**¿Por qué los hilos que esperan el GIL aparecen como «espera lock/semáforo»?**
+Porque el GIL es por dentro un lock sobre un futex: el SO los ve dormidos en `futex_do_wait`, y sólo
+el que tiene el GIL está en `R`. → F10, captura 06.
+
+**¿Qué pasa si el servidor recibe Ctrl+C con una ejecución en curso?**
+Envía `SIGINT` al grupo del sistema (cierre ordenado) y, si no termina en 20 s, `SIGKILL`. →
+F10 10.6 (H7).
+
 ## Sustentación (5 %)
 
 **¿Qué aprendieron que no esperaban?**
