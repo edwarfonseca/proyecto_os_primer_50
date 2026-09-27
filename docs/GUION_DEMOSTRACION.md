@@ -14,6 +14,10 @@ Hay **dos formas** de presentar el mismo guion de 7 pasos, con el mismo contenid
 Una combinación recomendada: presentar con el frontend y abrir una terminal para demostrar que los
 datos coinciden con `pstree -p -t` o `ps -L` (el profesor valora ver las herramientas del SO).
 
+Si la presentación es **en grupo**, el reparto por persona, los comandos exactos de cada uno y
+la relación paso ↔ comando de Linux ↔ requisito están en
+[`PLAN_SUSTENTACION.md`](PLAN_SUSTENTACION.md).
+
 ## Antes de la sustentación
 
 - [ ] `scripts/verificar.sh` → debe terminar con **0 fallas** (≈ 40 s).

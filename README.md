@@ -145,6 +145,7 @@ python3 experimentos/h6_contador_compartido.py             # H6: Value(lock=True
 |---|---|
 | [docs/BITACORA_TECNICA.md](docs/BITACORA_TECNICA.md) | Bitácora por fases: diseño, decisiones, evidencias y cómo explicarlas, hallazgos, conclusiones |
 | [docs/GUION_DEMOSTRACION.md](docs/GUION_DEMOSTRACION.md) | Guion de la demostración (10 min) paso a paso, en consola y en el frontend |
+| [docs/PLAN_SUSTENTACION.md](docs/PLAN_SUSTENTACION.md) | Plan de la sustentación en consola: reparto entre los tres presentadores, comandos de Linux y requisitos cubiertos |
 | [docs/PREGUNTAS_SUSTENTACION.md](docs/PREGUNTAS_SUSTENTACION.md) | Preguntas probables con respuestas, por criterio de evaluación |
 | [evidencias/fase8/resumen.md](evidencias/fase8/resumen.md) | Tablas y gráficas de la comparación antes/después |
 | [ROADMAP.md](ROADMAP.md) | Ruta de desarrollo por fases |
